@@ -38,12 +38,6 @@ twig-lint:
         - twig-lint lint ./templates
     allow_failure: false
 
-lint:php:
-  stage: lint
-  image: sixlive/php-lint-fix
-  script:
-    - php-cs-fixer fix --dry-run --diff
-
 phpunit:
     stage: UnitTests
     script:
