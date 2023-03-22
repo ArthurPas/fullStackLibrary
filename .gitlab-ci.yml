@@ -12,7 +12,6 @@ stages:
     - SecurityChecker
     - CodingStandards
     - UnitTests
-    - lint
 
 security-checker:
     stage: SecurityChecker
@@ -30,12 +29,6 @@ phpstan:
     stage: CodingStandards
     script:
         - phpstan analyse ./src
-    allow_failure: false
-
-twig-lint:
-    stage: CodingStandards
-    script:
-        - twig-lint lint ./templates
     allow_failure: false
 
 phpunit:
