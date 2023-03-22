@@ -11,6 +11,7 @@ stages:
     - SecurityChecker
     - CodingStandards
     - UnitTests
+    - lint
 
 security-checker:
     stage: SecurityChecker
@@ -35,6 +36,12 @@ twig-lint:
     script:
         - twig-lint lint ./templates
     allow_failure: false
+
+lint:php:
+  stage: lint
+  image: sixlive/php-lint-fix
+  script:
+    - php-cs-fixer fix --dry-run --diff
 
 phpunit:
     stage: UnitTests
