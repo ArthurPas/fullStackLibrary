@@ -1,8 +1,10 @@
-function Home() {
+import { useRouteError } from "react-router-dom";
 
-  return (
-    <></>
-  )
+function Home() {
+    
+    return (
+        <></>
+    )
 }
 
 export default Home;
