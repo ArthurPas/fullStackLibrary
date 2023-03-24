@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ApiController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Hello siu! ✅</h1>
+    show each book
+    <ul>
+        {% for book in books %}
+            <li>{{ book.title }}</li>
+        {% endfor %}
+    This friendly message is coming from:
+    <ul>
+        <li>Your controller at <code><a href="{{ 'C:/Users/Aurelien/Desktop/S4/S4 SAE/sae4/symfony/src/Controller/ApiController.php'|file_link(0) }}">src/Controller/ApiController.php</a></code></li>
+        <li>Your template at <code><a href="{{ 'C:/Users/Aurelien/Desktop/S4/S4 SAE/sae4/symfony/templates/api/index.html.twig'|file_link(0) }}">templates/api/index.html.twig</a></code></li>
+    </ul>
+</div>
+{% endblock %}
