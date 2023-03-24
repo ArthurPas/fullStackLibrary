@@ -15,15 +15,13 @@ use Symfony\Component\HttpFoundation\Request;
 #[Route('/api')]
 class ApiController extends AbstractController
 {
-    #[View()]
-    #[Route('/', name: 'app_api')]
+    #[Route('/', name: 'app_api_books')]
     public function index(EntityManagerInterface $em): Response
     {
         $books = $em->getRepository(Book::class)->findAll();
         return $this->json($books);
     }
-    #[View()]
-    #[Route('/login', name: 'app_api', methods: "POST")]
+    #[Route('/login', name: 'app_api_login', methods: "POST")]
     public function login(Request $request, UserRepository $ur): Response
     {
         $mailRecu = $request->query->get("email");
