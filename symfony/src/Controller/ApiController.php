@@ -8,9 +8,9 @@ use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\DBAL\Schema\View;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -22,18 +22,16 @@ class ApiController extends AbstractController
         return $this->json($books);
     }
     #[Route('/login', name: 'app_api_login', methods: "POST")]
-    public function login(Request $request, UserRepository $ur): Response
+    public function login(Request $request, UserRepository $ur, SerializerInterface $serializer): Response
     {
-        $mailRecu = $request->query->get("email");
-        $mdpRecu = $request->query->get("password");
-
-        $user = $ur->findOneByEmail($mailRecu);
-        if ($user == null) {
+        $credentials = $serializer->deserialize($request->getContent(), User::class, 'json');   
+        $ExepectedUser = $ur->findOneByEmail($credentials->getEmail());
+        if ($ExepectedUser == null) {
             return $this->json([
                 'message' => 'error',
              ], Response::HTTP_UNAUTHORIZED);
         }
-        if ($user->getPassword() == $mdpRecu) {
+        if ($ExepectedUser->getPassword() == $credentials->getPassword()) {
             return $this->json(['message' => 'ok']);
         } else {
             return $this->json([
