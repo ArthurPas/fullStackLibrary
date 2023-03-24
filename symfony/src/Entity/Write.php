@@ -40,6 +40,5 @@ class Write
     public function getIdBook(): ?string
     {
         return $this->idBook;
-    }
-    
+    } 
 }

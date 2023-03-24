@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Rating
  *
- * @ORM\Table(name="RATING", indexes={@ORM\Index(name="I_FK_RATING_USER", columns={"ID_USER"}), @ORM\Index(name="I_FK_RATING_BOOK", columns={"ID_BOOK"})})
+ * @ORM\Table(name="RATING", indexes={@ORM\Index(name="I_FK_RATING_USER", columns={"ID_USER"}),
+ * @ORM\Index(name="I_FK_RATING_BOOK", columns={"ID_BOOK"})})
  * @ORM\Entity
  */
 class Rating
@@ -58,6 +59,5 @@ class Rating
         $this->rate = $rate;
 
         return $this;
-    }
-    
+    }   
 }

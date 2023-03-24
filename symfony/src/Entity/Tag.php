@@ -41,5 +41,4 @@ class Tag
     {
         return $this->idCategory;
     }
-    
 }

@@ -103,5 +103,4 @@ class Borrow
 
         return $this;
     }
-
 }
