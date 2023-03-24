@@ -34,10 +34,10 @@ class ApiController extends AbstractController
             return $this->json([
                 'message' => 'error',
              ], Response::HTTP_UNAUTHORIZED);
-        }
+        } 
         if ($user->getPassword() == $mdpRecu) {
             return $this->json(['message' => 'ok']);
-        }
+        } 
         else {
             return $this->json([
                 'message' => 'error',

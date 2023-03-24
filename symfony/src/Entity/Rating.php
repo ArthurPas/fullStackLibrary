@@ -59,5 +59,5 @@ class Rating
         $this->rate = $rate;
 
         return $this;
-    }   
+    }
 }

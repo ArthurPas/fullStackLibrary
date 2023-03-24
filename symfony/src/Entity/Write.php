@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Write
  *
- * @ORM\Table(name="WRITE", indexes={@ORM\Index(name="I_FK_WRITE_BOOK", columns={"ID_BOOK"}), 
+ * @ORM\Table(name="WRITE", indexes={@ORM\Index(name="I_FK_WRITE_BOOK", columns={"ID_BOOK"}),
  * @ORM\Index(name="I_FK_WRITE_AUTHOR", columns={"ID_AUTHOR"})})
  * @ORM\Entity
  */
@@ -40,5 +40,5 @@ class Write
     public function getIdBook(): ?string
     {
         return $this->idBook;
-    } 
+    }
 }
