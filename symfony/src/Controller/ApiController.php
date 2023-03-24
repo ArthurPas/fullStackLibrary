@@ -25,7 +25,7 @@ class ApiController extends AbstractController
     public function login(Request $request, UserRepository $ur): Response
     {
         $mailRecu = $request->query->get("email");
-        $mdpRecu = $request->query->get("mdp");
+        $mdpRecu = $request->query->get("password");
 
         $user = $ur->findOneByEmail($mailRecu);
         if ($user == null) {
