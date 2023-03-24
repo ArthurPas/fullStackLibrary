@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Entity\User;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\DBAL\Schema\View;
 use Doctrine\ORM\EntityManagerInterface;
-
+use Symfony\Component\HttpFoundation\Request;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -19,5 +21,27 @@ class ApiController extends AbstractController
     {
         $books = $em->getRepository(Book::class)->findAll();
         return $this->json($books);
-}
+    }
+    #[View()]
+    #[Route('/login', name: 'app_api', methods: "POST")]
+    public function login(Request $request, UserRepository $ur): Response
+    {
+        $mailRecu = $request->query->get("email");
+        $mdpRecu = $request->query->get("mdp");
+
+        $user = $ur->findOneByEmail($mailRecu);
+        if($user == null){
+            return $this->json([
+                'message' => 'error',
+             ], Response::HTTP_UNAUTHORIZED);
+        }
+        if($user->getPassword() == $mdpRecu){
+            return $this->json(['message' => 'ok']);
+        }
+        else{
+            return $this->json([
+                'message' => 'error',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+    }
 }
