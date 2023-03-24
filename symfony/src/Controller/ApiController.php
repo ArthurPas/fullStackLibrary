@@ -32,7 +32,6 @@ class ApiController extends AbstractController
         } else {
             $books = $em->getRepository(Book::class)->findAll();
         }
-
         return $books;
     }
 
@@ -54,6 +53,8 @@ class ApiController extends AbstractController
         $credentials = $serializer->deserialize($request->getContent(), User::class, 'json');
         $ExepectedUser = $ur->findOneByEmail($credentials->getEmail());
         if ($ExepectedUser == null) {
+        $user = $ur->findOneByEmail($mailRecu);
+        if ($user == null) {
             return $this->json([
                 'message' => 'error',
              ], Response::HTTP_UNAUTHORIZED);
@@ -94,6 +95,10 @@ class ApiController extends AbstractController
                 'message' => 'success',
             ], Response::HTTP_OK);
         } else {
+        if ($user->getPassword() == $mdpRecu) {
+            return $this->json(['message' => 'ok']);
+        }
+        else {
             return $this->json([
                 'message' => 'error',
             ], Response::HTTP_UNAUTHORIZED);
