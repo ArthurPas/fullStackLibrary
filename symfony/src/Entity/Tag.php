@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Tag
  *
- * @ORM\Table(name="TAG", indexes={@ORM\Index(name="I_FK_TAG_CATEGORY", columns={"ID_CATEGORY"}), @ORM\Index(name="I_FK_TAG_BOOK", columns={"ID_BOOK"})})
+ * @ORM\Table(name="TAG", indexes={@ORM\Index(name="I_FK_TAG_CATEGORY", columns={"ID_CATEGORY"}),
+ * @ORM\Index(name="I_FK_TAG_BOOK", columns={"ID_BOOK"})})
  * @ORM\Entity
  */
 class Tag
@@ -40,6 +41,5 @@ class Tag
     {
         return $this->idCategory;
     }
-
-
+    
 }
