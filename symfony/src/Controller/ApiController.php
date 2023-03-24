@@ -30,15 +30,15 @@ class ApiController extends AbstractController
         $mdpRecu = $request->query->get("mdp");
 
         $user = $ur->findOneByEmail($mailRecu);
-        if($user == null){
+        if ($user == null) {
             return $this->json([
                 'message' => 'error',
              ], Response::HTTP_UNAUTHORIZED);
         }
-        if($user->getPassword() == $mdpRecu){
+        if ($user->getPassword() == $mdpRecu) {
             return $this->json(['message' => 'ok']);
         }
-        else{
+        else {
             return $this->json([
                 'message' => 'error',
             ], Response::HTTP_UNAUTHORIZED);
