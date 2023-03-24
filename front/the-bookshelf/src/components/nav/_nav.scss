@@ -1,0 +1,47 @@
+@use '../../style/variables' as v;
+
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 2em;
+    font-family: 'Poppins';
+    width: 100%;
+
+    margin: 0 !important;
+
+    & > * {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    & > .nav__logo {
+        gap: 1em;
+
+        & img {
+            width: v.$nav-logo-size;
+        }
+
+        & h1 {
+            font-family: 'JetBrains Mono';
+            font-weight: 400;
+            font-size: 1.5em;
+            letter-spacing: -0.07em;
+        }
+    }
+
+    & .nav__items {
+        gap: 4em;
+        list-style-type: none;
+    }
+}
+
+// Hide navbar
+nav.login__nav {
+    justify-content: center;
+    align-items: center;
+    scale: 1.3;
+    margin: 2em 0 !important;
+}

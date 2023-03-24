@@ -1,0 +1,20 @@
+@use '../../style/variables' as v;
+
+.section__books {
+    color: v.$color-secondary;
+    font-size: 15px;
+
+    & > .books__row {
+        display: flex;
+        justify-content: space-between;
+
+        & > .book__card {
+   
+            & > img {
+                width: v.$book-card-img-size;
+            }
+
+        }
+    }
+    
+}

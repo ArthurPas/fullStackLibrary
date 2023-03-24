@@ -1,0 +1,90 @@
+@use 'variables' as v;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+
+/*---------------------
+   CSS Reset
+---------------------*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/*---------------------
+    Background
+---------------------*/
+html {
+  background-image: url(../assets/background.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: rgba(255, 255, 255 ,0.5);
+  background-blend-mode: lighten;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    text-decoration: none;
+    filter: brightness(0.8);
+  }
+}
+
+/*---------------------
+   Global Styles
+---------------------*/
+
+#root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: v.$primary-font;
+  color: #2E2E2E;
+
+  & > * {
+    margin: 1.5em 0;
+  }
+}
+
+.btn__text {
+  color: v.$color-secondary;
+  font-family: 'Poppins';
+  letter-spacing: -0.025em;
+  font-size: .9em;
+}
+
+.btn__primary {
+  background-color: v.$color-secondary;
+  border-radius: 15px;
+  padding: 0.5em 3em;
+  color: white;
+}
+
+.btn__secondary {
+  background-color: v.$color-primary;
+  color: white;
+  border-radius: 15px;
+  padding: 0.5em 3em;
+}
+
+/*---------------------
+   Home Page
+---------------------*/
+.content__books {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 5em;
+  width: 90%;
+  
+  & > * > * {
+    margin: 1em 0;
+  }
+}
