@@ -13,8 +13,8 @@ function BookSection({title, books}: BookSectionProps) {
         <div className="section__books">
             <h4>{title}</h4>
             <div className="books__row">
-                {books.map((book) => {
-                    return <BookCard book={book} key={uID.next().value}/>
+                {books.map((book, index) => {
+                    return <BookCard book={book} key={index}/>
                 })}
             </div>
         </div>
