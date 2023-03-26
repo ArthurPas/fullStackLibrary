@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,11 +14,37 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/api')]
 class ApiController extends AbstractController
 {
-    #[View()]
     #[Route('/', name: 'app_api')]
     public function index(EntityManagerInterface $em): Response
     {
         $books = $em->getRepository(Book::class)->findAll();
         return $this->json($books);
-}
+    }
+
+    #[Route('/followed/{id}', name: 'app_followed_id')]
+    public function listfollowedId(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findByUserIsFollowed($id);
+        return $this->json($users);
+    }
+
+    #[Route('/follow/{id}', name: 'app_follow_id')]
+    public function listfollowId(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findUserFollowings($id);
+        return $this->json($users);
+    }
+
+    #[Route('/infoUser/{id}', name: 'app_Infouser_id')]
+    public function InfoUser(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->InfoUser($id);
+        return $this->json($users);
+    }
+    
+
+
+    // $users = $em->getRepository(User::class)->listFollowedUsers($us);
+    // return $this->json($users);
+
 }
