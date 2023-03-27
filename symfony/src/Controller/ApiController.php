@@ -14,10 +14,27 @@ use Doctrine\ORM\EntityManagerInterface;
 class ApiController extends AbstractController
 {
     #[View()]
-    #[Route('/', name: 'app_api')]
+    #[Route('/books', name: 'app_api')]
     public function index(EntityManagerInterface $em): Response
     {
         $books = $em->getRepository(Book::class)->findAll();
         return $this->json($books);
-}
+    }
+
+    #[View()]
+    #[Route('/books/{nb}', name: 'app_api_nb')]
+    public function getBookByNb(EntityManagerInterface $em, int $nb): Response
+    {
+        $books = $em->getRepository(Book::class)->bookByNb($nb);
+        return $this->json($books);
+    }
+
+    #[View()]
+    #[Route('/books/auteur/{auteur}', name: 'app_api_books_author')]
+    public function getBookByAuthor(EntityManagerInterface $em, int $auteur): Response
+    {
+        $books = $em->getRepository(Book::class)->bookByAuthor($auteur);
+        return $this->json($books);
+    }
+
 }

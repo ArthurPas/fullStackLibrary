@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Book
  *
  * @ORM\Table(name="BOOK", indexes={@ORM\Index(name="I_FK_BOOK_LANGUAGE", columns={"ID_LANGUAGE"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
  */
 class Book
 {
