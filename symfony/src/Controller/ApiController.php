@@ -45,7 +45,37 @@ class ApiController extends AbstractController
             $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-'), '=');
             $ExepectedUser->setToken($token);
             $em->persist($ExepectedUser);
-            return $this->json(['message' => 'ok']);
+            return $this->json([
+                'accessToken' => $token,
+                'user' => $ExepectedUser,
+            ], Response::HTTP_OK);
+        } else {
+            return $this->json([
+                'message' => 'error',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+    }
+
+    #[Route('/logout', name: 'app_api_logout', methods: "POST")]
+    public function logout(
+        EntityManagerInterface $em,
+        Request $request,
+        UserRepository $ur,
+        SerializerInterface $serializer
+    ): Response {
+        $credentials = $serializer->deserialize($request->getContent(), User::class, 'json');
+        $ExepectedUser = $ur->findOneByEmail($credentials->getEmail());
+        if ($ExepectedUser == null) {
+            return $this->json([
+                'message' => 'error',
+             ], Response::HTTP_UNAUTHORIZED);
+        }
+        if ($ExepectedUser->getPassword() == $credentials->getPassword()) {
+            $ExepectedUser->setToken(null);
+            $em->persist($ExepectedUser);
+            return $this->json([
+                'message' => 'success',
+            ], Response::HTTP_OK);
         } else {
             return $this->json([
                 'message' => 'error',
