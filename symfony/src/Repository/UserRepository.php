@@ -126,7 +126,7 @@ class UserRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findOneByToken($token): ?User 
+    public function findOneByToken($token): ?User
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.token = :token')
