@@ -2549,7 +2549,8 @@ CREATE TABLE `TEST_USER` (
   `LASTNAME` char(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `EMAIL` char(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `PASSWORD` char(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `AVATAR` text COLLATE utf8mb4_unicode_ci NOT NULL
+  `AVATAR` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `TOKEN` text COLLATE utf8mb4_unicode_ci NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -3362,7 +3363,8 @@ CREATE TABLE `USER` (
   `LASTNAME` char(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `EMAIL` char(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `PASSWORD` char(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `AVATAR` text COLLATE utf8mb4_unicode_ci NOT NULL
+  `AVATAR` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `TOKEN` text COLLATE utf8mb4_unicode_ci NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
