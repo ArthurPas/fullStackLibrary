@@ -8,21 +8,21 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * User
+ * TestUser
  *
- * @ORM\Table(name="USER")
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Table(name="TEST_USER")
+ * @ORM\Entity
  */
-class User
+class TestUser
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="ID_USER", type="bigint", nullable=false)
+     * @ORM\Column(name="ID_TEST_USER", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idUser;
+    private $idTestUser;
 
     /**
      * @var string
@@ -69,45 +69,45 @@ class User
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Book", inversedBy="idUser")
-     * @ORM\JoinTable(name="rating",
+     * @ORM\ManyToMany(targetEntity="TestBook", inversedBy="idTestUser")
+     * @ORM\JoinTable(name="test_rating",
      *   joinColumns={
-     *     @ORM\JoinColumn(name="ID_USER", referencedColumnName="ID_USER")
+     *     @ORM\JoinColumn(name="ID_TEST_USER", referencedColumnName="ID_TEST_USER")
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="ID_BOOK", referencedColumnName="ID_BOOK")
+     *     @ORM\JoinColumn(name="TEST_ID_BOOK", referencedColumnName="TEST_ID_BOOK")
      *   }
      * )
      */
-    private $idBook = array();
+    private $testIdBook = array();
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="User", inversedBy="idUserFollow")
-     * @ORM\JoinTable(name="follow",
+     * @ORM\ManyToMany(targetEntity="TestUser", inversedBy="testIdTestUserFollow")
+     * @ORM\JoinTable(name="test_follow",
      *   joinColumns={
-     *     @ORM\JoinColumn(name="ID_USER_FOLLOW", referencedColumnName="ID_USER")
+     *     @ORM\JoinColumn(name="TEST_ID_TEST_USER_FOLLOW", referencedColumnName="ID_TEST_USER")
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="ID_USER_IS_FOLLOWED", referencedColumnName="ID_USER")
+     *     @ORM\JoinColumn(name="TEST_ID_TEST_USER_IS_FOLLOWED", referencedColumnName="ID_TEST_USER")
      *   }
      * )
      */
-    private $idUserIsFollowed = array();
+    private $testIdTestUserIsFollowed = array();
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idBook = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idUserIsFollowed = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->testIdBook = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->testIdTestUserIsFollowed = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function getIdUser(): ?string
+    public function getIdTestUser(): ?string
     {
-        return $this->idUser;
+        return $this->idTestUser;
     }
 
     public function getFirstname(): ?string
@@ -183,49 +183,49 @@ class User
     }
 
     /**
-     * @return Collection<int, Book>
+     * @return Collection<int, TestBook>
      */
-    public function getIdBook(): Collection
+    public function getTestIdBook(): Collection
     {
-        return $this->idBook;
+        return $this->testIdBook;
     }
 
-    public function addIdBook(Book $idBook): self
+    public function addTestIdBook(TestBook $testIdBook): self
     {
-        if (!$this->idBook->contains($idBook)) {
-            $this->idBook->add($idBook);
+        if (!$this->testIdBook->contains($testIdBook)) {
+            $this->testIdBook->add($testIdBook);
         }
 
         return $this;
     }
 
-    public function removeIdBook(Book $idBook): self
+    public function removeTestIdBook(TestBook $testIdBook): self
     {
-        $this->idBook->removeElement($idBook);
+        $this->testIdBook->removeElement($testIdBook);
 
         return $this;
     }
 
     /**
-     * @return Collection<int, User>
+     * @return Collection<int, TestUser>
      */
-    public function getIdUserIsFollowed(): Collection
+    public function getTestIdTestUserIsFollowed(): Collection
     {
-        return $this->idUserIsFollowed;
+        return $this->testIdTestUserIsFollowed;
     }
 
-    public function addIdUserIsFollowed(User $idUserIsFollowed): self
+    public function addTestIdTestUserIsFollowed(TestUser $testIdTestUserIsFollowed): self
     {
-        if (!$this->idUserIsFollowed->contains($idUserIsFollowed)) {
-            $this->idUserIsFollowed->add($idUserIsFollowed);
+        if (!$this->testIdTestUserIsFollowed->contains($testIdTestUserIsFollowed)) {
+            $this->testIdTestUserIsFollowed->add($testIdTestUserIsFollowed);
         }
 
         return $this;
     }
 
-    public function removeIdUserIsFollowed(User $idUserIsFollowed): self
+    public function removeTestIdTestUserIsFollowed(TestUser $testIdTestUserIsFollowed): self
     {
-        $this->idUserIsFollowed->removeElement($idUserIsFollowed);
+        $this->testIdTestUserIsFollowed->removeElement($testIdTestUserIsFollowed);
 
         return $this;
     }
