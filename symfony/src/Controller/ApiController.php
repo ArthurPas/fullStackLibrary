@@ -19,8 +19,12 @@ class ApiController extends AbstractController
 {
     #[AnnotationsView(serializerGroups: ['livre'])]
     #[Route('/books', name: 'app_api')]
-    public function index(EntityManagerInterface $em, SerializerInterface $serializer, Request $request, BookRepository $book)
-    {
+    public function index(
+        EntityManagerInterface $em,
+        SerializerInterface $serializer,
+        Request $request,
+        BookRepository $book
+    ) {
         $author = $request->query->get('author');
         if ($author != null) {
             $books = $book->findByAuthor($author);
