@@ -915,7 +915,7 @@ INSERT INTO `BORROW` (`ID_BORROW`, `ID_USER`, `ID_BOOK`, `START_DATE`, `END_DATE
 
 CREATE TABLE `CATEGORY` (
   `ID_CATEGORY` bigint(4) NOT NULL,
-  `CATEGORY_NAME` char(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `CATEGORY_NAME` char(255) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -988,7 +988,7 @@ CREATE TABLE `FOLLOW` (
 
 CREATE TABLE `LANGUAGE` (
   `ID_LANGUAGE` bigint(4) NOT NULL,
-  `LIB_LANGUAGE` char(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `LIB_LANGUAGE` char(255) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1289,7 +1289,7 @@ CREATE TABLE `USER` (
   `ID_USER` bigint(4) NOT NULL,
   `FIRSTNAME` char(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `LASTNAME` char(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `EMAIL` char(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `EMAIL` char(255) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE  ,
   `PASSWORD` char(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `AVATAR` text COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
