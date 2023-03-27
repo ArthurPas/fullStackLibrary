@@ -24,7 +24,7 @@ class ApiController extends AbstractController
     #[Route('/login', name: 'app_api_login', methods: "POST")]
     public function login(Request $request, UserRepository $ur, SerializerInterface $serializer): Response
     {
-        $credentials = $serializer->deserialize($request->getContent(), User::class, 'json'); 
+        $credentials = $serializer->deserialize($request->getContent(), User::class, 'json');
         $ExepectedUser = $ur->findOneByEmail($credentials->getEmail());
         if ($ExepectedUser == null) {
             return $this->json([
