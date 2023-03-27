@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Language
  *
  * @ORM\Table(name="LANGUAGE")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\LanguageRepository")
  */
 class Language
 {

@@ -6,12 +6,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Book
  *
  * @ORM\Table(name="BOOK", indexes={@ORM\Index(name="I_FK_BOOK_LANGUAGE", columns={"ID_LANGUAGE"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
  */
 class Book
 {
@@ -29,6 +30,7 @@ class Book
      *
      * @ORM\Column(name="TITLE", type="text", length=65535, nullable=false)
      */
+    #[Groups(['livre'])]
     private $title;
 
     /**
@@ -36,6 +38,7 @@ class Book
      *
      * @ORM\Column(name="IMAGE", type="text", length=65535, nullable=true)
      */
+    #[Groups(['livre'])]
     private $image;
 
     /**
@@ -43,6 +46,7 @@ class Book
      *
      * @ORM\Column(name="DESCRIPTION", type="text", length=65535, nullable=true)
      */
+    #[Groups(['livre'])]
     private $description;
 
     /**
@@ -50,6 +54,7 @@ class Book
      *
      * @ORM\Column(name="NUMBER_OF_PAGES", type="bigint", nullable=true)
      */
+    #[Groups(['livre'])]
     private $numberOfPages;
 
     /**
@@ -57,6 +62,7 @@ class Book
      *
      * @ORM\Column(name="EDITOR", type="text", length=65535, nullable=true)
      */
+    #[Groups(['livre'])]
     private $editor;
 
     /**
@@ -64,6 +70,7 @@ class Book
      *
      * @ORM\Column(name="RELEASE_DATE", type="date", nullable=true)
      */
+    #[Groups(['livre'])]
     private $releaseDate;
 
     /**
@@ -74,6 +81,7 @@ class Book
      *   @ORM\JoinColumn(name="ID_LANGUAGE", referencedColumnName="ID_LANGUAGE")
      * })
      */
+    #[Groups(['livre'])]
     private $idLanguage;
 
     /**
@@ -81,6 +89,7 @@ class Book
      *
      * @ORM\ManyToMany(targetEntity="Author", mappedBy="idBook")
      */
+    #[Groups(['livre'])]
     private $idAuthor = array();
 
     /**
@@ -88,13 +97,14 @@ class Book
      *
      * @ORM\ManyToMany(targetEntity="User", mappedBy="idBook")
      */
+    #[Groups(['livre'])]
     private $idUser = array();
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Category", inversedBy="idBook")
-     * @ORM\JoinTable(name="tag",
+     * @ORM\JoinTable(name="TAG",
      *   joinColumns={
      *     @ORM\JoinColumn(name="ID_BOOK", referencedColumnName="ID_BOOK")
      *   },
@@ -103,6 +113,7 @@ class Book
      *   }
      * )
      */
+    #[Groups(['livre'])]
     private $idCategory = array();
 
     /**
