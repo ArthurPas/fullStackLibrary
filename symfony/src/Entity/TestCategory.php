@@ -89,5 +89,4 @@ class TestCategory
 
         return $this;
     }
-
 }

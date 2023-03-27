@@ -229,5 +229,4 @@ class TestUser
 
         return $this;
     }
-
 }

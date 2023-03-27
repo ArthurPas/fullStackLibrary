@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Borrow
  *
- * @ORM\Table(name="BORROW", indexes={@ORM\Index(name="I_FK_BORROW_USER", columns={"ID_USER"}), @ORM\Index(name="I_FK_BORROW_BOOK", columns={"ID_BOOK"})})
+ * @ORM\Table(name="BORROW", indexes={@ORM\Index(name="I_FK_BORROW_USER",
+ * columns={"ID_USER"}), @ORM\Index(name="I_FK_BORROW_BOOK", columns={"ID_BOOK"})})
  * @ORM\Entity
  */
 class Borrow
@@ -108,6 +109,4 @@ class Borrow
 
         return $this;
     }
-
-
 }

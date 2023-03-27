@@ -94,5 +94,4 @@ class TestAuthor
 
         return $this;
     }
-
 }
