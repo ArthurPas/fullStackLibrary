@@ -22,7 +22,7 @@ class ApiController extends AbstractController
         return $this->json($books);
     }
     #[Route('/login', name: 'app_api_login', methods: "POST")]
-    public function login(Request $request, UserRepository $ur, SerializerInterface $serializer): Response
+    public function login(EntityManagerInterface $em,Request $request, UserRepository $ur, SerializerInterface $serializer): Response
     {
         $credentials = $serializer->deserialize($request->getContent(), User::class, 'json');
         $ExepectedUser = $ur->findOneByEmail($credentials->getEmail());
@@ -32,6 +32,9 @@ class ApiController extends AbstractController
              ], Response::HTTP_UNAUTHORIZED);
         }
         if ($ExepectedUser->getPassword() == $credentials->getPassword()) {
+            $token =rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-'), '=');
+            $ExepectedUser->setToken($token);
+            $em->persist($ExepectedUser);
             return $this->json(['message' => 'ok']);
         } else {
             return $this->json([
