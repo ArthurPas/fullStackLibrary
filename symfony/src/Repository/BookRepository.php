@@ -39,7 +39,7 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
-    public function ShowAllBooks(): array
+    public function showAllBooks(): array
     {
         return $this->findAll();
     }

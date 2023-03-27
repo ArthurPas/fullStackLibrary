@@ -38,9 +38,9 @@ class ApiController extends AbstractController
     }
 
     #[Route('/infoUser/{id}', name: 'app_Infouser_id')]
-    public function InfoUser(int $id, UserRepository $userRepository): Response
+    public function infoUser(int $id, UserRepository $userRepository): Response
     {
-        $users = $userRepository->InfoUser($id);
+        $users = $userRepository->infoUser($id);
         return $this->json($users);
     }
 

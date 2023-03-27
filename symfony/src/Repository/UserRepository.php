@@ -65,7 +65,7 @@ class UserRepository extends ServiceEntityRepository
 
 
 
-    public function InfoUser(int $id): array
+    public function infoUser(int $id): array
     {
         return $this->createQueryBuilder('u')
             ->select('u.idUser, u.firstname, u.lastname, u.email, u.avatar')
