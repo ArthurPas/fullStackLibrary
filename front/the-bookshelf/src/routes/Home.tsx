@@ -14,7 +14,7 @@ function Home() {
     const fetchBooks = async (typeOfData: string) => {
         if (typeOfData === "recents") {
             // Set the request mode to no-cors to allow the response to be read
-            const response = await fetch(BASE_API_URL);
+            const response = await fetch(`${BASE_API_URL}/books`);
 
             if (!response.ok) {
                 throw new Error('Something went wrong');
