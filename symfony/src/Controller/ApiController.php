@@ -19,5 +19,5 @@ class ApiController extends AbstractController
     {
         $books = $em->getRepository(Book::class)->findAll();
         return $this->json($books);
-}
+    }
 }

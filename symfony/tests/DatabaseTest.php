@@ -15,6 +15,7 @@ class DatabaseTest extends WebTestCase
 
         // Create a new User entity
         $user = new User();
+        $user2 = new User();
 
         $user
             ->setFirstname('Shirley')
@@ -25,23 +26,21 @@ class DatabaseTest extends WebTestCase
         ;
         $tu->save($user, true);
 
-        $this->assertNotEmpty($user->getIdUser());
-        // $this->assertEquals(null, $tu->getIdUs());
-    }
 
-    public function testInsertUserWithoutFirstname(): void
-    {
-        self::bootKernel();
-        $tu = static::getContainer()->get(UserRepository::class);
-
-        // Create a new User entity
-        $user = new User();
-
-        $user
+        $user2
+            ->setFirstname('Shirley')
             ->setLastname('Burke')
             ->setEmail('Shirley@gmail.com')
             ->setPassword('test')
             ->setAvatar('?')
         ;
-        
+
+
+
+        $this->assertNotEmpty($user->getIdUser());
+        $tu->save($user2, true);
+        $this->assertNotEmpty($user2->getIdUser());
+        // $this->assertEquals(null, $tu->getIdUs());
+    }
+
 }
