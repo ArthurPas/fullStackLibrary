@@ -1,6 +1,6 @@
 enum AuthInputFields {
-    EMAIL = 'Email',
-    PASSWORD = 'Password'
+    EMAIL = 'email',
+    PASSWORD = 'password'
 }
 
 export default AuthInputFields;
