@@ -9,7 +9,7 @@
         }
     },
     "doctrine/doctrine-bundle": {
-        "version": "2.8",
+        "version": "2.9",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -56,7 +56,7 @@
             "ref": "6bea22e6c564fba3a1391615cada1437d0bde39c"
         },
         "files": [
-            "./config/packages/nelmio_cors.yaml"
+            "config/packages/nelmio_cors.yaml"
         ]
     },
     "phpunit/phpunit": {
@@ -298,18 +298,6 @@
         "files": [
             "config/packages/web_profiler.yaml",
             "config/routes/web_profiler.yaml"
-        ]
-    },
-    "symfony/webapp-pack": {
-        "version": "1.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "1.0",
-            "ref": "aece95c8a188f6e6d04f01ccb8678d1764fd2642"
-        },
-        "files": [
-            "config/packages/messenger.yaml"
         ]
     },
     "twig/extra-bundle": {

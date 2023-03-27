@@ -96,13 +96,30 @@ class User
      */
     private $idUserIsFollowed = array();
 
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="idUserIsFollowed")
+     * @ORM\JoinTable(name="FOLLOW",
+     *  joinColumns={
+     *    @ORM\JoinColumn(name="ID_USER_IS_FOLLOWED", referencedColumnName="ID_USER")
+     * },
+     * inverseJoinColumns={
+     *   @ORM\JoinColumn(name="ID_USER_FOLLOW", referencedColumnName="ID_USER")
+     * }
+     * )
+     */
+    private $idUserFollow = array();
+
     /**
      * Constructor
      */
     public function __construct()
     {
         $this->idBook = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idUserIsFollowed = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idUserFollow = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idUserIsFollowed = new ArrayCollection();
     }
 
     public function getIdUser(): ?string
@@ -209,15 +226,35 @@ class User
     /**
      * @return Collection<int, User>
      */
-    public function getIdUserIsFollowed(): Collection
+    public function getIdUserFollow(): Collection
     {
-        return $this->idUserIsFollowed;
+        return $this->idUserFollow;
+    }
+
+    public function addIdUserFollow(User $idUserFollow): self
+    {
+        if (!$this->idUserFollow->contains($idUserFollow)) {
+            $this->idUserFollow->add($idUserFollow);
+            $idUserFollow->addIdUserIsFollowed($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdUserFollow(User $idUserFollow): self
+    {
+        if ($this->idUserFollow->removeElement($idUserFollow)) {
+            $idUserFollow->removeIdUserIsFollowed($this);
+        }
+
+        return $this;
     }
 
     public function addIdUserIsFollowed(User $idUserIsFollowed): self
     {
         if (!$this->idUserIsFollowed->contains($idUserIsFollowed)) {
-            $this->idUserIsFollowed->add($idUserIsFollowed);
+            $this->idUserIsFollowed[] = $idUserIsFollowed;
+            $idUserIsFollowed->addIdUserFollow($this);
         }
 
         return $this;
@@ -225,8 +262,18 @@ class User
 
     public function removeIdUserIsFollowed(User $idUserIsFollowed): self
     {
-        $this->idUserIsFollowed->removeElement($idUserIsFollowed);
+        if ($this->idUserIsFollowed->removeElement($idUserIsFollowed)) {
+            $idUserIsFollowed->removeIdUserFollow($this);
+        }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getIdUserIsFollowed(): Collection
+    {
+        return $this->idUserIsFollowed;
     }
 }

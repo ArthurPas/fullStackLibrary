@@ -1,0 +1,22 @@
+@use '../../style/variables' as v;
+
+.section__books {
+    color: v.$color-secondary;
+    font-size: 20px;
+
+    & > .books__row {
+        display: flex;
+        justify-content: space-between;
+
+        & > .book__card {
+   
+            & > img {
+                border-radius: 10px;
+                width: v.$book-card-img-size;
+                height: v.$book-card-img-size*1.3;
+            }
+
+        }
+    }
+    
+}
