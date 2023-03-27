@@ -1,5 +1,6 @@
 import { BASE_API_URL } from "@/main";
 import { Link, useNavigate } from "react-router-dom";
+import swal from "sweetalert";
 
 function NavProfile() {
 
@@ -25,7 +26,12 @@ function NavProfile() {
         if (response.message == "success") {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('user');
-            window.location.reload();
+            swal("Success", "You have been logged out", "success", {
+                timer: 2000,
+            })
+            .then((value) => {
+                window.location.reload();
+            });
         } else {
             console.log(localStorage.getItem('accessToken'))
         }

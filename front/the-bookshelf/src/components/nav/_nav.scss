@@ -90,8 +90,9 @@ nav.login__nav {
         z-index: 1;
         width: 8.1em;
 
-        & > li {
+        & > a {
             font-size: 1em;
+            cursor: pointer;
             font-family: 'Poppins';
             font-weight: 400;
             color: #2E2E2E;

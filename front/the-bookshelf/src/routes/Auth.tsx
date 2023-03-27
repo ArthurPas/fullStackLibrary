@@ -25,10 +25,6 @@ function Auth() {
         e.preventDefault();
 
         const response = await loginUser({email, password});
-        
-        console.log(response)
-
-        console.log(response)
 
         if ('accessToken' in response) {
           swal("Success", response.message, "success", {
