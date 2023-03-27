@@ -8,8 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Language
  *
- * @ORM\Table(name="LANGUAGE")
- * @ORM\Entity
+ * @ORM\Table(name="LANGUAGE", uniqueConstraints={@ORM\UniqueConstraint(name="LIB_LANGUAGE", columns={"LIB_LANGUAGE"})})
+ * @ORM\Entity(repositoryClass="App\Repository\LanguageRepository")
  */
 class Language
 {
@@ -45,4 +45,6 @@ class Language
 
         return $this;
     }
+
+
 }

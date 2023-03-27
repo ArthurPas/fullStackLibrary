@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Author
  *
  * @ORM\Table(name="AUTHOR")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\AuthorRepository")
  */
 class Author
 {
@@ -35,7 +35,7 @@ class Author
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Book", inversedBy="idAuthor")
-     * @ORM\JoinTable(name="write",
+     * @ORM\JoinTable(name="wwrite",
      *   joinColumns={
      *     @ORM\JoinColumn(name="ID_AUTHOR", referencedColumnName="ID_AUTHOR")
      *   },
@@ -94,4 +94,5 @@ class Author
 
         return $this;
     }
+
 }

@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Category
  *
- * @ORM\Table(name="CATEGORY")
- * @ORM\Entity
+ * @ORM\Table(name="CATEGORY", uniqueConstraints={@ORM\UniqueConstraint(name="CATEGORY_NAME", columns={"CATEGORY_NAME"})})
+ * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
  */
 class Category
 {
@@ -89,4 +89,5 @@ class Category
 
         return $this;
     }
+
 }

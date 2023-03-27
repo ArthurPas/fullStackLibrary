@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table(name="USER")
- * @ORM\Entity
+ * @ORM\Table(name="USER", uniqueConstraints={@ORM\UniqueConstraint(name="EMAIL", columns={"EMAIL"})})
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User
 {
@@ -229,4 +229,5 @@ class User
 
         return $this;
     }
+
 }
