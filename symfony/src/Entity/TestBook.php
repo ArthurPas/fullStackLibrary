@@ -10,7 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * TestBook
  *
- * @ORM\Table(name="TEST_BOOK", indexes={@ORM\Index(name="TEST_TEST_I_FK_BOOK_LANGUAGE", columns={"TEST_ID_LANGUAGE"})})
+ * @ORM\Table(name="TEST_BOOK", indexes={@ORM\Index(name="TEST_TEST_I_FK_BOOK_LANGUAGE",
+ *  columns={"TEST_ID_LANGUAGE"})})
  * @ORM\Entity
  */
 class TestBook
