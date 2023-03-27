@@ -39,9 +39,26 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
-    public function showAllBooks(): array
+    public function findByNb(int $nb): array
     {
-        return $this->findAll();
+        return $this->createQueryBuilder('b')
+            ->orderBy('b.idBook', 'DESC')
+            ->setMaxResults($nb)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByAuthor(string $author): array
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.idAuthor', 'a')
+            ->leftJoin('b.idCategory', 'c')
+            ->leftJoin('b.idUser', 'u')
+            ->select('b, a, c, u')
+            ->andWhere('a.authorName LIKE :author_name')
+            ->setParameter('author_name', '%' . $author . '%')
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

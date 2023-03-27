@@ -6,22 +6,22 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Borrow
+ * TestBorrow
  *
- * @ORM\Table(name="BORROW", indexes={@ORM\Index(name="I_FK_BORROW_BOOK", columns={"ID_BOOK"}),
- * @ORM\Index(name="I_FK_BORROW_USER", columns={"ID_USER"})})
+ * @ORM\Table(name="TEST_BORROW", indexes={@ORM\Index(name="TEST_I_FK_test_BORROW_BOOK", columns={"TEST_ID_BOOK"}),
+ * @ORM\Index(name="I_FK_test_BORROW_TEST_USER", columns={"ID_TEST_USER"})})
  * @ORM\Entity
  */
-class Borrow
+class TestBorrow
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="ID_BORROW", type="bigint", nullable=false)
+     * @ORM\Column(name="ID_test_BORROW", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idBorrow;
+    private $idTestBorrow;
 
     /**
      * @var \DateTime
@@ -38,28 +38,28 @@ class Borrow
     private $endDate;
 
     /**
-     * @var \User
+     * @var \TestUser
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="TestUser")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ID_USER", referencedColumnName="ID_USER")
+     *   @ORM\JoinColumn(name="ID_TEST_USER", referencedColumnName="ID_TEST_USER")
      * })
      */
-    private $idUser;
+    private $idTestUser;
 
     /**
-     * @var \Book
+     * @var \TestBook
      *
-     * @ORM\ManyToOne(targetEntity="Book")
+     * @ORM\ManyToOne(targetEntity="TestBook")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ID_BOOK", referencedColumnName="ID_BOOK")
+     *   @ORM\JoinColumn(name="TEST_ID_BOOK", referencedColumnName="TEST_ID_BOOK")
      * })
      */
-    private $idBook;
+    private $testIdBook;
 
-    public function getIdBorrow(): ?string
+    public function getIdTestBorrow(): ?string
     {
-        return $this->idBorrow;
+        return $this->idTestBorrow;
     }
 
     public function getStartDate(): ?\DateTimeInterface
@@ -86,26 +86,26 @@ class Borrow
         return $this;
     }
 
-    public function getIdUser(): ?User
+    public function getIdTestUser(): ?TestUser
     {
-        return $this->idUser;
+        return $this->idTestUser;
     }
 
-    public function setIdUser(?User $idUser): self
+    public function setIdTestUser(?TestUser $idTestUser): self
     {
-        $this->idUser = $idUser;
+        $this->idTestUser = $idTestUser;
 
         return $this;
     }
 
-    public function getIdBook(): ?Book
+    public function getTestIdBook(): ?TestBook
     {
-        return $this->idBook;
+        return $this->testIdBook;
     }
 
-    public function setIdBook(?Book $idBook): self
+    public function setTestIdBook(?TestBook $testIdBook): self
     {
-        $this->idBook = $idBook;
+        $this->testIdBook = $testIdBook;
 
         return $this;
     }

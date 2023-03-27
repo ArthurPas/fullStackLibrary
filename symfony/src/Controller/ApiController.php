@@ -4,53 +4,41 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\User;
-use App\Repository\BookRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Repository\BookRepository;
+use FOS\RestBundle\Controller\Annotations\View as AnnotationsView;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
 
 #[Route('/api')]
 class ApiController extends AbstractController
 {
-    #[Route('/followed/{id}', name: 'app_followed_id')]
-    public function listfollowedId(int $id, UserRepository $userRepository): Response
-    {
-        $users = $userRepository->findByUserIsFollowed($id);
-        return $this->json($users);
+    #[AnnotationsView(serializerGroups: ['livre'])]
+    #[Route('/books', name: 'app_api')]
+    public function index(
+        EntityManagerInterface $em,
+        Request $request,
+        BookRepository $book
+    ) {
+        $author = $request->query->get('author');
+        if ($author != null) {
+            $books = $book->findByAuthor($author);
+        } else {
+            $books = $em->getRepository(Book::class)->findAll();
+        }
+        return $books;
     }
 
-    #[Route('/follow/{id}', name: 'app_follow_id')]
-    public function listfollowId(int $id, UserRepository $userRepository): Response
+    #[AnnotationsView(serializerGroups: ['livre'])]
+    #[Route('/books/{nb}', name: 'app_api_nb')]
+    public function getBookByNb(BookRepository $book, int $nb)
     {
-        $users = $userRepository->findUserFollowings($id);
-        return $this->json($users);
-    }
-
-    #[Route('/infoUser/{id}', name: 'app_Infouser_id')]
-    public function infoUser(int $id, UserRepository $userRepository): Response
-    {
-        $users = $userRepository->infoUser($id);
-        return $this->json($users);
-    }
-
-
-
-    // $users = $em->getRepository(User::class)->listFollowedUsers($us);
-    // return $this->json($users);
-    #[Route('/', name: 'app_api_books')]
-    public function index(EntityManagerInterface $em, SerializerInterface $serializer): Response
-    {
-        $books = $em->getRepository(Book::class)->findAll();
-        $context = (new ObjectNormalizerContextBuilder())
-            ->withGroups(['livre'])
-            ->toArray();
-        $json = $serializer->serialize($books, 'json', $context);
-        return $this->json($json);
+        $books = $book->findByNb($nb);
+        return $books;
     }
 
     #[Route('/login', name: 'app_api_login', methods: "POST")]

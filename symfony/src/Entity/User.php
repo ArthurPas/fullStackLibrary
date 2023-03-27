@@ -81,7 +81,7 @@ class User
      */
     private $idBook = array();
 
-        /**
+    /**
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="User", inversedBy="idUserFollow")
