@@ -9,11 +9,25 @@ function Auth() {
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
+
+    async function loginUser(credentials: { email: string; password: string; }) {
+      return fetch(`${BASE_API_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(credentials)
+      })
+        .then(data => data.json())
+     }
+>>>>>>> front/the-bookshelf/src/routes/Auth.tsx
     
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const response = await loginUser({email, password});
+        
+        console.log(response)
 
         console.log(response)
 
@@ -35,16 +49,5 @@ function Auth() {
         <AuthForm setEmail={setEmail} setPassword={setPassword} onSubmit={handleSubmit}/>
     )
 }
-
-async function loginUser(credentials: { email: string; password: string; }) {
-    return fetch(`${BASE_API_URL}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(credentials)
-    })
-      .then(data => data.json())
-   }
 
 export default Auth;

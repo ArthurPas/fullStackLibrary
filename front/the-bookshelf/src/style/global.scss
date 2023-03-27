@@ -23,7 +23,6 @@ html {
   background-color: rgba(255, 255, 255 ,0.5);
   background-blend-mode: lighten;
   min-height: 100vh;
-  overflow: hidden;
 }
 
 a {
@@ -80,9 +79,9 @@ a {
 ---------------------*/
 .content__books {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 5em;
-  width: 90%;
+  grid-template-columns: repeat(1, 2fr);
+  grid-gap: 2em;
+  width: 70%;
   
   & > * > * {
     margin: 1em 0;

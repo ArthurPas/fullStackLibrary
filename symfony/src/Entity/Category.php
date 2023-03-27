@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Category
  *
  * @ORM\Table(name="CATEGORY")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
  */
 class Category
 {

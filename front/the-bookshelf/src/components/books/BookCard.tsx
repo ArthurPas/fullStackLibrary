@@ -1,12 +1,12 @@
 interface BookCardProps {
-    book: Object;
+    book: any;
 }
 
 function BookCard({book}: BookCardProps) {
 
     return (
-        <div className="book__card test">
-            <img src={book ? "/src/assets/book-placeholder.svg" : ""} alt=""/>
+        <div className="book__card">
+            <img src={book.image || "/src/assets/book-placeholder.png"} alt=""/>
         </div>
     )
 }
