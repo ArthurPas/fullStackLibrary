@@ -43,7 +43,7 @@ class DatabaseTest extends WebTestCase
         $this->expectException(UniqueConstraintViolationException::class);
         $this->expectExceptionCode(1062);
         $tu->save($user2, true);
-        
+
         // $this->assertEquals(null, $tu->getIdUs());
     }
 

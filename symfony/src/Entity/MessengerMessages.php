@@ -140,6 +140,4 @@ class MessengerMessages
 
         return $this;
     }
-
-
 }

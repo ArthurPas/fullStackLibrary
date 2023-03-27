@@ -29,10 +29,12 @@ class TablePrefixEventListener
     {
         $classMetadata = $eventArgs->getClassMetadata();
 
-        if (!$classMetadata->isInheritanceTypeSingleTable() || $classMetadata->getName() === 
-        $classMetadata->rootEntityName) {
+        if (
+            !$classMetadata->isInheritanceTypeSingleTable() || $classMetadata->getName() ===
+            $classMetadata->rootEntityName
+        ) {
             $classMetadata->setPrimaryTable([
-                'name' => $this->getPrefix($classMetadata->getName(), $classMetadata->getTableName()) . 
+                'name' => $this->getPrefix($classMetadata->getName(), $classMetadata->getTableName()) .
                 $classMetadata->getTableName()
             ]);
         }
@@ -40,9 +42,11 @@ class TablePrefixEventListener
         foreach ($classMetadata->getAssociationMappings() as $fieldName => $mapping) {
             if ($mapping['type'] == ClassMetadataInfo::MANY_TO_MANY && $mapping['isOwningSide']) {
                 $mappedTableName = $mapping['joinTable']['name'];
-                $classMetadata->associationMappings[$fieldName]['joinTable']['name'] = 
-                $this->getPrefix($mapping['targetEntity'], 
-                $mappedTableName) . $mappedTableName;
+                $classMetadata->associationMappings[$fieldName]['joinTable']['name'] =
+                $this->getPrefix(
+                    $mapping['targetEntity'],
+                    $mappedTableName
+                ) . $mappedTableName;
             }
         }
     }

@@ -9,7 +9,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\DBAL\Schema\View;
 use Doctrine\ORM\EntityManagerInterface;
 
-
 #[Route('/api')]
 class ApiController extends AbstractController
 {

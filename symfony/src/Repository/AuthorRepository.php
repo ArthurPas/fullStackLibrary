@@ -42,16 +42,16 @@ class AuthorRepository extends ServiceEntityRepository
    /**
     * @return Author[] Returns an array of Author objects
     */
-   public function findSomeWithoutBook(): array
-   {
-       return $this->createQueryBuilder('a')
+    public function findSomeWithoutBook(): array
+    {
+        return $this->createQueryBuilder('a')
            ->innerJoin('a.idBook', 'w')
            ->andWhere('count(w.idBook) = :val')
-           ->setParameter('val',0 )
+           ->setParameter('val', 0)
            ->getQuery()
            ->getSingleScalarResult()
-       ;
-   }
+        ;
+    }
 
 //    public function findOneBySomeField($value): ?Author
 //    {
