@@ -1,7 +1,10 @@
 <?php
 
-namespace AppEntity;
+namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -51,4 +54,44 @@ class Author
         $this->idBook = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    public function getIdAuthor(): ?string
+    {
+        return $this->idAuthor;
+    }
+
+    public function getAuthorName(): ?string
+    {
+        return $this->authorName;
+    }
+
+    public function setAuthorName(string $authorName): self
+    {
+        $this->authorName = $authorName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Book>
+     */
+    public function getIdBook(): Collection
+    {
+        return $this->idBook;
+    }
+
+    public function addIdBook(Book $idBook): self
+    {
+        if (!$this->idBook->contains($idBook)) {
+            $this->idBook->add($idBook);
+        }
+
+        return $this;
+    }
+
+    public function removeIdBook(Book $idBook): self
+    {
+        $this->idBook->removeElement($idBook);
+
+        return $this;
+    }
 }

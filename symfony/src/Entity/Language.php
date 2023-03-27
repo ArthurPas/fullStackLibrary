@@ -1,7 +1,8 @@
 <?php
 
-namespace AppEntity;
+namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,5 +29,20 @@ class Language
      */
     private $libLanguage;
 
+    public function getIdLanguage(): ?string
+    {
+        return $this->idLanguage;
+    }
 
+    public function getLibLanguage(): ?string
+    {
+        return $this->libLanguage;
+    }
+
+    public function setLibLanguage(string $libLanguage): self
+    {
+        $this->libLanguage = $libLanguage;
+
+        return $this;
+    }
 }

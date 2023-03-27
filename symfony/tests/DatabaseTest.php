@@ -2,33 +2,46 @@
 
 namespace App\Tests;
 
-use PHPUnit\Framework\TestCase;
+use App\Entity\User;
+use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class DatabaseTest extends TestCase
+class DatabaseTest extends WebTestCase
 {
-    public function testSomething(): void
-    {
-        $this->assertTrue(true);
-    }
-
-    public function testEmailAlreadyExist(UserRepository $ur): void
+    public function testEmailAlreadyExist(): void
     {
         self::bootKernel();
-
-        // Get the Entity Manager
-        $entityManager = self::$container->get('doctrine')->getManager();
+        $tu = static::getContainer()->get(UserRepository::class);
 
         // Create a new User entity
-        $user = new TestUser();
-        $user->setFirstname('Shirley');
-        $user->setLastname('Burke');
-        $user->setEmail('Shirley@gmail.com');
+        $user = new User();
 
-        // Persist the User entity to the database
-        $entityManager->persist($user);
-        $entityManager->flush();
+        $user
+            ->setFirstname('Shirley')
+            ->setLastname('Burke')
+            ->setEmail('Shirley@gmail.com')
+            ->setPassword('test')
+            ->setAvatar('?')
+        ;
+        $tu->save($user, true);
 
-        // Assert that the User entity was saved to the database
-        $this->assertNotNull($user->getId());
+        $this->assertNotEmpty($user->getIdUser());
+        // $this->assertEquals(null, $tu->getIdUs());
     }
+
+    public function testInsertUserWithoutFirstname(): void
+    {
+        self::bootKernel();
+        $tu = static::getContainer()->get(UserRepository::class);
+
+        // Create a new User entity
+        $user = new User();
+
+        $user
+            ->setLastname('Burke')
+            ->setEmail('Shirley@gmail.com')
+            ->setPassword('test')
+            ->setAvatar('?')
+        ;
+        
 }

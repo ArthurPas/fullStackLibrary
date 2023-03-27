@@ -1,7 +1,8 @@
 <?php
 
-namespace AppEntity;
+namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -55,5 +56,56 @@ class Borrow
      */
     private $idUser;
 
+    public function getIdBorrow(): ?string
+    {
+        return $this->idBorrow;
+    }
 
+    public function getStartDate(): ?\DateTimeInterface
+    {
+        return $this->startDate;
+    }
+
+    public function setStartDate(\DateTimeInterface $startDate): self
+    {
+        $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    public function getEndDate(): ?\DateTimeInterface
+    {
+        return $this->endDate;
+    }
+
+    public function setEndDate(?\DateTimeInterface $endDate): self
+    {
+        $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    public function getIdBook(): ?Book
+    {
+        return $this->idBook;
+    }
+
+    public function setIdBook(?Book $idBook): self
+    {
+        $this->idBook = $idBook;
+
+        return $this;
+    }
+
+    public function getIdUser(): ?User
+    {
+        return $this->idUser;
+    }
+
+    public function setIdUser(?User $idUser): self
+    {
+        $this->idUser = $idUser;
+
+        return $this;
+    }
 }
