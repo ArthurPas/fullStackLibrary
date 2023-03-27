@@ -6,24 +6,23 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Language;
 
 /**
- * Book
+ * TestBook
  *
- * @ORM\Table(name="BOOK", indexes={@ORM\Index(name="I_FK_BOOK_LANGUAGE", columns={"ID_LANGUAGE"})})
- * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
+ * @ORM\Table(name="TEST_BOOK", indexes={@ORM\Index(name="TEST_TEST_I_FK_BOOK_LANGUAGE", columns={"TEST_ID_LANGUAGE"})})
+ * @ORM\Entity
  */
-class Book
+class TestBook
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="ID_BOOK", type="bigint", nullable=false)
+     * @ORM\Column(name="TEST_ID_BOOK", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idBook;
+    private $testIdBook;
 
     /**
      * @var string
@@ -68,57 +67,57 @@ class Book
     private $releaseDate;
 
     /**
-     * @var \Language
+     * @var \TestLanguage
      *
-     * @ORM\ManyToOne(targetEntity="Language")
+     * @ORM\ManyToOne(targetEntity="TestLanguage")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ID_LANGUAGE", referencedColumnName="ID_LANGUAGE")
+     *   @ORM\JoinColumn(name="TEST_ID_LANGUAGE", referencedColumnName="TEST_ID_LANGUAGE")
      * })
      */
-    private $idLanguage;
+    private $testIdLanguage;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Category", inversedBy="idBook")
-     * @ORM\JoinTable(name="TAG",
+     * @ORM\ManyToMany(targetEntity="TestUser", mappedBy="testIdBook")
+     */
+    private $idTestUser = array();
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="TestCategory", inversedBy="testIdBook")
+     * @ORM\JoinTable(name="TEST_TAG",
      *   joinColumns={
-     *     @ORM\JoinColumn(name="ID_BOOK", referencedColumnName="ID_BOOK")
+     *     @ORM\JoinColumn(name="TEST_ID_BOOK", referencedColumnName="TEST_ID_BOOK")
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="ID_CATEGORY", referencedColumnName="ID_CATEGORY")
+     *     @ORM\JoinColumn(name="TEST_ID_CATEGORY", referencedColumnName="TEST_ID_CATEGORY")
      *   }
      * )
      */
-    private $idCategory = array();
+    private $testIdCategory = array();
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="User", mappedBy="idBook")
+     * @ORM\ManyToMany(targetEntity="TestAuthor", mappedBy="testIdBook")
      */
-    private $idUser = array();
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Author", mappedBy="idBook")
-     */
-    private $idAuthor = array();
+    private $testIdAuthor = array();
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idCategory = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idUser = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idAuthor = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idTestUser = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->testIdCategory = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->testIdAuthor = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function getIdBook(): ?string
+    public function getTestIdBook(): ?string
     {
-        return $this->idBook;
+        return $this->testIdBook;
     }
 
     public function getTitle(): ?string
@@ -193,91 +192,91 @@ class Book
         return $this;
     }
 
-    public function getIdLanguage(): ?Language
+    public function getTestIdLanguage(): ?TestLanguage
     {
-        return $this->idLanguage;
+        return $this->testIdLanguage;
     }
 
-    public function setIdLanguage(?Language $idLanguage): self
+    public function setTestIdLanguage(?TestLanguage $testIdLanguage): self
     {
-        $this->idLanguage = $idLanguage;
+        $this->testIdLanguage = $testIdLanguage;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Category>
+     * @return Collection<int, TestUser>
      */
-    public function getIdCategory(): Collection
+    public function getIdTestUser(): Collection
     {
-        return $this->idCategory;
+        return $this->idTestUser;
     }
 
-    public function addIdCategory(Category $idCategory): self
+    public function addIdTestUser(TestUser $idTestUser): self
     {
-        if (!$this->idCategory->contains($idCategory)) {
-            $this->idCategory->add($idCategory);
+        if (!$this->idTestUser->contains($idTestUser)) {
+            $this->idTestUser->add($idTestUser);
+            $idTestUser->addTestIdBook($this);
         }
 
         return $this;
     }
 
-    public function removeIdCategory(Category $idCategory): self
+    public function removeIdTestUser(TestUser $idTestUser): self
     {
-        $this->idCategory->removeElement($idCategory);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, User>
-     */
-    public function getIdUser(): Collection
-    {
-        return $this->idUser;
-    }
-
-    public function addIdUser(User $idUser): self
-    {
-        if (!$this->idUser->contains($idUser)) {
-            $this->idUser->add($idUser);
-            $idUser->addIdBook($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIdUser(User $idUser): self
-    {
-        if ($this->idUser->removeElement($idUser)) {
-            $idUser->removeIdBook($this);
+        if ($this->idTestUser->removeElement($idTestUser)) {
+            $idTestUser->removeTestIdBook($this);
         }
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Author>
+     * @return Collection<int, TestCategory>
      */
-    public function getIdAuthor(): Collection
+    public function getTestIdCategory(): Collection
     {
-        return $this->idAuthor;
+        return $this->testIdCategory;
     }
 
-    public function addIdAuthor(Author $idAuthor): self
+    public function addTestIdCategory(TestCategory $testIdCategory): self
     {
-        if (!$this->idAuthor->contains($idAuthor)) {
-            $this->idAuthor->add($idAuthor);
-            $idAuthor->addIdBook($this);
+        if (!$this->testIdCategory->contains($testIdCategory)) {
+            $this->testIdCategory->add($testIdCategory);
         }
 
         return $this;
     }
 
-    public function removeIdAuthor(Author $idAuthor): self
+    public function removeTestIdCategory(TestCategory $testIdCategory): self
     {
-        if ($this->idAuthor->removeElement($idAuthor)) {
-            $idAuthor->removeIdBook($this);
+        $this->testIdCategory->removeElement($testIdCategory);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TestAuthor>
+     */
+    public function getTestIdAuthor(): Collection
+    {
+        return $this->testIdAuthor;
+    }
+
+    public function addTestIdAuthor(TestAuthor $testIdAuthor): self
+    {
+        if (!$this->testIdAuthor->contains($testIdAuthor)) {
+            $this->testIdAuthor->add($testIdAuthor);
+            $testIdAuthor->addTestIdBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTestIdAuthor(TestAuthor $testIdAuthor): self
+    {
+        if ($this->testIdAuthor->removeElement($testIdAuthor)) {
+            $testIdAuthor->removeTestIdBook($this);
         }
 
         return $this;

@@ -7,7 +7,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
 
-
 /**
  * @extends ServiceEntityRepository<User>
  *
@@ -61,9 +60,9 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    
-    
-    
+
+
+
 
 
     public function InfoUser(int $id): array

@@ -6,7 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Query\Expr\Func;
 
 /**
  * User
@@ -63,6 +62,21 @@ class User
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
+     * @ORM\ManyToMany(targetEntity="Book", inversedBy="idUser")
+     * @ORM\JoinTable(name="RATING",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="ID_USER", referencedColumnName="ID_USER")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="ID_BOOK", referencedColumnName="ID_BOOK")
+     *   }
+     * )
+     */
+    private $idBook = array();
+
+        /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
      * @ORM\ManyToMany(targetEntity="User", inversedBy="idUserFollow")
      * @ORM\JoinTable(name="FOLLOW",
      *   joinColumns={
@@ -90,13 +104,15 @@ class User
      * )
      */
     private $idUserFollow = array();
+
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idUserIsFollowed = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idBook = new \Doctrine\Common\Collections\ArrayCollection();
         $this->idUserFollow = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idUserIsFollowed = new ArrayCollection();
     }
 
     public function getIdUser(): ?string
@@ -164,35 +180,81 @@ class User
         return $this;
     }
 
-    // /**
-    //  * @return Collection<int, User>
-    //  */
-    // public function getIdUserIsFollowed(): Collection
-    // {
-    //     return $this->idUserIsFollowed;
-    // }
+    /**
+     * @return Collection<int, Book>
+     */
+    public function getIdBook(): Collection
+    {
+        return $this->idBook;
+    }
 
-    // public function getIdUserFollow(): Collection
-    // {
-    //     return $this->idUserFollow;
-    // }
+    public function addIdBook(Book $idBook): self
+    {
+        if (!$this->idBook->contains($idBook)) {
+            $this->idBook->add($idBook);
+        }
 
-    // public function addIdUserIsFollowed(User $idUserIsFollowed): self
-    // {
-    //     if (!$this->idUserIsFollowed->contains($idUserIsFollowed)) {
-    //         $this->idUserIsFollowed->add($idUserIsFollowed);
-    //     }
+        return $this;
+    }
 
-    //     return $this;
-    // }
+    public function removeIdBook(Book $idBook): self
+    {
+        $this->idBook->removeElement($idBook);
 
-    
+        return $this;
+    }
 
-    // public function removeIdUserIsFollowed(User $idUserIsFollowed): self
-    // {
-    //     $this->idUserIsFollowed->removeElement($idUserIsFollowed);
+    /**
+     * @return Collection<int, User>
+     */
+    public function getIdUserFollow(): Collection
+    {
+        return $this->idUserFollow;
+    }
 
-    //     return $this;
-    // }
+    public function addIdUserFollow(User $idUserFollow): self
+    {
+        if (!$this->idUserFollow->contains($idUserFollow)) {
+            $this->idUserFollow->add($idUserFollow);
+            $idUserFollow->addIdUserIsFollowed($this);
+        }
 
+        return $this;
+    }
+
+    public function removeIdUserFollow(User $idUserFollow): self
+    {
+        if ($this->idUserFollow->removeElement($idUserFollow)) {
+            $idUserFollow->removeIdUserIsFollowed($this);
+        }
+
+        return $this;
+    }
+
+    public function addIdUserIsFollowed(User $idUserIsFollowed): self
+    {
+        if (!$this->idUserIsFollowed->contains($idUserIsFollowed)) {
+            $this->idUserIsFollowed[] = $idUserIsFollowed;
+            $idUserIsFollowed->addIdUserFollow($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdUserIsFollowed(User $idUserIsFollowed): self
+    {
+        if ($this->idUserIsFollowed->removeElement($idUserIsFollowed)) {
+            $idUserIsFollowed->removeIdUserFollow($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getIdUserIsFollowed(): Collection
+    {
+        return $this->idUserIsFollowed;
+    }
 }

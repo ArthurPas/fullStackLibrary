@@ -3,21 +3,23 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Entity\User;
+use App\Repository\BookRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\DBAL\Schema\View;
 use Doctrine\ORM\EntityManagerInterface;
-
+use SebastianBergmann\Environment\Console;
 
 #[Route('/api')]
 class ApiController extends AbstractController
 {
     #[Route('/', name: 'app_api')]
-    public function index(EntityManagerInterface $em): Response
+    public function index(BookRepository $books): Response
     {
-        $books = $em->getRepository(Book::class)->findAll();
+        $books = $books->ShowAllBooks();
         return $this->json($books);
     }
 
@@ -41,10 +43,9 @@ class ApiController extends AbstractController
         $users = $userRepository->InfoUser($id);
         return $this->json($users);
     }
-    
+
 
 
     // $users = $em->getRepository(User::class)->listFollowedUsers($us);
     // return $this->json($users);
-
 }
