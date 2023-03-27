@@ -45,3 +45,70 @@ nav.login__nav {
     scale: 1.3;
     margin: 2em 0 !important;
 }
+
+.nav__profile {
+
+    background-color: #F3F3F3;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    & > div { 
+        
+        display: flex;
+        flex-direction: row;
+        padding: .4em;
+        align-items: center;
+        justify-content: flex-start;
+        z-index: 3;
+
+        & > img {
+            width: 2em;
+            border-radius: 13px;
+        }
+        
+        & > h3 {
+            font-weight: 400;
+            margin: 0 1em;
+            font-size: 1em;
+            font-family: 'Poppins';
+        }
+    }
+
+    &:hover > .nav__profile__dropdown {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #F3F3F3;
+        border-radius: 20px;
+        position: absolute;
+        padding-top: 3em;
+        right: 50;
+        list-style-type: none;
+        z-index: 1;
+        width: 8.1em;
+
+        & > li {
+            font-size: 1em;
+            font-family: 'Poppins';
+            font-weight: 400;
+            color: #2E2E2E;
+            margin: 0.6em 0;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+
+            &:hover {
+                filter: brightness(0.8);
+            }
+        }
+    }
+
+
+    & > .nav__profile__dropdown {
+        display: none;
+    }
+
+
+}

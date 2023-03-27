@@ -32,4 +32,4 @@ ReactDOM.createRoot(document.getElementById("root") as Element).render(
   </React.StrictMode>
 );
 
-export const BASE_API_URL = "http://127.0.0.1:8000/api";
+export const BASE_API_URL = "https://127.0.0.1:8000/api";

@@ -2,15 +2,20 @@ import AuthForm from "@/components/forms/AuthForm";
 import { useState } from "react";
 import swal from "sweetalert";
 import { BASE_API_URL } from "@/main";
+import { useNavigate } from "react-router-dom";
 
 function Auth() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const navigate = useNavigate();
     
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const response = await loginUser({email, password});
+
+        console.log(response)
 
         if ('accessToken' in response) {
           swal("Success", response.message, "success", {
@@ -19,11 +24,11 @@ function Auth() {
           .then((value) => {
             localStorage.setItem('accessToken', response['accessToken']);
             localStorage.setItem('user', JSON.stringify(response['user']));
+            navigate('/');
           });
         } else {
           swal("Failed", response.message, "error");
-        }
-        
+        }    
       }
 
     return (
