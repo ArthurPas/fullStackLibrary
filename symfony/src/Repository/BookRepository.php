@@ -61,28 +61,51 @@ class BookRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-//    /**
-//     * @return Book[] Returns an array of Book objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findByUser(string $utilisateur): array
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin(
+                'App\Entity\Borrow',
+                'bo',
+                'WITH',
+                'b.idBook = bo.idBook'
+            )
+            ->leftJoin(
+                'App\Entity\User',
+                'u',
+                'WITH',
+                'u.idUser = bo.idUser'
+            )
+            ->select('b, bo, u')
+            ->where('u.firstname = :utilisateur')
+            ->andWhere('bo.idUser = u.idUser')
+            ->setParameter('utilisateur', $utilisateur)
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Book
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Book[] Returns an array of Book objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('b')
+    //            ->andWhere('b.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('b.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?Book
+    //    {
+    //        return $this->createQueryBuilder('b')
+    //            ->andWhere('b.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

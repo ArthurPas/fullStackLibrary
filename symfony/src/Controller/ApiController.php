@@ -41,6 +41,16 @@ class ApiController extends AbstractController
         return $books;
     }
 
+    #[AnnotationsView(serializerGroups: ['livre'])]
+    #[Route('/books/user/{utilisateur}', name: 'app_api_utilisateur')]
+    public function getBookByUser(BookRepository $book, string $utilisateur)
+    {
+        dump($utilisateur);
+        $books = $book->findByUser($utilisateur);
+        dump($books);
+        return $books;
+    }
+
     #[Route('/login', name: 'app_api_login', methods: "POST")]
     public function login(
         EntityManagerInterface $em,
