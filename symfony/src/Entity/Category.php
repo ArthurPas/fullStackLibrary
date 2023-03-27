@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Entity;
+namespace AppEntity;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,22 +28,19 @@ class Category
      */
     private $categoryName;
 
-    public function getIdCategory(): ?string
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Book", mappedBy="idCategory")
+     */
+    private $idBook = array();
+
+    /**
+     * Constructor
+     */
+    public function __construct()
     {
-        return $this->idCategory;
+        $this->idBook = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
-    public function getCategoryName(): ?string
-    {
-        return $this->categoryName;
-    }
-
-    public function setCategoryName(string $categoryName): self
-    {
-        $this->categoryName = $categoryName;
-
-        return $this;
-    }
-
 
 }

@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Entity;
+namespace AppEntity;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,28 +22,33 @@ class Author
     private $idAuthor;
 
     /**
-     * @var string|null
+     * @var string
      *
-     * @ORM\Column(name="AUTHOR_NAME", type="string", length=255, nullable=true, options={"fixed"=true})
+     * @ORM\Column(name="AUTHOR_NAME", type="string", length=255, nullable=false, options={"fixed"=true})
      */
     private $authorName;
 
-    public function getIdAuthor(): ?string
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Book", inversedBy="idAuthor")
+     * @ORM\JoinTable(name="write",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="ID_AUTHOR", referencedColumnName="ID_AUTHOR")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="ID_BOOK", referencedColumnName="ID_BOOK")
+     *   }
+     * )
+     */
+    private $idBook = array();
+
+    /**
+     * Constructor
+     */
+    public function __construct()
     {
-        return $this->idAuthor;
+        $this->idBook = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
-    public function getAuthorName(): ?string
-    {
-        return $this->authorName;
-    }
-
-    public function setAuthorName(?string $authorName): self
-    {
-        $this->authorName = $authorName;
-
-        return $this;
-    }
-
 
 }

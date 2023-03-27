@@ -5,21 +5,21 @@ namespace AppEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * User
+ * TestUser
  *
- * @ORM\Table(name="USER")
+ * @ORM\Table(name="TEST_USER")
  * @ORM\Entity
  */
-class User
+class TestUser
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="ID_USER", type="bigint", nullable=false)
+     * @ORM\Column(name="ID_TEST_USER", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idUser;
+    private $idTestUser;
 
     /**
      * @var string
@@ -66,40 +66,40 @@ class User
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Book", inversedBy="idUser")
-     * @ORM\JoinTable(name="rating",
+     * @ORM\ManyToMany(targetEntity="TestBook", inversedBy="idTestUser")
+     * @ORM\JoinTable(name="test_rating",
      *   joinColumns={
-     *     @ORM\JoinColumn(name="ID_USER", referencedColumnName="ID_USER")
+     *     @ORM\JoinColumn(name="ID_TEST_USER", referencedColumnName="ID_TEST_USER")
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="ID_BOOK", referencedColumnName="ID_BOOK")
+     *     @ORM\JoinColumn(name="TEST_ID_BOOK", referencedColumnName="TEST_ID_BOOK")
      *   }
      * )
      */
-    private $idBook = array();
+    private $testIdBook = array();
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="User", inversedBy="idUserFollow")
-     * @ORM\JoinTable(name="follow",
+     * @ORM\ManyToMany(targetEntity="TestUser", inversedBy="testIdTestUserFollow")
+     * @ORM\JoinTable(name="test_follow",
      *   joinColumns={
-     *     @ORM\JoinColumn(name="ID_USER_FOLLOW", referencedColumnName="ID_USER")
+     *     @ORM\JoinColumn(name="TEST_ID_TEST_USER_FOLLOW", referencedColumnName="ID_TEST_USER")
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="ID_USER_IS_FOLLOWED", referencedColumnName="ID_USER")
+     *     @ORM\JoinColumn(name="TEST_ID_TEST_USER_IS_FOLLOWED", referencedColumnName="ID_TEST_USER")
      *   }
      * )
      */
-    private $idUserIsFollowed = array();
+    private $testIdTestUserIsFollowed = array();
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idBook = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idUserIsFollowed = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->testIdBook = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->testIdTestUserIsFollowed = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 }

@@ -5,21 +5,21 @@ namespace AppEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Book
+ * TestBook
  *
- * @ORM\Table(name="BOOK", indexes={@ORM\Index(name="I_FK_BOOK_LANGUAGE", columns={"ID_LANGUAGE"})})
+ * @ORM\Table(name="TEST_BOOK", indexes={@ORM\Index(name="TEST_TEST_I_FK_BOOK_LANGUAGE", columns={"TEST_ID_LANGUAGE"})})
  * @ORM\Entity
  */
-class Book
+class TestBook
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="ID_BOOK", type="bigint", nullable=false)
+     * @ORM\Column(name="TEST_ID_BOOK", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idBook;
+    private $testIdBook;
 
     /**
      * @var string
@@ -64,52 +64,52 @@ class Book
     private $releaseDate;
 
     /**
-     * @var \Language
+     * @var \TestLanguage
      *
-     * @ORM\ManyToOne(targetEntity="Language")
+     * @ORM\ManyToOne(targetEntity="TestLanguage")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ID_LANGUAGE", referencedColumnName="ID_LANGUAGE")
+     *   @ORM\JoinColumn(name="TEST_ID_LANGUAGE", referencedColumnName="TEST_ID_LANGUAGE")
      * })
      */
-    private $idLanguage;
+    private $testIdLanguage;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Author", mappedBy="idBook")
+     * @ORM\ManyToMany(targetEntity="TestAuthor", mappedBy="testIdBook")
      */
-    private $idAuthor = array();
+    private $testIdAuthor = array();
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="User", mappedBy="idBook")
-     */
-    private $idUser = array();
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Category", inversedBy="idBook")
-     * @ORM\JoinTable(name="tag",
+     * @ORM\ManyToMany(targetEntity="TestCategory", inversedBy="testIdBook")
+     * @ORM\JoinTable(name="test_tag",
      *   joinColumns={
-     *     @ORM\JoinColumn(name="ID_BOOK", referencedColumnName="ID_BOOK")
+     *     @ORM\JoinColumn(name="TEST_ID_BOOK", referencedColumnName="TEST_ID_BOOK")
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="ID_CATEGORY", referencedColumnName="ID_CATEGORY")
+     *     @ORM\JoinColumn(name="TEST_ID_CATEGORY", referencedColumnName="TEST_ID_CATEGORY")
      *   }
      * )
      */
-    private $idCategory = array();
+    private $testIdCategory = array();
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="TestUser", mappedBy="testIdBook")
+     */
+    private $idTestUser = array();
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idAuthor = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idUser = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idCategory = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->testIdAuthor = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->testIdCategory = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idTestUser = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 }
