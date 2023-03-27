@@ -29,19 +29,4 @@ class DatabaseTest extends WebTestCase
         // $this->assertEquals(null, $tu->getIdUs());
     }
 
-    public function testInsertUserWithoutFirstname(): void
-    {
-        self::bootKernel();
-        $tu = static::getContainer()->get(UserRepository::class);
-
-        // Create a new User entity
-        $user = new User();
-
-        $user
-            ->setLastname('Burke')
-            ->setEmail('Shirley@gmail.com')
-            ->setPassword('test')
-            ->setAvatar('?')
-        ;
-        
 }
