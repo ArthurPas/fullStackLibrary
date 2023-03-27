@@ -35,7 +35,7 @@ class ApiController extends AbstractController
 
     #[AnnotationsView(serializerGroups: ['livre'])]
     #[Route('/books/{nb}', name: 'app_api_nb')]
-    public function getBookByNb(BookRepository $book, int $nb): Response
+    public function getBookByNb(BookRepository $book, int $nb)
     {
         $books = $book->findByNb($nb);
         return $books;
