@@ -8,6 +8,8 @@ import { ErrorPage } from "./components";
 import { Auth, Home, Root } from "./routes";
 import './style/global.scss';
 
+export const BASE_API_URL = "https://127.0.0.1:8000/api";
+
 const router = createBrowserRouter([
 	{
 		path: "/",
@@ -31,5 +33,3 @@ ReactDOM.createRoot(document.getElementById("root") as Element).render(
       <RouterProvider router={router}/>
   </React.StrictMode>
 );
-
-export const BASE_API_URL = "http://127.0.0.1:8000/api";

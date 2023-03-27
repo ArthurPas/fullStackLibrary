@@ -1,5 +1,7 @@
 import BookSection from "@/components/books/BookSection";
-import { SearchInput, HeroBanner, Nav } from "../components";
+import { useQuery } from "react-query";
+import { SearchInput, HeroBanner, Nav } from "@/components";
+import { BASE_API_URL } from "@/main";
 
 export type Book = {
     title: string;
@@ -7,28 +9,34 @@ export type Book = {
 
 function Home() {
 
-    const bookList: Book[] = [
-        {
-            title: "Book 1"
-        },
-        {
-            title: "Book 2"
-        },
-        {
-            title: "Book 3"
-        },
-        {
-            title: "Book 4"
-        },
-    ]
+    const { data, status } = useQuery('books', () => fetchBooks("recents"));
+
+    const fetchBooks = async (typeOfData: string) => {
+        if (typeOfData === "recents") {
+            // Set the request mode to no-cors to allow the response to be read
+            const response = await fetch(BASE_API_URL);
+
+            if (!response.ok) {
+                throw new Error('Something went wrong');
+            }
+
+            return response.json();
+        }
+    }
     
     return (
         <>
             <HeroBanner/>
             <SearchInput/>
             <div className="content__books">
-                <BookSection title="Recently added books" books={bookList}/>
-                <BookSection title="Most liked books" books={bookList}/>
+                {status === 'loading' && (<p>Loading...</p>)}
+                {status === 'error' && (<p>Error fetching data</p>)}
+                {status === 'success' && (
+                    <>
+                        <BookSection title="Recently added books" books={data.slice(0, 5)}/>
+                        <BookSection title="Most liked books" books={data.slice(0, 5)}/>
+                    </>
+                )}
             </div>
         </>
     )
