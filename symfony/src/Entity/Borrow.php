@@ -86,7 +86,6 @@ class Borrow
         return $this;
     }
 
-<<<<<<< HEAD
     public function getIdUser(): ?User
     {
         return $this->idUser;
@@ -110,6 +109,4 @@ class Borrow
 
         return $this;
     }
-=======
->>>>>>> 762c9f1 (login fonctionnel)
 }
