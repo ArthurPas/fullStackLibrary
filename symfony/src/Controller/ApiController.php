@@ -8,33 +8,37 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\DBAL\Schema\View;
 use Doctrine\ORM\EntityManagerInterface;
-
+use App\Repository\BookRepository;
+use FOS\RestBundle\Controller\Annotations\View as AnnotationsView;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
+use Symfony\Component\HttpFoundation\Request;
 
 #[Route('/api')]
 class ApiController extends AbstractController
 {
-    #[View()]
+    #[AnnotationsView(serializerGroups: ['livre'])]
     #[Route('/books', name: 'app_api')]
-    public function index(EntityManagerInterface $em): Response
+    public function index(EntityManagerInterface $em, SerializerInterface $serializer, Request $request, BookRepository $book)
     {
-        $books = $em->getRepository(Book::class)->findAll();
-        return $this->json($books);
+        $author = $request->query->get('author');
+        if ($author != null) {
+            $books = $book->findByAuthor($author);
+        } else {
+            $books = $em->getRepository(Book::class)->findAll();
+        }
+
+        return $books;
     }
 
-    #[View()]
     #[Route('/books/{nb}', name: 'app_api_nb')]
-    public function getBookByNb(EntityManagerInterface $em, int $nb): Response
+    public function getBookByNb(BookRepository $book, int $nb, SerializerInterface $serializer): Response
     {
-        $books = $em->getRepository(Book::class)->bookByNb($nb);
-        return $this->json($books);
+        $books = $book->findByNb($nb);
+        $context = (new ObjectNormalizerContextBuilder())
+        ->withGroups(['livre'])
+        ->toArray();
+        $json = $serializer->serialize($books, 'json', $context);
+        return $this->json($json);
     }
-
-    #[View()]
-    #[Route('/books/auteur/{auteur}', name: 'app_api_books_author')]
-    public function getBookByAuthor(EntityManagerInterface $em, int $auteur): Response
-    {
-        $books = $em->getRepository(Book::class)->bookByAuthor($auteur);
-        return $this->json($books);
-    }
-
 }

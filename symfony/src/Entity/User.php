@@ -60,10 +60,32 @@ class User
     private $avatar;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="TOKEN", type="text", length=65535, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Book", inversedBy="idUser")
+     * @ORM\JoinTable(name="RATING",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="ID_USER", referencedColumnName="ID_USER")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="ID_BOOK", referencedColumnName="ID_BOOK")
+     *   }
+     * )
+     */
+    private $idBook = array();
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="User", inversedBy="idUserFollow")
-     * @ORM\JoinTable(name="follow",
+     * @ORM\JoinTable(name="FOLLOW",
      *   joinColumns={
      *     @ORM\JoinColumn(name="ID_USER_FOLLOW", referencedColumnName="ID_USER")
      *   },
@@ -79,6 +101,7 @@ class User
      */
     public function __construct()
     {
+        $this->idBook = new \Doctrine\Common\Collections\ArrayCollection();
         $this->idUserIsFollowed = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -147,6 +170,42 @@ class User
         return $this;
     }
 
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Book>
+     */
+    public function getIdBook(): Collection
+    {
+        return $this->idBook;
+    }
+
+    public function addIdBook(Book $idBook): self
+    {
+        if (!$this->idBook->contains($idBook)) {
+            $this->idBook->add($idBook);
+        }
+
+        return $this;
+    }
+
+    public function removeIdBook(Book $idBook): self
+    {
+        $this->idBook->removeElement($idBook);
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, User>
      */
@@ -170,5 +229,4 @@ class User
 
         return $this;
     }
-
 }

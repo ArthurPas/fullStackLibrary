@@ -39,8 +39,7 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
-    //pour la doc : récupère les nb derniers livres ajoutés
-    public function bookByNb(int $nb): array
+    public function findByNb(int $nb): array
     {
         return $this->createQueryBuilder('b')
             ->orderBy('b.idBook', 'DESC')
@@ -49,19 +48,18 @@ class BookRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    //pour la doc : récupère les livres d'un auteur
-    public function bookByAuthor(int $author): array
+    public function findByAuthor(string $author): array
     {
         return $this->createQueryBuilder('b')
-            // ->innerJoin('App\Entity\Write', 'w', 'WITH', 'w.idBook = b.idBook')
-            // ->join("b.authors", "a")
-            // ->andWhere('w.idAuthor = :val')
-            // ->setParameter('val', $author)
-            ->andWhere(":author MEMBER OF b.authors")
+            ->leftJoin('b.idAuthor', 'a')
+            ->leftJoin('b.idCategory', 'c')
+            ->leftJoin('b.idUser', 'u')
+            ->select('b, a, c, u')
+            ->andWhere('a.authorName LIKE :author_name')
+            ->setParameter('author_name', '%' . $author . '%')
             ->getQuery()
             ->getResult();
     }
-
 
 //    /**
 //     * @return Book[] Returns an array of Book objects
@@ -87,5 +85,4 @@ class BookRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-
 }
