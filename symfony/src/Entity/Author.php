@@ -71,6 +71,7 @@ class Author
         return $this;
     }
 
+
     /**
      * @return Collection<int, Book>
      */
