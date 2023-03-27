@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\BookRepository;
 use FOS\RestBundle\Controller\Annotations\View as AnnotationsView;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use App\Services\AddressAPIService;
+use OpenApi\Attributes as OA;
+use Nelmio\ApiDocBundle;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -41,6 +45,21 @@ class ApiController extends AbstractController
         return $books;
     }
 
+    #[View()]
+    #[OA\Parameter(
+        name: "email",
+        in: "query",
+        description: "email of the user",
+        required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/LoginEmail")
+    )]
+    #[OA\Parameter(
+        name: "password",
+        in: "query",
+        description: "password of the user",
+        required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/LoginPassword")
+    )]
     #[Route('/login', name: 'app_api_login', methods: "POST")]
     public function login(
         EntityManagerInterface $em,
@@ -90,5 +109,26 @@ class ApiController extends AbstractController
         return $this->json([
             'message' => 'success',
         ], Response::HTTP_OK);
+    }
+
+    #[Route('/followed/{id}', name: 'app_followed_id')]
+    public function listfollowedId(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findByUserIsFollowed($id);
+        return $this->json($users);
+    }
+
+    #[Route('/follow/{id}', name: 'app_follow_id')]
+    public function listfollowId(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findUserFollowings($id);
+        return $this->json($users);
+    }
+
+    #[Route('/infoUser/{id}', name: 'app_Infouser_id')]
+    public function infoUser(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->infoUser($id);
+        return $this->json($users);
     }
 }

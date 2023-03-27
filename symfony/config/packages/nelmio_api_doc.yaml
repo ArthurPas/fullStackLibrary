@@ -1,0 +1,35 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: API the-bookshell
+            description: This is the API documentation for the-bookshell.
+            version: 1.0.0
+        components:
+            schemas:
+                LoginEmail:
+                    type: "string"
+                    description: "Email of the user"
+                    example: "Jason@gmail.com"
+                LoginPassword:
+                    type: "string"
+                    description: "Password of the user"
+                    example: "DonutsSucréAuSucre"
+                Login:
+                    type: "object"
+                    properties:
+                        email:
+                            $ref: "#/components/schemas/LoginEmail"
+                        password:
+                            $ref: "#/components/schemas/LoginPassword"
+                Follow: 
+                    type: "string"
+                    description: "id of the user"   
+                    example: "1"
+                Followed:
+                    type: "string"
+                    description: "id of the user"
+                    example: "1"        
+
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
