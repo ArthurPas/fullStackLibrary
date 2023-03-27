@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\User;
+use App\Repository\BookRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,13 +17,38 @@ use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuild
 #[Route('/api')]
 class ApiController extends AbstractController
 {
+    #[Route('/followed/{id}', name: 'app_followed_id')]
+    public function listfollowedId(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findByUserIsFollowed($id);
+        return $this->json($users);
+    }
+
+    #[Route('/follow/{id}', name: 'app_follow_id')]
+    public function listfollowId(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findUserFollowings($id);
+        return $this->json($users);
+    }
+
+    #[Route('/infoUser/{id}', name: 'app_Infouser_id')]
+    public function infoUser(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->infoUser($id);
+        return $this->json($users);
+    }
+
+
+
+    // $users = $em->getRepository(User::class)->listFollowedUsers($us);
+    // return $this->json($users);
     #[Route('/', name: 'app_api_books')]
     public function index(EntityManagerInterface $em, SerializerInterface $serializer): Response
     {
         $books = $em->getRepository(Book::class)->findAll();
         $context = (new ObjectNormalizerContextBuilder())
-        ->withGroups(['livre'])
-        ->toArray();
+            ->withGroups(['livre'])
+            ->toArray();
         $json = $serializer->serialize($books, 'json', $context);
         return $this->json($json);
     }
@@ -39,7 +65,7 @@ class ApiController extends AbstractController
         if ($ExepectedUser == null) {
             return $this->json([
                 'message' => 'error',
-             ], Response::HTTP_UNAUTHORIZED);
+            ], Response::HTTP_UNAUTHORIZED);
         }
         if ($ExepectedUser->getPassword() == $credentials->getPassword()) {
             $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-'), '=');
@@ -68,7 +94,7 @@ class ApiController extends AbstractController
         if ($ExepectedUser == null) {
             return $this->json([
                 'message' => 'error',
-             ], Response::HTTP_UNAUTHORIZED);
+            ], Response::HTTP_UNAUTHORIZED);
         }
         if ($ExepectedUser->getPassword() == $credentials->getPassword()) {
             $ExepectedUser->setToken(null);
