@@ -60,10 +60,17 @@ class User
     private $avatar;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="TOKEN", type="text", length=65535, nullable=true)
+     */
+    private $token;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Book", inversedBy="idUser")
-     * @ORM\JoinTable(name="RATING",
+     * @ORM\JoinTable(name="rating",
      *   joinColumns={
      *     @ORM\JoinColumn(name="ID_USER", referencedColumnName="ID_USER")
      *   },
@@ -176,6 +183,18 @@ class User
     public function setAvatar(string $avatar): self
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
 
         return $this;
     }
