@@ -20,7 +20,6 @@ function Auth() {
       })
         .then(data => data.json())
      }
->>>>>>> front/the-bookshelf/src/routes/Auth.tsx
     
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
