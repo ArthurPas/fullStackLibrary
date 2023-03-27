@@ -35,19 +35,21 @@ class ApiController extends AbstractController
         SerializerInterface $serializer
     ): Response {
         $credentials = $serializer->deserialize($request->getContent(), User::class, 'json');
-        $ExepectedUser = $ur->findOneByEmail($credentials->getEmail());
-        if ($ExepectedUser == null) {
+        $ExpectedUser = $ur->findOneByEmail($credentials->getEmail());
+        if ($ExpectedUser == null) {
             return $this->json([
                 'message' => 'error',
              ], Response::HTTP_UNAUTHORIZED);
         }
-        if ($ExepectedUser->getPassword() == $credentials->getPassword()) {
+        if ($ExpectedUser->getPassword() == $credentials->getPassword()) {
             $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-'), '=');
-            $ExepectedUser->setToken($token);
-            $em->persist($ExepectedUser);
+            $ExpectedUser->setToken($token);
+            $ur->save($ExpectedUser, true);
+
             return $this->json([
                 'accessToken' => $token,
-                'user' => $ExepectedUser,
+                'user' => $ExpectedUser,
+                'message' => 'success',
             ], Response::HTTP_OK);
         } else {
             return $this->json([
@@ -60,26 +62,19 @@ class ApiController extends AbstractController
     public function logout(
         EntityManagerInterface $em,
         Request $request,
-        UserRepository $ur,
-        SerializerInterface $serializer
+        UserRepository $ur
     ): Response {
-        $credentials = $serializer->deserialize($request->getContent(), User::class, 'json');
-        $ExepectedUser = $ur->findOneByEmail($credentials->getEmail());
-        if ($ExepectedUser == null) {
+        $userToken = json_decode($request->getContent(), true);
+        $ExpectedUser = $ur->findOneByToken($userToken['token']);
+        if ($ExpectedUser == null) {
             return $this->json([
-                'message' => 'error',
+                'message' => 'error, token is unknown'." ". $userToken['token']
              ], Response::HTTP_UNAUTHORIZED);
         }
-        if ($ExepectedUser->getPassword() == $credentials->getPassword()) {
-            $ExepectedUser->setToken(null);
-            $em->persist($ExepectedUser);
-            return $this->json([
-                'message' => 'success',
-            ], Response::HTTP_OK);
-        } else {
-            return $this->json([
-                'message' => 'error',
-            ], Response::HTTP_UNAUTHORIZED);
-        }
+        $ExpectedUser->setToken(null);
+        $em->persist($ExpectedUser);
+        return $this->json([
+            'message' => 'success',
+        ], Response::HTTP_OK);
     }
 }

@@ -70,7 +70,7 @@ class User
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Book", inversedBy="idUser")
-     * @ORM\JoinTable(name="rating",
+     * @ORM\JoinTable(name="RATING",
      *   joinColumns={
      *     @ORM\JoinColumn(name="ID_USER", referencedColumnName="ID_USER")
      *   },
@@ -85,7 +85,7 @@ class User
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="User", inversedBy="idUserFollow")
-     * @ORM\JoinTable(name="follow",
+     * @ORM\JoinTable(name="FOLLOW",
      *   joinColumns={
      *     @ORM\JoinColumn(name="ID_USER_FOLLOW", referencedColumnName="ID_USER")
      *   },
