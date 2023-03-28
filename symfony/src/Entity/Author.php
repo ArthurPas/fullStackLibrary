@@ -28,7 +28,7 @@ class Author
     /**
      * @var string
      *
-     * @ORM\Column(name="AUTHOR_NAME", type="string", length=255, nullable=false, 
+     * @ORM\Column(name="AUTHOR_NAME", type="string", length=255, nullable=false,
      * options={"fixed"=true})
      */
     #[Groups(['nomAuteur'])]
