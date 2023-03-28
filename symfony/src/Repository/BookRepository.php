@@ -39,13 +39,21 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByNb(int $nb): array
+    public function findByNb(int $nb, string $type): array
     {
-        return $this->createQueryBuilder('b')
+        if ($type == "recent"){
+            return $this->createQueryBuilder('b')
             ->orderBy('b.idBook', 'DESC')
             ->setMaxResults($nb)
             ->getQuery()
             ->getResult();
+        }else if($type == "old"){
+            return $this->createQueryBuilder('b')
+            ->orderBy('b.idBook', 'ASC')
+            ->setMaxResults($nb)
+            ->getQuery()
+            ->getResult();
+        }
     }
 
     public function findByAuthor(string $author): array
