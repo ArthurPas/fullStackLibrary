@@ -117,76 +117,8 @@ class ApiController extends AbstractController
         }
         return $author;
     }
-    #[AnnotationsView(serializerGroups: ['nomAuteur'])]
-    #[Route('/autocompletion', name: 'app_autocompletion')]
-    public function autocompletion(AuthorRepository $a, Request $request)
-    {
-        $debut = $request->query->get('debut');
-        if (strlen($debut) >= 4) {
-            $author = $a->autocompleter($debut);
-            return $author;
-        }
-        return null;
-    }
-    #[AnnotationsView(serializerGroups: ['emprunt'])]
-    #[Route('/borrow/user/{utilisateur}', name: 'app_api_borrow_user')]
-    public function getBorrowByUser(BorrowRepository $borrow, string $utilisateur)
-    {
-        $borrows = $borrow->findBorrowByUser($utilisateur);
-        return $borrows;
-    }
 
-    #[AnnotationsView(serializerGroups: ['emprunt'])]
-    #[Route('/borrow/date/{id}', name: 'app_api_borrow_date')]
-    public function getDateOfBorrow(BorrowRepository $borrow, int $id)
-    {
-        $borrows = $borrow->findDateOfBorrow($id);
-        return $borrows;
-    }
-
-    #[AnnotationsView(serializerGroups: ['emprunt'])]
-    #[Route('/borrow/emprunter', name: 'app_api_borrow_emprunt')]
-    public function emprunter(
-        EntityManagerInterface $em,
-        Request $request,
-        BorrowRepository $borrow,
-        BookRepository $book,
-        UserRepository $user
-    ) {
-        $idBook = $request->query->get('idBook');
-        $idBook = $book->findById($idBook);
-        $idUser = $request->query->get('idUser');
-        $idUser = $user->findById($idUser);
-
-        $date = new \DateTime();
-        $borrow = new Borrow();
-        $borrow->setStartDate($date);
-        $borrow->setIdUser($idUser);
-        $borrow->setIdBook($idBook);
-        $em->persist($borrow);
-        $em->flush();
-        return $borrow;
-    }
-
-    #[AnnotationsView(serializerGroups: ['emprunt'])]
-    #[Route('/borrow/rendre', name: 'app_api_borrow_rendre')]
-    public function rendre(
-        EntityManagerInterface $em,
-        Request $request,
-        BorrowRepository $borrow,
-    ) {
-        $idBorrow = $request->query->get('idBorrow');
-        $idBorrow = $borrow->findById($idBorrow);
-        $date = new \DateTime();
-        $idBorrow->setEndDate($date);
-        $em->persist($idBorrow);
-        $em->flush();
-        return $idBorrow;
-    }
-
-
-
-        // Follow
+    // Follow
 
     #[OA\Tag(name: "Follow")]
     #[OA\Parameter(
@@ -422,8 +354,7 @@ class ApiController extends AbstractController
         $idUser = $user->findById($idUser);
         if ($idBook === null && $idUser === null) {
             return new JsonResponse(['error' => 'No books and users found'], Response::HTTP_NOT_FOUND);
-        }
-        else if ($idBook === null) {
+        } else if ($idBook === null) {
             return new JsonResponse(['error' => 'No books found'], Response::HTTP_NOT_FOUND);
         } else if ($idUser === null) {
             return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
@@ -440,9 +371,9 @@ class ApiController extends AbstractController
             'IdBorrow' => $borrow->getIdBorrow(),
             'StartDate' => $borrow->getStartDate(),
             'message' => 'Borrow returned successfully',
-        ],Response::HTTP_OK );
+        ], Response::HTTP_OK);
     }
-   
+
 
     #[OA\Tag(name: "Borrow")]
     #[OA\Parameter(
@@ -484,7 +415,7 @@ class ApiController extends AbstractController
             'message' => 'success',
         ], Response::HTTP_OK);
     }
-  
+
 
     //AUTHENTIFICATION
 
