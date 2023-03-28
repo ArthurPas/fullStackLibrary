@@ -9,20 +9,18 @@ export type Book = {
 
 function Home() {
 
-    const { data, status } = useQuery('books', () => fetchBooks("recents"));
+    const { data, status } = useQuery('books', () => fetchRecentsBooks(5));
 
-    const fetchBooks = async (typeOfData: string) => {
-        if (typeOfData === "recents") {
-            // Set the request mode to no-cors to allow the response to be read
-            const response = await fetch(`${BASE_API_URL}/books`);
+    const fetchRecentsBooks = async (nbBooks: number) => {
+        const response = await fetch(`${BASE_API_URL}/books?number=4&type=recent`);
 
-            if (!response.ok) {
-                throw new Error('Something went wrong');
-            }
-
-            return response.json();
+        if (!response.ok) {
+            throw new Error('Something went wrong');
         }
+
+        return response.json();
     }
+
     
     return (
         <>
@@ -34,7 +32,7 @@ function Home() {
                 {status === 'success' && (
                     <>
                         <BookSection title="Recently added books" books={data.slice(0, 5)}/>
-                        <BookSection title="Most liked books" books={data.slice(0, 5)}/>
+                        <BookSection title="Most liked books" books={undefined}/>
                     </>
                 )}
             </div>
