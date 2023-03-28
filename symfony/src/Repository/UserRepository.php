@@ -61,10 +61,6 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
-
-
-
     public function infoUser(int $id): array
     {
         return $this->createQueryBuilder('u')
@@ -74,7 +70,6 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
 
     public function findById(int $id): ?User
     {

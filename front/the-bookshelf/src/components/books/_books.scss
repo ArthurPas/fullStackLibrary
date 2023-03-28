@@ -5,10 +5,30 @@
     font-size: 20px;
 
     & > .books__row {
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(v.$book-card-img-size, 1fr));
+        grid-template-rows: 1fr auto;
+        width: 100%;
 
         & > .book__card {
+
+            width: v.$book-card-img-size;
+            height: v.$book-card-img-size*1.3;
+
+            & > p {
+                color: #676767;
+                font-size: .6em;
+                font-weight: 400;
+                margin: 0;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                // Align text vertically
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
    
             & > img {
                 border-radius: 10px;
@@ -19,4 +39,12 @@
         }
     }
     
+}
+
+@media screen and (max-width: 768px) {
+    .section__books {
+        & > .books__row {
+            place-items: center;
+        }
+    }
 }

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { Nav } from "../components";
+import { Nav, Footer } from "../components";
 import { useLocation, Link } from 'react-router-dom'
 import Logo from "@/assets/logo-iut.svg";
 
@@ -22,6 +22,7 @@ function Root() {
             </nav>
             } 
             <Outlet/>
+            {(location.pathname != "/login") ? <Footer/> : null}
         </QueryClientProvider>
     )
 
