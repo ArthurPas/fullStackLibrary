@@ -39,6 +39,17 @@ class BorrowRepository extends ServiceEntityRepository
         }
     }
 
+    public function findBorrowByUser($utilisateur): array
+    {
+        return $this->createQueryBuilder('bo')
+            ->leftJoin('bo.idUser', 'u')
+            ->select('bo.idBorrow, bo.startDate, bo.endDate, u.idUser')
+            ->andWhere('u.email = :email_utilisateur')
+            ->setParameter('email_utilisateur', $utilisateur)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Borrow[] Returns an array of Borrow objects
 //     */

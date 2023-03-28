@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\BookRepository;
+use App\Repository\BorrowRepository;
 use FOS\RestBundle\Controller\Annotations\View as AnnotationsView;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Repository\AuthorRepository;
@@ -31,7 +32,8 @@ class ApiController extends AbstractController
         $type = $request->query->get('type');
         if ($author != null && $nbLastBooks == null) {
             $books = $book->findByAuthor($author);
-        } if ($author == null && $nbLastBooks != null) {
+        }
+        if ($author == null && $nbLastBooks != null) {
             $books = $book->findByNb($nbLastBooks, $type);
         } else {
             $books = $em->getRepository(Book::class)->findAll();
@@ -53,6 +55,18 @@ class ApiController extends AbstractController
         $author = $a->findAuthorById($id);
         return $author;
     }
+
+    #[AnnotationsView(serializerGroups: ['emprunt'])]
+    #[Route('/borrow/user/{utilisateur}', name: 'app_api_book')]
+    public function getBorrowByUser(BorrowRepository $borrow, string $utilisateur)
+    {
+        dump($utilisateur);
+        $borrows = $borrow->findBorrowByUser($utilisateur);
+        dump($borrows);
+        return $borrows;
+    }
+
+
     #[Route('/login', name: 'app_api_login', methods: "POST")]
     public function login(
         EntityManagerInterface $em,
@@ -103,4 +117,5 @@ class ApiController extends AbstractController
             'message' => 'success',
         ], Response::HTTP_OK);
     }
+
 }
