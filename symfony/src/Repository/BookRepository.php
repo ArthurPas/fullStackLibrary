@@ -88,6 +88,39 @@ class BookRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findOneById($value): ?Book
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.idBook = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    public function findSomeWithSeveralAuthors(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->innerjoin('b.idAuthor', 'a')
+            ->groupBy('b.idBook')
+            ->having('COUNT(a.idAuthor) > :val')
+            ->setParameter('val', 1)
+            ->getQuery()
+            ->getScalarResult()
+        ;
+    }
+
+    public function findSomeWithOneAuthor(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->innerjoin('b.idAuthor', 'a')
+            ->groupBy('b.idBook')
+            ->having('COUNT(a.idAuthor) = :val')
+            ->setParameter('val', 1)
+            ->getQuery()
+            ->getScalarResult()
+        ;
+    }
 //    /**
 //     * @return Book[] Returns an array of Book objects
 //     */

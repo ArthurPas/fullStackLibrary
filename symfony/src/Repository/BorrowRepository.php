@@ -68,6 +68,15 @@ class BorrowRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+    
+    public function findSomeBorrowNotReturned(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.endDate IS NULL')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
 //    /**
 //     * @return Borrow[] Returns an array of Borrow objects

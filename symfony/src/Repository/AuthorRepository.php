@@ -81,4 +81,45 @@ class AuthorRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+/**
+    * @return Author[] Returns an array of Author objects
+    */
+    public function findSomeWithoutBook(): array
+    {
+        // je veux comparer les idAuthor des tables Author et Book et compter le nombre d'auteur qui n'ont pas de livre
+        return $this->createQueryBuilder('a')
+           ->leftJoin('a.idBook', 'w')
+           ->groupBy('a.idAuthor')
+           ->having('count(w.idBook) = :val')
+           ->setParameter('val', 0)
+           ->getQuery()
+           ->getScalarResult()
+        ;
+    }
+
+    public function findSomeWithSeveralBooks(): array
+    {
+        return $this->createQueryBuilder('a')
+           ->innerJoin('a.idBook', 'w')
+           ->groupBy('a.idAuthor')
+           ->having('count(w.idBook) > :val')
+           ->setParameter('val', 1)
+           ->getQuery()
+           ->getScalarResult()
+        ;
+    }
+
+    public function findSomeWithOneBook(): array
+    {
+        return $this->createQueryBuilder('a')
+           ->innerJoin('a.idBook', 'w')
+           ->groupBy('a.idAuthor')
+           ->having('count(w.idBook) = :val')
+           ->setParameter('val', 1)
+           ->getQuery()
+           ->getScalarResult()
+        ;
+    }
+
 }
