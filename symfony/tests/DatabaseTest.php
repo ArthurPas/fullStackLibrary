@@ -83,14 +83,14 @@ class DatabaseTest extends WebTestCase
         $this->assertGreaterThan(50, count($authors));
     }
 
-    /*public function testAuthorsWithoutBooks(): void
+    public function testAuthorsWithoutBooks(): void
     {
         self::bootKernel();
         $tu = static::getContainer()->get(AuthorRepository::class);
 
         $authors = $tu->findSomeWithoutBook();
         $this->assertGreaterThan(0, count($authors));
-    }*/
+    }
 
     /**
      * Test la contrainte de date de début de prêt
@@ -203,13 +203,54 @@ class DatabaseTest extends WebTestCase
     /**
      * Test qu'il existe des utilisateurs n'ayant pas encore emprunté de livre
      */
-    /*public function testUsersWithoutBorrow(): void
+    public function testUsersWithoutBorrow(): void
     {
         self::bootKernel();
         $ur = static::getContainer()->get(UserRepository::class);
 
         $users = $ur->findSomeWithoutBorrow();
-        var_dump($users);
         $this->assertGreaterThan(0, count($users));
-    }*/
+    }
+
+    /**
+     * Test qu'il existe des livres n'ayant pas encore été rendu
+     */
+    public function testBorrowNotReturned(): void
+    {
+        self::bootKernel();
+        $bor = static::getContainer()->get(BorrowRepository::class);
+
+        $borrows = $bor->findSomeBorrowNotReturned();
+        $this->assertGreaterThan(0, count($borrows));
+    }
+
+    /**
+     * Test qu'il existe des utilisateurs ayant emprunté plus d'un livre
+     */
+    public function testUserBorrowMoreThanOneBook(): void
+    {
+        self::bootKernel();
+        $bor = static::getContainer()->get(UserRepository::class);
+
+        $borrows = $bor->findSomeUserBorrowMoreThanOneBook();
+        $this->assertGreaterThan(0, count($borrows));
+    }
+
+    /**
+     * Test qu'il existe des utilisateurs ayant emprunté le même livre plus d'une fois
+     */
+    public function testUserBorrowSameBookTwice(): void
+    {
+        self::bootKernel();
+        $bor = static::getContainer()->get(UserRepository::class);
+
+        $borrows = $bor->findSomeUserBorrowSameBookTwice();
+        $this->assertGreaterThan(0, count($borrows));
+    }
+
+    public function testLogin(): void
+    {
+        self::bootKernel();
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
 }
