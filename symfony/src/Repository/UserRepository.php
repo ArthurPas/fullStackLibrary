@@ -76,6 +76,16 @@ class UserRepository extends ServiceEntityRepository
     }
 
 
+    public function findById(int $id): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.idUser = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
     // public function follow(User $user, User $followedUser): void
     // {
     //     $user->addFollowedUser($followedUser);

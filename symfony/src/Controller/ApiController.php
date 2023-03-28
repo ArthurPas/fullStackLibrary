@@ -4,6 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\User;
+use App\Entity\Borrow;
+use App\Entity\Author;
+use App\Repository\BorrowRepository;
+use App\Repository\AuthorRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,28 +18,36 @@ use App\Repository\BookRepository;
 use FOS\RestBundle\Controller\Annotations\View as AnnotationsView;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use App\Services\AddressAPIService;
 use OpenApi\Attributes as OA;
-use Nelmio\ApiDocBundle;
-use OpenApi\Attributes\RequestBody;
-use OpenApi\Attributes\MediaType;
-use OpenApi\Attributes\Schema;
-use OpenApi\Attributes\Property;
-
-use function PHPSTORM_META\type;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api')]
 class ApiController extends AbstractController
 {
 
-    #[View()]
+    // BOOKS
+
+    #[OA\Tag(name: "Books")]
     #[OA\Parameter(
         name: "author",
         in: "query",
         description: "Get the book by author name",
         required: true,
-        schema: new OA\Schema(ref: "#/components/schemas/Books")
-
+        schema: new OA\Schema(ref: "#/components/schemas/Books/properties/author")
+    )]
+    #[OA\Parameter(
+        name: "nbLastBooks",
+        in: "query",
+        description: "Number of books to retrieve",
+        required: false,
+        schema: new OA\Schema(ref: "#/components/schemas/Books/properties/nbLastBooks")
+    )]
+    #[OA\Parameter(
+        name: "type",
+        in: "query",
+        description: "Type of books to retrieve",
+        required: false,
+        schema: new OA\Schema(ref: "#/components/schemas/Books/properties/type")
     )]
     #[OA\Response(
         response: "200",
@@ -61,31 +73,52 @@ class ApiController extends AbstractController
         $type = $request->query->get('type');
         if ($author != null && $nbLastBooks == null) {
             $books = $book->findByAuthor($author);
-        }
-        if ($author == null && $nbLastBooks != null) {
+        } else if ($author == null && $nbLastBooks != null) {
             $books = $book->findByNb($nbLastBooks, $type);
         } else {
             $books = $em->getRepository(Book::class)->findAll();
         }
+        if (count($books) === 0) {
+            return new JsonResponse(['error' => 'No books found'], Response::HTTP_NOT_FOUND);
+        }
         return $books;
     }
 
-
+    #[OA\Tag(name: "Author")]
+    #[OA\Tag(name: "Books")]
     #[OA\Parameter(
-        name: "Firstname",
+        name: "id",
         in: "path",
-        description: "The ID of the user to get the list of the users he follows",
+        description: "Get the list of books by author id",
         required: true,
     )]
-    #[AnnotationsView(serializerGroups: ['livre'])]
-    #[Route('/books/user/{utilisateur}', name: 'app_api_utilisateur', methods: "GET")]
-    public function getBookByUser(BookRepository $book, string $utilisateur)
+    #[OA\Response(
+        response: "200",
+        description: "Books information retrieved successfully",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "No author found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+    #[AnnotationsView()]
+    #[Route('/books/author/{id}', name: 'app_api_author', methods: "GET")]
+    public function getAuthorById(AuthorRepository $a, int $id)
     {
-        $books = $book->findByUser($utilisateur);
-        return $books;
+        $author = $a->findAuthorById($id);
+        if (count($author) === 0) {
+            return new JsonResponse(['error' => 'No author found'], Response::HTTP_NOT_FOUND);
+        }
+        return $author;
     }
 
 
+        // Follow
+
+    #[OA\Tag(name: "Follow")]
     #[OA\Parameter(
         name: "id",
         in: "path",
@@ -98,7 +131,7 @@ class ApiController extends AbstractController
     )]
     #[OA\Response(
         response: "404",
-        description: "No users found",
+        description: "Error on this user",
     )]
     #[OA\Response(
         response: "500",
@@ -107,12 +140,18 @@ class ApiController extends AbstractController
     #[Route('/follow/{id}', name: 'app_follow_id', methods: "GET")]
     public function listfollowId(int $id, UserRepository $userRepository): Response
     {
+        $exist = $userRepository->find($id);
+        if ($exist == null) {
+            return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
+        }
         $users = $userRepository->findUserFollowings($id);
+        if (count($users) === 0) {
+            return new JsonResponse(['error' => 'This person follow nobody'], Response::HTTP_NOT_FOUND);
+        }
         return $this->json($users);
     }
 
-
-
+    #[OA\Tag(name: "Follow")]
     #[OA\Parameter(
         name: "id",
         in: "path",
@@ -126,7 +165,7 @@ class ApiController extends AbstractController
     )]
     #[OA\Response(
         response: "404",
-        description: "No users found",
+        description: "Error on this user",
     )]
     #[OA\Response(
         response: "500",
@@ -135,10 +174,27 @@ class ApiController extends AbstractController
     #[Route('/followed/{id}', name: 'app_followed_id', methods: "GET")]
     public function listfollowedId(int $id, UserRepository $userRepository): Response
     {
+        $exist = $userRepository->find($id);
+        if ($exist == null) {
+            return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
+        }
         $users = $userRepository->findByUserIsFollowed($id);
+        if (count($users) === 0) {
+            return new JsonResponse(['error' => 'Nobody follow this person'], Response::HTTP_NOT_FOUND);
+        }
         return $this->json($users);
     }
 
+
+    // USER
+
+    #[OA\Tag(name: "User")]
+    #[OA\Parameter(
+        name: "id",
+        in: "path",
+        description: "The ID of a user for which you want to know the information",
+        required: true,
+    )]
     #[OA\Response(
         response: "200",
         description: "Info of the user are displayed correctly",
@@ -151,15 +207,218 @@ class ApiController extends AbstractController
         response: "500",
         description: "Query syntax error",
     )]
-    #[Route('/infoUser/{id}', name: 'app_Infouser_id', methods: "GET")]
+    #[Route('/user/{id}', name: 'app_user_id', methods: "GET")]
     public function infoUser(int $id, UserRepository $userRepository): Response
     {
         $users = $userRepository->infoUser($id);
+        if (count($users) === 0) {
+            return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
+        }
         return $this->json($users);
     }
 
 
+    // AUTHOR
 
+    #[OA\Tag(name: "Author")]
+    #[OA\Parameter(
+        name: "debut",
+        in: "query",
+        description: "Get the book by author name",
+        required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/Authors")
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "Author information retrieved successfully",
+    )]
+    #[OA\Response(
+        response: "204",
+        description: "No author found",
+    )]
+
+    #[AnnotationsView(serializerGroups: ['nomAuteur'])]
+    #[Route('/autocompletion', name: 'app_autocompletion', methods: "GET")]
+    public function autocompletion(AuthorRepository $a, Request $request)
+    {
+        $debut = $request->query->get('debut');
+        if (strlen($debut) >= 4) {
+            $author = $a->autocompleter($debut);
+            if (count($author) === 0) {
+                return new JsonResponse(['error' => 'No author found'], Response::HTTP_NO_CONTENT);
+            }
+            return $author;
+        }
+        return null;
+    }
+
+
+    // BORROW
+
+    #[OA\Tag(name: "Borrow")]
+    #[OA\Parameter(
+        name: "utilisateur",
+        in: "path",
+        description: "Get the list of books that the user has borrowed by his email",
+        required: true,
+        example: "Nathan@gmail.com"
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "Borrows information retrieved successfully",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "No borrows or users found",
+    )]
+    #[AnnotationsView(serializerGroups: ['emprunt'])]
+    #[Route('/borrow/user/{utilisateur}', name: 'app_api_borrow_user', methods: "GET")]
+    public function getBorrowByUser(BorrowRepository $borrow, string $utilisateur)
+    {
+        $borrows = $borrow->findBorrowByUser($utilisateur);
+        if (count($borrows) === 0) {
+            return new JsonResponse(['error' => 'No borrows or users found'], Response::HTTP_NOT_FOUND);
+        }
+        return $borrows;
+    }
+
+    #[OA\Tag(name: "Borrow")]
+    #[OA\Parameter(
+        name: "id",
+        in: "path",
+        description: "Get the date of the borrow with the borrow ID",
+        required: true,
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "Borrows information retrieved successfully",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "No borrows found",
+    )]
+    #[AnnotationsView(serializerGroups: ['emprunt'])]
+    #[Route('/borrow/date/{id}', name: 'app_api_borrow_date', methods: "GET")]
+    public function getDateOfBorrow(BorrowRepository $borrow, int $id)
+    {
+        $borrows = $borrow->findDateOfBorrow($id);
+        if (count($borrows) === 0) {
+            return new JsonResponse(['error' => 'No borrows found'], Response::HTTP_NOT_FOUND);
+        }
+        return $borrows;
+    }
+
+
+    #[OA\Tag(name: "Borrow")]
+    #[OA\Parameter(
+        name: "idBook",
+        in: "query",
+        description: "id of the book to borrow",
+        required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/Borrows/properties/idBook")
+    )]
+    #[OA\Parameter(
+        name: "idUser",
+        in: "query",
+        description: "id of the user who wants to borrow the book",
+        required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/Borrows/properties/idUser")
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "Books information retrieved successfully",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "Information not found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+    #[OA\Tag(name: "Borrow")]
+    #[AnnotationsView(serializerGroups: ['emprunt'])]
+    #[Route('/borrow/emprunter', name: 'app_api_borrow_emprunter', methods: "GET")]
+    public function emprunter(
+        EntityManagerInterface $em,
+        Request $request,
+        BorrowRepository $borrow,
+        BookRepository $book,
+        UserRepository $user
+    ) {
+        $idBook = $request->query->get('idBook');
+        $idBook = $book->findById($idBook);
+        $idUser = $request->query->get('idUser');
+        $idUser = $user->findById($idUser);
+        if ($idBook === null && $idUser === null) {
+            return new JsonResponse(['error' => 'No books and users found'], Response::HTTP_NOT_FOUND);
+        }
+        else if ($idBook === null) {
+            return new JsonResponse(['error' => 'No books found'], Response::HTTP_NOT_FOUND);
+        } else if ($idUser === null) {
+            return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
+        }
+        $date = new \DateTime();
+        $borrow = new Borrow();
+        $borrow->setStartDate($date);
+        $borrow->setIdUser($idUser);
+        $borrow->setIdBook($idBook);
+        $em->persist($borrow);
+        $em->flush();
+        //return $borrow && new JsonResponse(['success' => 'Borrow created'], Response::HTTP_OK);
+        return $this->json([
+            'IdBorrow' => $borrow->getIdBorrow(),
+            'StartDate' => $borrow->getStartDate(),
+            'message' => 'Borrow returned successfully',
+        ],Response::HTTP_OK );
+    }
+   
+
+    #[OA\Tag(name: "Borrow")]
+    #[OA\Parameter(
+        name: "idBorrow",
+        in: "query",
+        description: "id of the borrow to return",
+        required: true,
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "The borrow has been returned successfully",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "Borrow not found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+    #[AnnotationsView(serializerGroups: ['emprunt'])]
+    #[Route('/borrow/rendre', name: 'app_api_borrow_rendre', methods: "GET")]
+    public function rendre(
+        EntityManagerInterface $em,
+        Request $request,
+        BorrowRepository $borrow,
+    ) {
+        $idBorrow = $request->query->get('idBorrow');
+        $idBorrow = $borrow->findById($idBorrow);
+        if ($idBorrow === null) {
+            return new JsonResponse(['error' => 'No borrows found'], Response::HTTP_NOT_FOUND);
+        }
+        $date = new \DateTime();
+        $idBorrow->setEndDate($date);
+        $em->persist($idBorrow);
+        $em->flush();
+        return $this->json([
+            'EndDate' => $date,
+            'message' => 'success',
+        ], Response::HTTP_OK);
+    }
+  
+
+    //AUTHENTIFICATION
+
+    #[OA\Tag(name: "Authentification")]
     #[OA\RequestBody(
         request: "Login",
         content: new OA\JsonContent(ref: "#/components/schemas/Login")
@@ -174,7 +433,7 @@ class ApiController extends AbstractController
     )]
     #[OA\Response(
         response: "500",
-        description: "Bug jsp pk wlh",
+        description: "Query syntax error",
     )]
     #[Route('/login', name: 'app_api_login', methods: "POST")]
     public function login(
@@ -207,7 +466,7 @@ class ApiController extends AbstractController
         }
     }
 
-
+    #[OA\Tag(name: "Authentification")]
     #[OA\RequestBody(
         request: "Logout",
         content: new OA\JsonContent(ref: "#/components/schemas/Logout")
@@ -241,5 +500,4 @@ class ApiController extends AbstractController
             'message' => 'success',
         ], Response::HTTP_OK);
     }
-
 }
