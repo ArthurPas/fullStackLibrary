@@ -41,18 +41,18 @@ class BookRepository extends ServiceEntityRepository
 
     public function findByNb(int $nb, string $type): array
     {
-        if ($type == "recent"){
+        if ($type == "recent") {
             return $this->createQueryBuilder('b')
-            ->orderBy('b.idBook', 'DESC')
-            ->setMaxResults($nb)
-            ->getQuery()
-            ->getResult();
-        }else if($type == "old"){
+                ->orderBy('b.idBook', 'DESC')
+                ->setMaxResults($nb)
+                ->getQuery()
+                ->getResult();
+        } elseif ($type == "old") {
             return $this->createQueryBuilder('b')
-            ->orderBy('b.idBook', 'ASC')
-            ->setMaxResults($nb)
-            ->getQuery()
-            ->getResult();
+                ->orderBy('b.idBook', 'ASC')
+                ->setMaxResults($nb)
+                ->getQuery()
+                ->getResult();
         }
     }
 
@@ -92,28 +92,28 @@ class BookRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    //    /**
-    //     * @return Book[] Returns an array of Book objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+//    /**
+//     * @return Book[] Returns an array of Book objects
+//     */
+//    public function findByExampleField($value): array
+//    {
+//        return $this->createQueryBuilder('b')
+//            ->andWhere('b.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('b.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
 
-    //    public function findOneBySomeField($value): ?Book
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+//    public function findOneBySomeField($value): ?Book
+//    {
+//        return $this->createQueryBuilder('b')
+//            ->andWhere('b.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
 }
