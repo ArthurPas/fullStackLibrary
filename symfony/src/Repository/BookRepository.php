@@ -39,13 +39,21 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByNb(int $nb): array
+    public function findByNb(int $nb, string $type): array
     {
-        return $this->createQueryBuilder('b')
-            ->orderBy('b.idBook', 'DESC')
-            ->setMaxResults($nb)
-            ->getQuery()
-            ->getResult();
+        if ($type == "recent") {
+            return $this->createQueryBuilder('b')
+                ->orderBy('b.idBook', 'DESC')
+                ->setMaxResults($nb)
+                ->getQuery()
+                ->getResult();
+        } elseif ($type == "old") {
+            return $this->createQueryBuilder('b')
+                ->orderBy('b.idBook', 'ASC')
+                ->setMaxResults($nb)
+                ->getQuery()
+                ->getResult();
+        }
     }
 
     public function findByAuthor(string $author): array
@@ -57,6 +65,29 @@ class BookRepository extends ServiceEntityRepository
             ->select('b, a, c, u')
             ->andWhere('a.authorName LIKE :author_name')
             ->setParameter('author_name', '%' . $author . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByUser(string $utilisateur): array
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin(
+                'App\Entity\Borrow',
+                'bo',
+                'WITH',
+                'b.idBook = bo.idBook'
+            )
+            ->leftJoin(
+                'App\Entity\User',
+                'u',
+                'WITH',
+                'u.idUser = bo.idUser'
+            )
+            ->select('b, bo, u')
+            ->where('u.firstname = :utilisateur')
+            ->andWhere('bo.idUser = u.idUser')
+            ->setParameter('utilisateur', $utilisateur)
             ->getQuery()
             ->getResult();
     }

@@ -17,48 +17,164 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use App\Services\AddressAPIService;
 use OpenApi\Attributes as OA;
 use Nelmio\ApiDocBundle;
+use OpenApi\Attributes\RequestBody;
+use OpenApi\Attributes\MediaType;
+use OpenApi\Attributes\Schema;
+use OpenApi\Attributes\Property;
+
+use function PHPSTORM_META\type;
 
 #[Route('/api')]
 class ApiController extends AbstractController
 {
+
+    #[View()]
+    #[OA\Parameter(
+        name: "author",
+        in: "query",
+        description: "Get the book by author name",
+        required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/Books")
+
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "Books information retrieved successfully",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "No books found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
     #[AnnotationsView(serializerGroups: ['livre'])]
-    #[Route('/books', name: 'app_api')]
+    #[Route('/books', name: 'app_api', methods: "GET")]
     public function index(
         EntityManagerInterface $em,
         Request $request,
         BookRepository $book
     ) {
         $author = $request->query->get('author');
-        if ($author != null) {
+        $nbLastBooks = $request->query->get('nbLastBooks');
+        $type = $request->query->get('type');
+        if ($author != null && $nbLastBooks == null) {
             $books = $book->findByAuthor($author);
+        }
+        if ($author == null && $nbLastBooks != null) {
+            $books = $book->findByNb($nbLastBooks, $type);
         } else {
             $books = $em->getRepository(Book::class)->findAll();
         }
         return $books;
     }
 
+
+    #[OA\Parameter(
+        name: "Firstname",
+        in: "path",
+        description: "The ID of the user to get the list of the users he follows",
+        required: true,
+    )]
     #[AnnotationsView(serializerGroups: ['livre'])]
-    #[Route('/books/{nb}', name: 'app_api_nb')]
-    public function getBookByNb(BookRepository $book, int $nb)
+    #[Route('/books/user/{utilisateur}', name: 'app_api_utilisateur', methods: "GET")]
+    public function getBookByUser(BookRepository $book, string $utilisateur)
     {
-        $books = $book->findByNb($nb);
+        $books = $book->findByUser($utilisateur);
         return $books;
     }
 
-    #[View()]
+
     #[OA\Parameter(
-        name: "email",
-        in: "query",
-        description: "email of the user",
+        name: "id",
+        in: "path",
+        description: "The ID of the user to get the list of the users he follows",
         required: true,
-        schema: new OA\Schema(ref: "#/components/schemas/LoginEmail")
     )]
+    #[OA\Response(
+        response: "200",
+        description: "All people followed by this user are displayed correctly",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "No users found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+    #[Route('/follow/{id}', name: 'app_follow_id', methods: "GET")]
+    public function listfollowId(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findUserFollowings($id);
+        return $this->json($users);
+    }
+
+
+
     #[OA\Parameter(
-        name: "password",
-        in: "query",
-        description: "password of the user",
+        name: "id",
+        in: "path",
+        description: "The ID of the user to get the list of the users he follows",
         required: true,
-        schema: new OA\Schema(ref: "#/components/schemas/LoginPassword")
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "All people who follow this person are displayed correctly",
+
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "No users found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+    #[Route('/followed/{id}', name: 'app_followed_id', methods: "GET")]
+    public function listfollowedId(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findByUserIsFollowed($id);
+        return $this->json($users);
+    }
+
+    #[OA\Response(
+        response: "200",
+        description: "Info of the user are displayed correctly",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "No users found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+    #[Route('/infoUser/{id}', name: 'app_Infouser_id', methods: "GET")]
+    public function infoUser(int $id, UserRepository $userRepository): Response
+    {
+        $users = $userRepository->infoUser($id);
+        return $this->json($users);
+    }
+
+
+
+    #[OA\RequestBody(
+        request: "Login",
+        content: new OA\JsonContent(ref: "#/components/schemas/Login")
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "The user is logged in successfully",
+    )]
+    #[OA\Response(
+        response: "401",
+        description: "No users found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Bug jsp pk wlh",
     )]
     #[Route('/login', name: 'app_api_login', methods: "POST")]
     public function login(
@@ -91,6 +207,21 @@ class ApiController extends AbstractController
         }
     }
 
+
+    #[OA\RequestBody(
+        request: "Logout",
+        content: new OA\JsonContent(ref: "#/components/schemas/Logout")
+    )]
+
+    #[OA\Response(
+        response: "200",
+        description: "The user is logged out successfully",
+    )]
+    #[OA\Response(
+        response: "401",
+        description: "No token found",
+    )]
+
     #[Route('/logout', name: 'app_api_logout', methods: "POST")]
     public function logout(
         EntityManagerInterface $em,
@@ -111,24 +242,4 @@ class ApiController extends AbstractController
         ], Response::HTTP_OK);
     }
 
-    #[Route('/followed/{id}', name: 'app_followed_id')]
-    public function listfollowedId(int $id, UserRepository $userRepository): Response
-    {
-        $users = $userRepository->findByUserIsFollowed($id);
-        return $this->json($users);
-    }
-
-    #[Route('/follow/{id}', name: 'app_follow_id')]
-    public function listfollowId(int $id, UserRepository $userRepository): Response
-    {
-        $users = $userRepository->findUserFollowings($id);
-        return $this->json($users);
-    }
-
-    #[Route('/infoUser/{id}', name: 'app_Infouser_id')]
-    public function infoUser(int $id, UserRepository $userRepository): Response
-    {
-        $users = $userRepository->infoUser($id);
-        return $this->json($users);
-    }
 }

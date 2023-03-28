@@ -1,34 +1,37 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: API the-bookshell
-            description: This is the API documentation for the-bookshell.
+            title: API the-bookshelf
+            description: This is the API documentation for the-bookshelf.
             version: 1.0.0
         components:
             schemas:
-                LoginEmail:
-                    type: "string"
-                    description: "Email of the user"
-                    example: "Jason@gmail.com"
-                LoginPassword:
-                    type: "string"
-                    description: "Password of the user"
-                    example: "DonutsSucréAuSucre"
                 Login:
                     type: "object"
                     properties:
                         email:
-                            $ref: "#/components/schemas/LoginEmail"
+                            type: "string"
+                            description: "Email of the user"
+                            example: "Nathan@gmail.com"
                         password:
-                            $ref: "#/components/schemas/LoginPassword"
-                Follow: 
-                    type: "string"
+                            type: "string"
+                            description: "Password of the user"
+                            example: "Nathan33"
+                Logout:
+                    type: "object"
+                    properties:
+                        token:
+                            type: "string"
+                            description: "token of the user"
+                            example: "CxFQHyVyI5O0fAmv0oBH1J/6vHcx0I95oiDjCyHSces"
+                Follow(ed): 
+                    type: "integer"
                     description: "id of the user"   
                     example: "1"
-                Followed:
+                Books:
                     type: "string"
-                    description: "id of the user"
-                    example: "1"        
+                    description: "cherch by author"
+                    example: "Emile Zola"   
 
     areas: # to filter documented areas
         path_patterns:
