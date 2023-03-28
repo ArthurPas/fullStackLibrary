@@ -54,6 +54,7 @@ class BookRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
         }
+        return [];
     }
 
     public function findByAuthor(string $author): array
