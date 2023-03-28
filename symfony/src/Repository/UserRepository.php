@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -39,6 +40,70 @@ class UserRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByUserIsFollowed(int $id): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u.idUser, u.firstname, u.lastname, u.email, u.avatar')
+            ->innerJoin('u.idUserIsFollowed', 'f', Join::WITH, 'f.idUser = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findUserFollowings(int $id): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u.idUser, u.firstname, u.lastname, u.email, u.avatar')
+            ->innerJoin('u.idUserFollow', 'f')
+            ->where('f.idUser = :userId')
+            ->setParameter('userId', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function infoUser(int $id): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u.idUser, u.firstname, u.lastname, u.email, u.avatar')
+            ->where('u.idUser = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findById(int $id): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.idUser = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+    // public function follow(User $user, User $followedUser): void
+    // {
+    //     $user->addFollowedUser($followedUser);
+    //     $this->save($user, true);
+    // }
+
+    // public function listFollowedUsers(User $user): array
+    // {
+    //     return $user->getFollowedUsers()->toArray();
+    // }
+
+    //    /**
+    //     * @return User[] Returns an array of User objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('u')
+    //            ->andWhere('u.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('u.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */
@@ -91,14 +156,23 @@ class UserRepository extends ServiceEntityRepository
 
     public function findSomeUserBorrowSameBookTwice(): array
     {
-        // compte le nombre d'user(idUser) qui ont emprunté le même livre(idBook) plus d'une fois
+    // compte le nombre d'user(idUser) qui ont emprunté le même livre(idBook) plus d'une fois
+    return $this->createQueryBuilder('u')
+        ->select('u.idUser')
+        ->leftJoin('App\Entity\Borrow', 'b', 'WITH', 'u.idUser = b.idUser')
+        ->groupBy('u.idUser, b.idBook')
+        ->having('COUNT(b.idBook) > 1')
+        ->getQuery()
+        ->getScalarResult()
+        ;
+    }
+    public function findOneByToken($token): ?User
+    {
         return $this->createQueryBuilder('u')
-            ->select('u.idUser')
-            ->leftJoin('App\Entity\Borrow', 'b', 'WITH', 'u.idUser = b.idUser')
-            ->groupBy('u.idUser, b.idBook')
-            ->having('COUNT(b.idBook) > 1')
+            ->andWhere('u.token = :token')
+            ->setParameter('token', $token)
             ->getQuery()
-            ->getScalarResult()
+            ->getOneOrNullResult();
         ;
     }
 }

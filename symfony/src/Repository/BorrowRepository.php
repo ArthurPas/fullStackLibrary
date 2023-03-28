@@ -41,11 +41,40 @@ class BorrowRepository extends ServiceEntityRepository
 
     public function findSomeBorrowNotReturned(): array
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.endDate IS NULL')
+    return $this->createQueryBuilder('b')
+        ->andWhere('b.endDate IS NULL')
+        ->getQuery()
+        ->getResult()
+    ;
+    }
+    public function findBorrowByUser($utilisateur): array
+    {
+        return $this->createQueryBuilder('bo')
+            ->leftJoin('bo.idUser', 'u')
+            ->select('bo.idBorrow, bo.startDate, bo.endDate, u.idUser')
+            ->andWhere('u.email = :email_utilisateur')
+            ->setParameter('email_utilisateur', $utilisateur)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+    }
+
+    public function findDateOfBorrow($id): array
+    {
+        return $this->createQueryBuilder('bo')
+            ->select('bo.startDate, bo.endDate')
+            ->andWhere('bo.idBorrow = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findById(int $id): ?Borrow
+    {
+        return $this->createQueryBuilder('bo')
+            ->andWhere('bo.idBorrow = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
 //    /**
