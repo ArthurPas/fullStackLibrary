@@ -70,29 +70,6 @@ class BookRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByUser(string $utilisateur): array
-    {
-        return $this->createQueryBuilder('b')
-            ->leftJoin(
-                'App\Entity\Borrow',
-                'bo',
-                'WITH',
-                'b.idBook = bo.idBook'
-            )
-            ->leftJoin(
-                'App\Entity\User',
-                'u',
-                'WITH',
-                'u.idUser = bo.idUser'
-            )
-            ->select('b, bo, u')
-            ->where('u.firstname = :utilisateur')
-            ->andWhere('bo.idUser = u.idUser')
-            ->setParameter('utilisateur', $utilisateur)
-            ->getQuery()
-            ->getResult();
-    }
-
     public function findById(int $id): ?Book
     {
         return $this->createQueryBuilder('b')
