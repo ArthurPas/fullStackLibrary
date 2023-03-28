@@ -79,6 +79,8 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+
     // public function follow(User $user, User $followedUser): void
     // {
     //     $user->addFollowedUser($followedUser);
