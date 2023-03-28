@@ -27,8 +27,12 @@ class ApiController extends AbstractController
         BookRepository $book
     ) {
         $author = $request->query->get('author');
-        if ($author != null) {
+        $nbLastBooks = $request->query->get('nbLastBooks');
+        $type = $request->query->get('type');
+        if ($author != null && $nbLastBooks == null) {
             $books = $book->findByAuthor($author);
+        } if ($author == null && $nbLastBooks != null) {
+            $books = $book->findByNb($nbLastBooks, $type);
         } else {
             $books = $em->getRepository(Book::class)->findAll();
         }
@@ -36,10 +40,10 @@ class ApiController extends AbstractController
     }
 
     #[AnnotationsView(serializerGroups: ['livre'])]
-    #[Route('/books/{nb}', name: 'app_api_nb')]
-    public function getBookByNb(BookRepository $book, int $nb)
+    #[Route('/books/user/{utilisateur}', name: 'app_api_utilisateur')]
+    public function getBookByUser(BookRepository $book, string $utilisateur)
     {
-        $books = $book->findByNb($nb);
+        $books = $book->findByUser($utilisateur);
         return $books;
     }
     #[AnnotationsView()]
