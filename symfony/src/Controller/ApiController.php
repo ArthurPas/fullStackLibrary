@@ -32,11 +32,15 @@ class ApiController extends AbstractController
         $author = $request->query->get('author');
         $nbLastBooks = $request->query->get('nbLastBooks');
         $type = $request->query->get('type');
+        $title = $request->query->get('title');
         if ($author != null && $nbLastBooks == null) {
             $books = $book->findByAuthor($author);
         }
-        if ($author == null && $nbLastBooks != null) {
+        if ($nbLastBooks != null && $author == null && $title == null) {
             $books = $book->findByNb($nbLastBooks, $type);
+        }
+        if ($title != null && $author == null && $nbLastBooks == null) {
+            $books = $book->findByTitle($title);
         } else {
             $books = $em->getRepository(Book::class)->findAll();
         }
