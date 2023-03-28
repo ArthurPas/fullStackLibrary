@@ -42,14 +42,6 @@ class ApiController extends AbstractController
         }
         return $books;
     }
-
-    #[AnnotationsView(serializerGroups: ['livre'])]
-    #[Route('/books/user/{utilisateur}', name: 'app_api_utilisateur')]
-    public function getBookByUser(BookRepository $book, string $utilisateur)
-    {
-        $books = $book->findByUser($utilisateur);
-        return $books;
-    }
     #[AnnotationsView()]
     #[Route('/books/author/{id}', name: 'app_api_author')]
     public function getAuthorById(AuthorRepository $a, int $id)
@@ -57,7 +49,17 @@ class ApiController extends AbstractController
         $author = $a->findAuthorById($id);
         return $author;
     }
-
+    #[AnnotationsView(serializerGroups: ['nomAuteur'])]
+    #[Route('/autocompletion', name: 'app_autocompletion')]
+    public function autocompletion(AuthorRepository $a, Request $request)
+    {
+        $debut = $request->query->get('debut');
+        if (strlen($debut) >= 4) {
+            $author = $a->autocompleter($debut);
+            return $author;
+        }
+        return null;
+    }
     #[AnnotationsView(serializerGroups: ['emprunt'])]
     #[Route('/borrow/user/{utilisateur}', name: 'app_api_borrow_user')]
     public function getBorrowByUser(BorrowRepository $borrow, string $utilisateur)
@@ -104,8 +106,6 @@ class ApiController extends AbstractController
         EntityManagerInterface $em,
         Request $request,
         BorrowRepository $borrow,
-        BookRepository $book,
-        UserRepository $user
     ) {
         $idBorrow = $request->query->get('idBorrow');
         $idBorrow = $borrow->findById($idBorrow);
@@ -119,7 +119,6 @@ class ApiController extends AbstractController
 
     #[Route('/login', name: 'app_api_login', methods: "POST")]
     public function login(
-        EntityManagerInterface $em,
         Request $request,
         UserRepository $ur,
         SerializerInterface $serializer

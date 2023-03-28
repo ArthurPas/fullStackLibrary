@@ -48,6 +48,15 @@ class AuthorRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function autocompleter(string $mot): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.authorName LIKE :mot')
+            ->setParameter('mot', $mot . '%')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Author[] Returns an array of Author objects
 //     */
