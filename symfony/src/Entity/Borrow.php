@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Borrow
@@ -28,6 +29,7 @@ class Borrow
      *
      * @ORM\Column(name="START_DATE", type="date", nullable=false)
      */
+    #[Groups(['emprunt'])]
     private $startDate;
 
     /**
@@ -35,6 +37,7 @@ class Borrow
      *
      * @ORM\Column(name="END_DATE", type="date", nullable=true)
      */
+    #[Groups(['emprunt'])]
     private $endDate;
 
     /**
@@ -45,6 +48,7 @@ class Borrow
      *   @ORM\JoinColumn(name="ID_USER", referencedColumnName="ID_USER")
      * })
      */
+    #[Groups(['emprunt'])]
     private $idUser;
 
     /**
@@ -55,6 +59,7 @@ class Borrow
      *   @ORM\JoinColumn(name="ID_BOOK", referencedColumnName="ID_BOOK")
      * })
      */
+    #[Groups(['emprunt'])]
     private $idBook;
 
     public function getIdBorrow(): ?string

@@ -93,6 +93,15 @@ class BookRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findById(int $id): ?Book
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.idBook = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 //    /**
 //     * @return Book[] Returns an array of Book objects
 //     */
