@@ -44,7 +44,6 @@ class AuthorRepository extends ServiceEntityRepository
     */
     public function findSomeWithoutBook(): array
     {
-        // je veux comparer les idAuthor des tables Author et Book et compter le nombre d'auteur qui n'ont pas de livre
         return $this->createQueryBuilder('a')
            ->leftJoin('a.idBook', 'w')
            ->groupBy('a.idAuthor')

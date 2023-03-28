@@ -253,4 +253,5 @@ class DatabaseTest extends WebTestCase
         self::bootKernel();
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
+    }
 }

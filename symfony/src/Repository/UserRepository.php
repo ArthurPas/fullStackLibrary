@@ -131,7 +131,6 @@ class UserRepository extends ServiceEntityRepository
 
     public function findSomeWithoutBorrow(): array
     {
-        //compare les idUser de la table borrow avec ceux de la table user et compte le nombre de idUser qui ne sont pas dans la table borrow
         return $this->createQueryBuilder('u')
             ->select('u.idUser')
             ->leftJoin('App\Entity\Borrow', 'b', 'WITH', 'u.idUser = b.idUser')
@@ -143,7 +142,6 @@ class UserRepository extends ServiceEntityRepository
 
     public function findSomeUserBorrowMoreThanOneBook(): array
     {
-        // compte le nombre d'user qui ont emprunté plus d'un livre
         return $this->createQueryBuilder('u')
             ->select('u.idUser')
             ->leftJoin('App\Entity\Borrow', 'b', 'WITH', 'u.idUser = b.idUser')
@@ -156,8 +154,7 @@ class UserRepository extends ServiceEntityRepository
 
     public function findSomeUserBorrowSameBookTwice(): array
     {
-    // compte le nombre d'user(idUser) qui ont emprunté le même livre(idBook) plus d'une fois
-    return $this->createQueryBuilder('u')
+        return $this->createQueryBuilder('u')
         ->select('u.idUser')
         ->leftJoin('App\Entity\Borrow', 'b', 'WITH', 'u.idUser = b.idUser')
         ->groupBy('u.idUser, b.idBook')
