@@ -60,6 +60,15 @@ class BorrowRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findById(int $id): ?Borrow
+    {
+        return $this->createQueryBuilder('bo')
+            ->andWhere('bo.idBorrow = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 //    /**
 //     * @return Borrow[] Returns an array of Borrow objects
 //     */

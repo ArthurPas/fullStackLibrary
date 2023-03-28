@@ -17,6 +17,7 @@ use App\Repository\BorrowRepository;
 use FOS\RestBundle\Controller\Annotations\View as AnnotationsView;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Repository\AuthorRepository;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -61,9 +62,7 @@ class ApiController extends AbstractController
     #[Route('/borrow/user/{utilisateur}', name: 'app_api_borrow_user')]
     public function getBorrowByUser(BorrowRepository $borrow, string $utilisateur)
     {
-        dump($utilisateur);
         $borrows = $borrow->findBorrowByUser($utilisateur);
-        dump($borrows);
         return $borrows;
     }
 
@@ -73,6 +72,48 @@ class ApiController extends AbstractController
     {
         $borrows = $borrow->findDateOfBorrow($id);
         return $borrows;
+    }
+
+    #[AnnotationsView(serializerGroups: ['emprunt'])]
+    #[Route('/borrow/emprunter', name: 'app_api_borrow_date')]
+    public function emprunter(
+        EntityManagerInterface $em,
+        Request $request,
+        BorrowRepository $borrow,
+        BookRepository $book,
+        UserRepository $user
+    ) {
+        $idBook = $request->query->get('idBook');
+        $idBook = $book->findById($idBook);
+        $idUser = $request->query->get('idUser');
+        $idUser = $user->findById($idUser);
+
+        $date = new \DateTime();
+        $borrow = new Borrow();
+        $borrow->setStartDate($date);
+        $borrow->setIdUser($idUser);
+        $borrow->setIdBook($idBook);
+        $em->persist($borrow);
+        $em->flush();
+        return $borrow;
+    }
+
+    #[AnnotationsView(serializerGroups: ['emprunt'])]
+    #[Route('/borrow/rendre', name: 'app_api_borrow_date')]
+    public function rendre(
+        EntityManagerInterface $em,
+        Request $request,
+        BorrowRepository $borrow,
+        BookRepository $book,
+        UserRepository $user
+    ) {
+        $idBorrow = $request->query->get('idBorrow');
+        $idBorrow = $borrow->findById($idBorrow);
+        $date = new \DateTime();
+        $idBorrow->setEndDate($date);
+        $em->persist($idBorrow);
+        $em->flush();
+        return $idBorrow;
     }
 
 
