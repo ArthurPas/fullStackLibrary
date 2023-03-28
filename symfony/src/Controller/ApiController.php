@@ -71,10 +71,13 @@ class ApiController extends AbstractController
         $author = $request->query->get('author');
         $nbLastBooks = $request->query->get('nbLastBooks');
         $type = $request->query->get('type');
+        $title = $request->query->get('title');
         if ($author != null && $nbLastBooks == null) {
             $books = $book->findByAuthor($author);
-        } else if ($author == null && $nbLastBooks != null) {
+        } elseif ($nbLastBooks != null && $author == null && $title == null) {
             $books = $book->findByNb($nbLastBooks, $type);
+        } elseif ($title != null && $author == null && $nbLastBooks == null) {
+            $books = $book->findByTitle($title);
         } else {
             $books = $em->getRepository(Book::class)->findAll();
         }
@@ -142,7 +145,7 @@ class ApiController extends AbstractController
     }
 
     #[AnnotationsView(serializerGroups: ['emprunt'])]
-    #[Route('/borrow/emprunter', name: 'app_api_borrow_date')]
+    #[Route('/borrow/emprunter', name: 'app_api_borrow_emprunt')]
     public function emprunter(
         EntityManagerInterface $em,
         Request $request,
@@ -166,7 +169,7 @@ class ApiController extends AbstractController
     }
 
     #[AnnotationsView(serializerGroups: ['emprunt'])]
-    #[Route('/borrow/rendre', name: 'app_api_borrow_date')]
+    #[Route('/borrow/rendre', name: 'app_api_borrow_rendre')]
     public function rendre(
         EntityManagerInterface $em,
         Request $request,
