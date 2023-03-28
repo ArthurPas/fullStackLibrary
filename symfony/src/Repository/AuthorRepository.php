@@ -46,16 +46,16 @@ class AuthorRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
            ->innerJoin('a.idBook', 'w')
-           ->andWhere('count(w.idBook) = :val')
+           ->groupBy('a.idAuthor')
+           ->having('count(w.idBook) = :val')
            ->setParameter('val', 0)
            ->getQuery()
-           ->getSingleScalarResult()
+           ->getScalarResult()
         ;
     }
 
     public function findSomeWithSeveralBooks(): array
     {
-        // get a list of authors with more than 1 book
         return $this->createQueryBuilder('a')
            ->innerJoin('a.idBook', 'w')
            ->groupBy('a.idAuthor')
@@ -65,7 +65,19 @@ class AuthorRepository extends ServiceEntityRepository
            ->getScalarResult()
         ;
     }
-    
+
+    public function findSomeWithOneBook(): array
+    {
+        return $this->createQueryBuilder('a')
+           ->innerJoin('a.idBook', 'w')
+           ->groupBy('a.idAuthor')
+           ->having('count(w.idBook) = :val')
+           ->setParameter('val', 1)
+           ->getQuery()
+           ->getScalarResult()
+        ;
+    }
+
 
 //    public function findOneBySomeField($value): ?Author
 //    {

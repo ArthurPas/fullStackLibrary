@@ -85,4 +85,16 @@ class BookRepository extends ServiceEntityRepository
             ->getScalarResult()
         ;
     }
+
+    public function findSomeWithOneAuthor(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->innerjoin('b.idAuthor', 'a')
+            ->groupBy('b.idBook')
+            ->having('COUNT(a.idAuthor) = :val')
+            ->setParameter('val', 1)
+            ->getQuery()
+            ->getScalarResult()
+        ;
+    }
 }

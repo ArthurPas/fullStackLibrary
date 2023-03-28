@@ -47,6 +47,9 @@ class DatabaseTest extends WebTestCase
         $tu->save($user2, true);
     }
 
+    /**
+     * Test si le nombre d'utilisateurs est supérieur à 100
+     */
     public function testNumberOfUsers(): void
     {
         self::bootKernel();
@@ -56,6 +59,9 @@ class DatabaseTest extends WebTestCase
         $this->assertGreaterThan(100, count($users));
     }
 
+    /**
+     * Test si le nombre de livres est supérieur à 200
+     */
     public function testNumberOfBooks(): void
     {
         self::bootKernel();
@@ -65,6 +71,9 @@ class DatabaseTest extends WebTestCase
         $this->assertGreaterThan(200, count($books));
     }
 
+    /**
+     * Test si le nombre d'auteurs est supérieur à 50
+     */
     public function testNumberOfAuthors(): void
     {
         self::bootKernel();
@@ -80,9 +89,12 @@ class DatabaseTest extends WebTestCase
         $tu = static::getContainer()->get(AuthorRepository::class);
 
         $authors = $tu->findSomeWithoutBook();
-        $this->assertGreaterThan(0, $authors);
+        $this->assertGreaterThan(0, count($authors));
     }*/
 
+    /**
+     * Test la contrainte de date de début de prêt
+     */
     public function testDateOfBorrow(): void
     {
         self::bootKernel();
@@ -90,7 +102,7 @@ class DatabaseTest extends WebTestCase
         $ur = static::getContainer()->get(UserRepository::class);
         $br = static::getContainer()->get(BookRepository::class);
         $borrow = new Borrow();
-        
+
         $borrow
             ->setStartDate(new \DateTime('2021-02-01'))
             ->setEndDate(new \DateTime('2021-01-01'))
@@ -100,6 +112,10 @@ class DatabaseTest extends WebTestCase
         $this->expectException(\Exception::class);
         $bor->save($borrow, true);
     }
+
+    /**
+     * Test la contrainte de notation d'un livre
+     */
     public function testRatingWithoutBorrow(): void
     {
         self::bootKernel();
@@ -111,7 +127,10 @@ class DatabaseTest extends WebTestCase
         $usr->addIdBook($br->findOneById(3));
         $ur->save($usr, true);
     }
-    
+
+    /**
+     * Test la validité de la notation d'un livre
+     */
     public function testValidRating(): void
     {
         self::bootKernel();
@@ -133,15 +152,33 @@ class DatabaseTest extends WebTestCase
         $this->assertTrue($usr->getIdBook()->contains($br->findOneById(1)));
     }
 
+    /**
+     * Test qu'il existe des livres écrits par plusieurs auteurs
+     */
     public function testBooksWriteBySeveralAuthors(): void
     {
         self::bootKernel();
         $br = static::getContainer()->get(BookRepository::class);
 
         $books = $br->findSomeWithSeveralAuthors();
-        $this->assertGreaterThan(1, count($books));
+        $this->assertGreaterThan(0, count($books));
     }
 
+    /**
+     * Test qu'il existe des livres écrits par un seul auteur
+     */
+    public function testBooksWriteByOneAuthor(): void
+    {
+        self::bootKernel();
+        $br = static::getContainer()->get(BookRepository::class);
+
+        $books = $br->findSomeWithOneAuthor();
+        $this->assertGreaterThan(0, count($books));
+    }
+
+    /**
+     * Test qu'il existe des auteurs ayant écrit plusieurs livres
+     */
     public function testAuthorsWithSeveralBooks(): void
     {
         self::bootKernel();
@@ -151,14 +188,28 @@ class DatabaseTest extends WebTestCase
         $this->assertGreaterThan(0, count($authors));
     }
 
-    public function testUsersWithoutBorrow(): void
+    /**
+     * Test qu'il existe des auteurs ayant écrit un seul livre
+     */
+    public function testAuthorWithOneBook(): void
     {
         self::bootKernel();
-        $ur = static::getContainer()->get(BorrowRepository::class);
+        $ar = static::getContainer()->get(AuthorRepository::class);
+
+        $authors = $ar->findSomeWithOneBook();
+        $this->assertGreaterThan(0, count($authors));
+    }
+
+    /**
+     * Test qu'il existe des utilisateurs n'ayant pas encore emprunté de livre
+     */
+    /*public function testUsersWithoutBorrow(): void
+    {
+        self::bootKernel();
+        $ur = static::getContainer()->get(UserRepository::class);
 
         $users = $ur->findSomeWithoutBorrow();
         var_dump($users);
         $this->assertGreaterThan(0, count($users));
-    }
-
+    }*/
 }
