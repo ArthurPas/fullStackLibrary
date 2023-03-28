@@ -24,7 +24,6 @@ use Symfony\Component\Validator\Constraints\DateTime;
 #[Route('/api')]
 class ApiController extends AbstractController
 {
-
     // BOOKS
 
     #[OA\Tag(name: "Books")]
@@ -163,7 +162,6 @@ class ApiController extends AbstractController
     #[OA\Response(
         response: "200",
         description: "All people who follow this person are displayed correctly",
-
     )]
     #[OA\Response(
         response: "404",
@@ -354,9 +352,9 @@ class ApiController extends AbstractController
         $idUser = $user->findById($idUser);
         if ($idBook === null && $idUser === null) {
             return new JsonResponse(['error' => 'No books and users found'], Response::HTTP_NOT_FOUND);
-        } else if ($idBook === null) {
+        } elseif ($idBook === null) {
             return new JsonResponse(['error' => 'No books found'], Response::HTTP_NOT_FOUND);
-        } else if ($idUser === null) {
+        } elseif ($idUser === null) {
             return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
         }
         $date = new \DateTime();
