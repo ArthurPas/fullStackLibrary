@@ -50,6 +50,16 @@ class BorrowRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findDateOfBorrow($id): array
+    {
+        return $this->createQueryBuilder('bo')
+            ->select('bo.startDate, bo.endDate')
+            ->andWhere('bo.idBorrow = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Borrow[] Returns an array of Borrow objects
 //     */

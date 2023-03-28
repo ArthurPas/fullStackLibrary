@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\User;
+use App\Entity\Borrow;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,12 +58,20 @@ class ApiController extends AbstractController
     }
 
     #[AnnotationsView(serializerGroups: ['emprunt'])]
-    #[Route('/borrow/user/{utilisateur}', name: 'app_api_book')]
+    #[Route('/borrow/user/{utilisateur}', name: 'app_api_borrow_user')]
     public function getBorrowByUser(BorrowRepository $borrow, string $utilisateur)
     {
         dump($utilisateur);
         $borrows = $borrow->findBorrowByUser($utilisateur);
         dump($borrows);
+        return $borrows;
+    }
+
+    #[AnnotationsView(serializerGroups: ['emprunt'])]
+    #[Route('/borrow/date/{id}', name: 'app_api_borrow_date')]
+    public function getDateOfBorrow(BorrowRepository $borrow, int $id)
+    {
+        $borrows = $borrow->findDateOfBorrow($id);
         return $borrows;
     }
 
@@ -117,5 +126,4 @@ class ApiController extends AbstractController
             'message' => 'success',
         ], Response::HTTP_OK);
     }
-
 }
