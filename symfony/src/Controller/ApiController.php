@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\BookRepository;
 use FOS\RestBundle\Controller\Annotations\View as AnnotationsView;
 use Symfony\Component\Serializer\SerializerInterface;
+use App\Repository\AuthorRepository;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -44,7 +46,13 @@ class ApiController extends AbstractController
         $books = $book->findByUser($utilisateur);
         return $books;
     }
-
+    #[AnnotationsView()]
+    #[Route('/books/author/{id}', name: 'app_api_author')]
+    public function getAuthorById(AuthorRepository $a, int $id)
+    {
+        $author = $a->findAuthorById($id);
+        return $author;
+    }
     #[Route('/login', name: 'app_api_login', methods: "POST")]
     public function login(
         EntityManagerInterface $em,
