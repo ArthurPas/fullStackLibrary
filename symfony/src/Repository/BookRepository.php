@@ -73,4 +73,16 @@ class BookRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    public function findSomeWithSeveralAuthors(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->innerjoin('b.idAuthor', 'a')
+            ->groupBy('b.idBook')
+            ->having('COUNT(a.idAuthor) > :val')
+            ->setParameter('val', 1)
+            ->getQuery()
+            ->getScalarResult()
+        ;
+    }
 }

@@ -39,6 +39,16 @@ class BorrowRepository extends ServiceEntityRepository
         }
     }
 
+    public function findSomeWithoutBorrow(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->select('u')
+            ->from('App\Entity\User', 'u')
+            ->where('u.idUser NOT IN (SELECT b.user FROM App\Entity\Borrow b2)')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Borrow[] Returns an array of Borrow objects
 //     */

@@ -63,4 +63,13 @@ class UserRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    public function findSomeWithoutBorrow(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.borrows', 'b')
+            ->where('b.id IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
 }
