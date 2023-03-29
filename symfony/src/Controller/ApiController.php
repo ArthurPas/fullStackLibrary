@@ -27,14 +27,13 @@ class ApiController extends AbstractController
         BookRepository $book
     ) {
         $author = $request->query->get('author');
-        $nbLastBooks = $request->query->get('nbLastBooks');
+        $nbBooks = $request->query->get('nbResults');
         $type = $request->query->get('type');
-        if ($author != null && $nbLastBooks == null) {
+        
+        if ($author != null)  {
             $books = $book->findByAuthor($author);
-        } if ($author == null && $nbLastBooks != null) {
-            $books = $book->findByNb($nbLastBooks, $type);
         } else {
-            $books = $em->getRepository(Book::class)->findAll();
+            $books = $book->findByNb($nbBooks, $type);
         }
         return $books;
     }
@@ -47,7 +46,7 @@ class ApiController extends AbstractController
         return $books;
     }
     #[AnnotationsView()]
-    #[Route('/books/author/{id}', name: 'app_api_author')]
+    #[Route('/author/{id}', name: 'app_api_author')]
     public function getAuthorById(AuthorRepository $a, int $id)
     {
         $author = $a->findAuthorById($id);

@@ -41,20 +41,17 @@ class BookRepository extends ServiceEntityRepository
 
     public function findByNb(int $nb, string $type): array
     {
-        if ($type == "recent") {
-            return $this->createQueryBuilder('b')
-                ->orderBy('b.idBook', 'DESC')
-                ->setMaxResults($nb)
-                ->getQuery()
-                ->getResult();
-        } elseif ($type == "old") {
-            return $this->createQueryBuilder('b')
-                ->orderBy('b.idBook', 'ASC')
-                ->setMaxResults($nb)
-                ->getQuery()
-                ->getResult();
-        }
-        return [];
+        if ($type != 'ASC' && $type != 'DESC')return [];
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.idAuthor', 'a')
+            ->leftJoin('b.idCategory', 'c')
+            ->leftJoin('b.idLanguage', 'l')
+            ->orderBy('b.idBook', $type)
+            ->select('b.title, b.idBook, b.image, b.description, b.numberOfPages, b.editor, b.releaseDate, 
+            a.idAuthor, c.idCategory, l.idLanguage')
+            ->setMaxResults($nb)
+            ->getQuery()
+            ->getResult();
     }
 
     public function findByAuthor(string $author): array
@@ -63,7 +60,8 @@ class BookRepository extends ServiceEntityRepository
             ->leftJoin('b.idAuthor', 'a')
             ->leftJoin('b.idCategory', 'c')
             ->leftJoin('b.idUser', 'u')
-            ->select('b, a, c, u')
+            ->select('b.title, b.idBook, b.image, b.description, b.numberOfPages, b.editor, b.releaseDate, 
+            a.idAuthor, c.idCategory, a.idAuthor, u.idUser')
             ->andWhere('a.authorName LIKE :author_name')
             ->setParameter('author_name', '%' . $author . '%')
             ->getQuery()
