@@ -164,7 +164,7 @@ class ApiController extends AbstractController
         }
         return $this->json($users);
     }
-    
+
    /**
     * Route that returns all the followers of an user
     */
