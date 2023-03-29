@@ -4,6 +4,9 @@ before_script:
   - cd symfony
   - composer install
 
+variables:
+  SQLVAR: "$SCRIPT_SQL"
+
 cache:
   paths:
     - vendor/
@@ -45,8 +48,11 @@ phpunit:
     - apt-get update && apt-get install -y git libzip-dev
     - curl -sSk https://getcomposer.org/installer | php -- --disable-tls && mv composer.phar /usr/local/bin/composer
     - docker-php-ext-install mysqli pdo pdo_mysql zip
-    - echo "$SCRIPT_SQL" && cat "$SCRIPT_SQL"
-    - mysql -u root -p  bhooks<"$SCRIPT_SQL"
+    - echo $SCRIPT_SQL
+    - cat $SCRIPT_SQL
+    - echo ${!SQLVAR}
+    - cat ${!SQLVAR}
+    - mysql -u root -p  bhooks<"$SQLVAR"
   script:
     - php bin/phpunit
   allow_failure: false
