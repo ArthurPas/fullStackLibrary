@@ -41,7 +41,9 @@ class BookRepository extends ServiceEntityRepository
 
     public function findByNb(int $nb, string $type): array
     {
-        if ($type != 'ASC' && $type != 'DESC')return [];
+        if ($type != 'ASC' && $type != 'DESC') {
+            return [];
+        }
         return $this->createQueryBuilder('b')
             ->leftJoin('b.idAuthor', 'a')
             ->leftJoin('b.idCategory', 'c')
