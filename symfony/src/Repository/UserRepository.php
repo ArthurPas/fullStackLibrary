@@ -39,7 +39,9 @@ class UserRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
+    /**
+     * Request that finds the followers of an user by its id
+     */
     public function findByUserIsFollowed(int $id): array
     {
         return $this->createQueryBuilder('u')
@@ -49,7 +51,9 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
+    /**
+     * Request that finds the user that an user follows by its id
+     */
     public function findUserFollowings(int $id): array
     {
         return $this->createQueryBuilder('u')
@@ -60,11 +64,9 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-
-
-
-
+    /**
+     * Request that finds the information of an user by its id
+     */
     public function infoUser(int $id): array
     {
         return $this->createQueryBuilder('u')
@@ -73,6 +75,17 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
+    }
+    /**
+     * Request that find an user by its id
+     */
+    public function findById(int $id): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.idUser = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
 

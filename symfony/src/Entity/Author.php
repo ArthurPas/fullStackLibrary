@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Author
@@ -29,6 +30,7 @@ class Author
      *
      * @ORM\Column(name="AUTHOR_NAME", type="string", length=255, nullable=false, options={"fixed"=true})
      */
+    #[Groups(['nomAuteur'])]
     private $authorName;
 
     /**
