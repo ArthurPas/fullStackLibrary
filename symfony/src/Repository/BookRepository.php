@@ -38,6 +38,12 @@ class BookRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    /**
+    * Request that finds a certain number of books
+    * depending on the param nb. It will be sorted
+    * by ASC if the param is "recent" and DESC if
+    * it's "old"
+    */
 
     public function findByNb(int $nb, string $type): array
     {
@@ -56,6 +62,9 @@ class BookRepository extends ServiceEntityRepository
         }
         return [];
     }
+    /**
+    * Request that find the books from an author
+    */
 
     public function findByAuthor(string $author): array
     {
@@ -69,6 +78,9 @@ class BookRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    /**
+    * Request that find a book by its id
+    */
 
     public function findById(int $id): ?Book
     {
@@ -78,6 +90,10 @@ class BookRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+    /**
+    * Request that find books by a part of its
+    * title
+    */
 
     public function findByTitle(string $title)
     {
