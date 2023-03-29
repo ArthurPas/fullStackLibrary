@@ -46,7 +46,8 @@ class BorrowRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('bo')
             ->leftJoin('bo.idUser', 'u')
             ->leftJoin('bo.idBook', 'b')
-            ->select('bo.endDate, bo.startDate, b.idBook, b.title, b.image', 'b.description, b.numberOfPages, b.editor, b.releaseDate')
+            ->select('bo.endDate, bo.startDate, b.idBook, b.title, b.image', 'b.description, 
+            b.numberOfPages, b.editor, b.releaseDate')
             ->andWhere('u.email = :email_utilisateur')
             ->setParameter('email_utilisateur', $utilisateur)
             ->getQuery()
