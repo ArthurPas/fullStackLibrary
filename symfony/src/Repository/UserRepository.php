@@ -161,6 +161,6 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere('u.token = :token')
             ->setParameter('token', $token)
             ->getQuery()
-            ->getOneOrNullResult();;
+            ->getOneOrNullResult();
     }
 }
