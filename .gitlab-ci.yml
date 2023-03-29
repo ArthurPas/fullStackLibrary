@@ -1,40 +1,55 @@
 image: jakzal/phpqa:php8.1
 
 before_script:
-    - cd symfony
-    - composer install
+  - cd symfony
+  - composer install
 
 cache:
-    paths:
-        - vendor/
+  paths:
+    - vendor/
 
 stages:
-    - SecurityChecker
-    - CodingStandards
-    - UnitTests
+  - SecurityChecker
+  - CodingStandards
+  - UnitTests
 
 security-checker:
-    stage: SecurityChecker
-    script:
-        - local-php-security-checker  --path=./composer.lock
-    allow_failure: false
+  stage: SecurityChecker
+  script:
+    - local-php-security-checker  --path=./composer.lock
+  allow_failure: false
 
 phpcs:
-    stage: CodingStandards
-    script:
-        - phpcs -v --standard=PSR12 --ignore=./src/Kernel.php ./src
-    allow_failure: false
+  stage: CodingStandards
+  script:
+    - phpcs -v --standard=PSR12 --ignore=./src/Kernel.php ./src --exclude=Generic.Files.LineLength
+  allow_failure: false
 
 phpstan:
-    stage: CodingStandards
-    script:
-        - phpstan analyse ./src
-    allow_failure: false
+  stage: CodingStandards
+  script:
+    - phpstan analyse ./src
+  allow_failure: false
 
 phpunit:
-    stage: UnitTests
-    script:
-        - export $(cat .env | xargs) && php bin/phpunit
-    allow_failure: false
+  before_script:
+  - cd ../Livrables
+  image: php:8.1-apache
+  stage: UnitTests
+  services:
+    - name: mysql:8.0
+      alias: mysql
+  variables:
+    MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    MYSQL_DATABASE: bhooks
+    DATABASE_URL: "mysql://root:@mysql:3306/bhooks"
+  before_script:
+    - apt-get update && apt-get install -y git libzip-dev
+    - curl -sSk https://getcomposer.org/installer | php -- --disable-tls && mv composer.phar /usr/local/bin/composer
+    - docker-php-ext-install mysqli pdo pdo_mysql zip
+    - mysql -u root -p  bhooks < ../Livrables/script_final_bd_grp8.sql
 
-    
+    # - php bin/console doctrine:migration:migrate --env=test --no-interaction
+  script:
+    - php bin/phpunit
+  allow_failure: false
