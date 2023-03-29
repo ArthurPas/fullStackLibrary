@@ -38,6 +38,12 @@ class BookRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    /**
+    * Request that finds a certain number of books
+    * depending on the param nb. It will be sorted
+    * by ASC if the param is "recent" and DESC if
+    * it's "old"
+    */
 
     public function findByNb(int $nb, string $type): array
     {
@@ -53,6 +59,9 @@ class BookRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    /**
+    * Request that find the books from an author
+    */
 
     public function findByAuthor(string $author): array
     {
@@ -67,52 +76,54 @@ class BookRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    /**
+    * Request that find a book by its id
+    */
 
-    public function findByUser(string $utilisateur): array
+    public function findById(int $id): ?Book
     {
         return $this->createQueryBuilder('b')
-            ->leftJoin(
-                'App\Entity\Borrow',
-                'bo',
-                'WITH',
-                'b.idBook = bo.idBook'
-            )
-            ->leftJoin(
-                'App\Entity\User',
-                'u',
-                'WITH',
-                'u.idUser = bo.idUser'
-            )
-            ->select('b, bo, u')
-            ->where('u.firstname = :utilisateur')
-            ->andWhere('bo.idUser = u.idUser')
-            ->setParameter('utilisateur', $utilisateur)
+            ->where('b.idBook = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+    /**
+    * Request that find books by a part of its
+    * title
+    */
+
+    public function findByTitle(string $title)
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.title LIKE :title')
+            ->setParameter('title', '%' . $title . '%')
             ->getQuery()
             ->getResult();
     }
 
-//    /**
-//     * @return Book[] Returns an array of Book objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Book[] Returns an array of Book objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('b')
+    //            ->andWhere('b.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('b.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
-//    public function findOneBySomeField($value): ?Book
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    public function findOneBySomeField($value): ?Book
+    //    {
+    //        return $this->createQueryBuilder('b')
+    //            ->andWhere('b.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

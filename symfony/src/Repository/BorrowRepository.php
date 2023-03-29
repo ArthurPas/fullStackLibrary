@@ -38,6 +38,42 @@ class BorrowRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    /**
+     * Request that find the borrows of an user
+     */
+    public function findBorrowByUser($utilisateur): array
+    {
+        return $this->createQueryBuilder('bo')
+            ->leftJoin('bo.idUser', 'u')
+            ->select('bo.idBorrow, bo.startDate, bo.endDate, u.idUser')
+            ->andWhere('u.email = :email_utilisateur')
+            ->setParameter('email_utilisateur', $utilisateur)
+            ->getQuery()
+            ->getResult();
+    }
+    /**
+     * Request that find the date of a borrow by its id
+     */
+    public function findDateOfBorrow($id): array
+    {
+        return $this->createQueryBuilder('bo')
+            ->select('bo.startDate, bo.endDate')
+            ->andWhere('bo.idBorrow = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+    /**
+     * Request that finds a borrow by its id
+     */
+    public function findById(int $id): ?Borrow
+    {
+        return $this->createQueryBuilder('bo')
+            ->andWhere('bo.idBorrow = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
 //    /**
 //     * @return Borrow[] Returns an array of Borrow objects
