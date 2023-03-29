@@ -24,6 +24,16 @@ use Symfony\Component\Validator\Constraints\DateTime;
 #[Route('/api')]
 class ApiController extends AbstractController
 {
+   /**
+    * Route that returns a json of the books from an author or from
+    * a title or a number of books depending on the number in the URL
+    * param "nbLastBooks" sorted by recent or old depending on the
+    * param "type" but not all in the same time only "nbLastBooks" and
+    * "type" can be combined
+    * If there is not parameters the route return a json with all
+    * the books
+    */
+
 
     #[OA\Tag(name: "Books")]
     #[OA\Parameter(
@@ -75,7 +85,7 @@ class ApiController extends AbstractController
         BookRepository $book
     ) {
         $author = $request->query->get('author');
-        $nbLastBooks = $request->query->get('nbLastBooks');
+        $nbBooks = $request->query->get('nbResults');
         $type = $request->query->get('type');
         $title = $request->query->get('title');
         if ($author != null && $nbLastBooks == null && $type == null && $title == null) {
@@ -85,14 +95,17 @@ class ApiController extends AbstractController
         } elseif ($title != null && $author == null && $nbLastBooks == null && $type == null) {
             $books = $book->findByTitle($title);
         } else {
-            $books = $em->getRepository(Book::class)->findAll();
+            $books = $book->findByNb($nbBooks, $type);
         }
-        if (count($books) === 0) {
+        if (count($books) === 0) { // if there is not any book in the request
             return new JsonResponse(['error' => 'No books found'], Response::HTTP_NOT_FOUND);
         }
         return $books;
     }
 
+   /**
+    * Route that returns the author depending on his id
+    */
     #[OA\Tag(name: "Author")]
     #[OA\Tag(name: "Books")]
     #[OA\Parameter(
@@ -114,17 +127,19 @@ class ApiController extends AbstractController
         description: "Query syntax error",
     )]
     #[AnnotationsView()]
-    #[Route('/books/author/{id}', name: 'app_api_author', methods: "GET")]
+    #[Route('/author/{id}', name: 'app_api_author')]
     public function getAuthorById(AuthorRepository $a, int $id)
     {
         $author = $a->findAuthorById($id);
-        if (count($author) === 0) {
+        if (count($author) === 0) { // if there is not any result of the request
             return new JsonResponse(['error' => 'No author found'], Response::HTTP_NOT_FOUND);
         }
         return $author;
     }
 
-
+   /**
+    * Route that returns all the user that a user follow by his id
+    */
     #[OA\Tag(name: "Follow")]
     #[OA\Parameter(
         name: "id",
@@ -149,16 +164,19 @@ class ApiController extends AbstractController
     public function listfollowId(int $id, UserRepository $userRepository): Response
     {
         $exist = $userRepository->find($id);
-        if ($exist == null) {
+        if ($exist == null) { // if there is not any user with this id
             return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
         }
         $users = $userRepository->findUserFollowings($id);
-        if (count($users) === 0) {
+        if (count($users) === 0) { // if the request return 0 lines
             return new JsonResponse(['error' => 'This person follow nobody'], Response::HTTP_NOT_FOUND);
         }
         return $this->json($users);
     }
 
+   /**
+    * Route that returns all the followers of an user
+    */
     #[OA\Tag(name: "Follow")]
     #[OA\Parameter(
         name: "id",
@@ -183,11 +201,11 @@ class ApiController extends AbstractController
     public function listfollowedId(int $id, UserRepository $userRepository): Response
     {
         $exist = $userRepository->find($id);
-        if ($exist == null) {
+        if ($exist == null) {// if there is not any user with this id
             return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
         }
         $users = $userRepository->findByUserIsFollowed($id);
-        if (count($users) === 0) {
+        if (count($users) === 0) {// if the request return 0 lines
             return new JsonResponse(['error' => 'Nobody follow this person'], Response::HTTP_NOT_FOUND);
         }
         return $this->json($users);
@@ -277,6 +295,9 @@ class ApiController extends AbstractController
         return $this->json($users);
     }
 
+   /**
+    * Return the info of an user by his id
+    */
 
     #[OA\Tag(name: "User")]
     #[OA\Parameter(
@@ -301,12 +322,15 @@ class ApiController extends AbstractController
     public function infoUser(int $id, UserRepository $userRepository): Response
     {
         $users = $userRepository->infoUser($id);
-        if (count($users) === 0) {
+        if (count($users) === 0) { //if the request return 0 lines
             return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
         }
         return $this->json($users);
     }
 
+   /**
+    * Route that returns a list of author with the same begining of their name
+    */
 
     #[OA\Tag(name: "Author")]
     #[OA\Parameter(
@@ -325,20 +349,28 @@ class ApiController extends AbstractController
         description: "No author found",
     )]
 
+
     #[AnnotationsView(serializerGroups: ['nomAuteur'])]
     #[Route('/autocompletion', name: 'app_autocompletion', methods: "GET")]
     public function autocompletion(AuthorRepository $a, Request $request)
     {
         $debut = $request->query->get('debut');
-        if (strlen($debut) >= 4) {
+        if (strlen($debut) >= 4) { // We only start at 4 character
             $author = $a->autocompleter($debut);
-            if (count($author) === 0) {
+            if (count($author) === 0) { // if the request returns 0 line
                 return new JsonResponse(['error' => 'No author found'], Response::HTTP_NO_CONTENT);
             }
             return $author;
         }
         return null;
     }
+
+
+
+
+   /**
+    * Route that returns all the books borrowed by an user
+    */
 
 
     #[OA\Tag(name: "Borrow")]
@@ -362,12 +394,15 @@ class ApiController extends AbstractController
     public function getBorrowByUser(BorrowRepository $borrow, string $utilisateur)
     {
         $borrows = $borrow->findBorrowByUser($utilisateur);
-        if (count($borrows) === 0) {
+        if (count($borrows) === 0) { // if the request return 0 line
             return new JsonResponse(['error' => 'No borrows or users found'], Response::HTTP_NOT_FOUND);
         }
         return $borrows;
     }
 
+   /**
+    * Route that return the dates of the borrows from an id
+    */
     #[OA\Tag(name: "Borrow")]
     #[OA\Parameter(
         name: "id",
@@ -395,6 +430,10 @@ class ApiController extends AbstractController
     }
 
 
+   /**
+    * Route that create a borrow and return a json with the borrow date,id and a success
+    * message
+    */
     #[OA\Tag(name: "Borrow")]
     #[OA\Parameter(
         name: "idBook",
@@ -452,13 +491,16 @@ class ApiController extends AbstractController
         $em->flush();
         //return $borrow && new JsonResponse(['success' => 'Borrow created'], Response::HTTP_OK);
         return $this->json([
-            'IdBorrow' => $borrow->getIdBorrow(),
-            'StartDate' => $borrow->getStartDate(),
-            'message' => 'Borrow returned successfully',
+           'IdBorrow' => $borrow->getIdBorrow(),
+           'StartDate' => $borrow->getStartDate(),
+           'message' => 'Borrow returned successfully',
         ], Response::HTTP_OK);
     }
 
 
+   /**
+    * Route that "return" the borrow and return a json with the endDate and a message
+    */
     #[OA\Tag(name: "Borrow")]
     #[OA\Parameter(
         name: "idBorrow",
@@ -495,10 +537,18 @@ class ApiController extends AbstractController
         $em->persist($idBorrow);
         $em->flush();
         return $this->json([
-            'EndDate' => $date,
-            'message' => 'success',
+           'EndDate' => $date,
+           'message' => 'success',
         ], Response::HTTP_OK);
     }
+
+
+
+
+   /**
+    * Route that handle the login from an user and return in a json
+    * the tokken, the user and a message
+    */
 
 
     #[OA\Tag(name: "Authentification")]
@@ -528,7 +578,7 @@ class ApiController extends AbstractController
         $ExpectedUser = $ur->findOneByEmail($credentials->getEmail());
         if ($ExpectedUser == null) {
             return $this->json([
-                'message' => 'error',
+               'message' => 'error',
             ], Response::HTTP_UNAUTHORIZED);
         }
         if ($ExpectedUser->getPassword() == $credentials->getPassword()) {
@@ -536,23 +586,27 @@ class ApiController extends AbstractController
             $ExpectedUser->setToken($token);
             $ur->save($ExpectedUser, true);
 
+
             return $this->json([
-                'accessToken' => $token,
-                'user' => $ExpectedUser,
-                'message' => 'success',
+               'accessToken' => $token,
+               'user' => $ExpectedUser,
+               'message' => 'success',
             ], Response::HTTP_OK);
         } else {
             return $this->json([
-                'message' => 'error',
+               'message' => 'error',
             ], Response::HTTP_UNAUTHORIZED);
         }
     }
-
+   /**
+    * Route that handle the logout from an user and return a message
+    */
     #[OA\Tag(name: "Authentification")]
     #[OA\RequestBody(
         request: "Logout",
         content: new OA\JsonContent(ref: "#/components/schemas/Logout")
     )]
+
 
     #[OA\Response(
         response: "200",
@@ -562,6 +616,7 @@ class ApiController extends AbstractController
         response: "401",
         description: "No token found",
     )]
+
 
     #[Route('/logout', name: 'app_api_logout', methods: "POST")]
     public function logout(
@@ -573,13 +628,13 @@ class ApiController extends AbstractController
         $ExpectedUser = $ur->findOneByToken($userToken['token']);
         if ($ExpectedUser == null) {
             return $this->json([
-                'message' => 'error',
+               'message' => 'error',
             ], Response::HTTP_UNAUTHORIZED);
         }
         $ExpectedUser->setToken(null);
         $em->persist($ExpectedUser);
         return $this->json([
-            'message' => 'success',
+           'message' => 'success',
         ], Response::HTTP_OK);
     }
 }

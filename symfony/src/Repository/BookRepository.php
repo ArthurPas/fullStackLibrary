@@ -38,24 +38,32 @@ class BookRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    /**
+    * Request that finds a certain number of books
+    * depending on the param nb. It will be sorted
+    * by ASC if the param is "recent" and DESC if
+    * it's "old"
+    */
 
     public function findByNb(int $nb, string $type): array
     {
-        if ($type == "recent") {
-            return $this->createQueryBuilder('b')
-                ->orderBy('b.idBook', 'DESC')
-                ->setMaxResults($nb)
-                ->getQuery()
-                ->getResult();
-        } elseif ($type == "old") {
-            return $this->createQueryBuilder('b')
-                ->orderBy('b.idBook', 'ASC')
-                ->setMaxResults($nb)
-                ->getQuery()
-                ->getResult();
+        if ($type != 'ASC' && $type != 'DESC') {
+            return [];
         }
-        return [];
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.idAuthor', 'a')
+            ->leftJoin('b.idCategory', 'c')
+            ->leftJoin('b.idLanguage', 'l')
+            ->orderBy('b.idBook', $type)
+            ->select('b.title, b.idBook, b.image, b.description, b.numberOfPages, b.editor, b.releaseDate, 
+            a.idAuthor, c.idCategory, l.idLanguage')
+            ->setMaxResults($nb)
+            ->getQuery()
+            ->getResult();
     }
+    /**
+    * Request that find the books from an author
+    */
 
     public function findByAuthor(string $author): array
     {
@@ -63,12 +71,16 @@ class BookRepository extends ServiceEntityRepository
             ->leftJoin('b.idAuthor', 'a')
             ->leftJoin('b.idCategory', 'c')
             ->leftJoin('b.idUser', 'u')
-            ->select('b, a, c, u')
+            ->select('b.title, b.idBook, b.image, b.description, b.numberOfPages, b.editor, b.releaseDate, 
+            a.idAuthor, c.idCategory, a.idAuthor, u.idUser')
             ->andWhere('a.authorName LIKE :author_name')
             ->setParameter('author_name', '%' . $author . '%')
             ->getQuery()
             ->getResult();
     }
+    /**
+    * Request that find a book by its id
+    */
 
     public function findById(int $id): ?Book
     {
@@ -78,6 +90,10 @@ class BookRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+    /**
+    * Request that find books by a part of its
+    * title
+    */
 
     public function findByTitle(string $title)
     {
