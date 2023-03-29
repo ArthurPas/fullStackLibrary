@@ -248,10 +248,36 @@ class DatabaseTest extends WebTestCase
         $this->assertGreaterThan(0, count($borrows));
     }
 
-    public function testLogin(): void
+    /**
+     * Test la connexion et la déconnexion d'un utilisateur
+     */
+    public function testLoginAndLogout(): void
     {
-        self::bootKernel();
         $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
+
+        $ur = static::getContainer()->get(UserRepository::class);
+        $user = $ur->findOneByEmail("Evan@gmail.com");
+
+        $client->jsonRequest('POST', '/api/login', [
+            'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
+        ]);
+
+        $this->assertResponseStatusCodeSame(200);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals($user->getToken(), $data['accessToken']);
+
+        $client->jsonRequest('POST', '/api/logout', [
+            'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
+            'token' => $user->getToken(),
+        ]);
+
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEquals(null, $ur->findOneByToken($user->getToken()));
     }
+
+    
+
+
 }

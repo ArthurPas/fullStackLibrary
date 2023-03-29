@@ -34,5 +34,7 @@ phpstan:
 phpunit:
     stage: UnitTests
     script:
-        - php bin/phpunit
+        - export $(cat .env | xargs) && php bin/phpunit
     allow_failure: false
+
+    

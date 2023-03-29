@@ -38,7 +38,7 @@ class Author
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Book", inversedBy="idAuthor")
-     * @ORM\JoinTable(name="wwrite",
+     * @ORM\JoinTable(name="WWRITE",
      *   joinColumns={
      *     @ORM\JoinColumn(name="ID_AUTHOR", referencedColumnName="ID_AUTHOR")
      *   },
