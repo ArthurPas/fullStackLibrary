@@ -77,23 +77,24 @@ class ApiController extends AbstractController
         BookRepository $book
     ) {
         $author = $request->query->get('author');
-        $nbLastBooks = $request->query->get('nbLastBooks');
+        $nbBooks = $request->query->get('nbResults');
         $type = $request->query->get('type');
         $title = $request->query->get('title');
-        if ($author != null && $nbLastBooks == null) {
+        if ($author != null && $nbBooks == null) {
             $books = $book->findByAuthor($author);
-        } elseif ($nbLastBooks != null && $author == null && $title == null) {
-            $books = $book->findByNb($nbLastBooks, $type);
-        } elseif ($title != null && $author == null && $nbLastBooks == null) {
+        } elseif ($nbBooks != null && $author == null && $title == null) {
+            $books = $book->findByNb($nbBooks, $type);
+        } elseif ($title != null && $author == null && $nbBooks == null) {
             $books = $book->findByTitle($title);
         } else {
-            $books = $em->getRepository(Book::class)->findAll();
+            $books = $book->findByNb($nbBooks, $type);
         }
         if (count($books) === 0) { // if there is not any book in the request
             return new JsonResponse(['error' => 'No books found'], Response::HTTP_NOT_FOUND);
         }
         return $books;
     }
+
    /**
     * Route that returns the author depending on his id
     */
@@ -118,7 +119,7 @@ class ApiController extends AbstractController
         description: "Query syntax error",
     )]
     #[AnnotationsView()]
-    #[Route('/books/author/{id}', name: 'app_api_author', methods: "GET")]
+    #[Route('/author/{id}', name: 'app_api_author')]
     public function getAuthorById(AuthorRepository $a, int $id)
     {
         $author = $a->findAuthorById($id);
@@ -163,6 +164,7 @@ class ApiController extends AbstractController
         }
         return $this->json($users);
     }
+
    /**
     * Route that returns all the followers of an user
     */

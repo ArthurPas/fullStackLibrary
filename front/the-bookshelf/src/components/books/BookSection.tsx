@@ -8,8 +8,7 @@ interface BookSectionProps {
 }
 
 function BookSection({title, books}: BookSectionProps) {
-    
-    console.log(books);
+
     return (
         <div className="section__books">
             <h4>{title}</h4>

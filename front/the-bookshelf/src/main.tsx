@@ -4,25 +4,30 @@ import {
 	createBrowserRouter,
 	RouterProvider,
 } from "react-router-dom";
-import { ErrorPage } from "./components";
-import { Auth, Home, Root } from "./routes";
-import './style/global.scss';
-
-export const BASE_API_URL = "https://127.0.0.1:8000/api";
+import { ErrorPage } from "@/components";
+import { Auth, Home, Root, Search } from "@/routes";
+import '@/style/global.scss';
 
 const router = createBrowserRouter([
 	{
 		path: "/",
 		element: <Root/>,
-		errorElement: <ErrorPage />,
     children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
       {
         path: "/login",
         element: <Auth />,
       },
       {
-        path: "/",
-        element: <Home />,
+        path: "/search",
+        element: <Search />,
+      },
+      {
+        path: "*",
+        element: <ErrorPage />,
       }
     ],
   },
