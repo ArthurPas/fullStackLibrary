@@ -1,13 +1,5 @@
 image: jakzal/phpqa:php8.1
 
-before_script:
-  - cd symfony
-  - composer install
-
-cache:
-  paths:
-    - vendor/
-
 stages:
   - SecurityChecker
   - CodingStandards
@@ -22,12 +14,18 @@ security-checker:
 
 phpcs:
   stage: CodingStandards
+  before_script:
+    - cd symfony
+    - composer install
   script:
     - phpcs -v --standard=PSR12 --ignore=./src/Kernel.php ./src --exclude=Generic.Files.LineLength
   allow_failure: false
 
 phpstan:
   stage: CodingStandards
+  before_script:
+    - cd symfony
+    - composer install
   script:
     - phpstan analyse ./src
   allow_failure: false
@@ -56,6 +54,8 @@ phpunit:
     MYSQL_DATABASE: bhooks
     DATABASE_URL: "mysql://root:@mysql:3306/bhooks"
   before_script:
+    - cd symfony
+    - composer install
     - apt-get update && apt-get install -y git libzip-dev
     - curl -sSk https://getcomposer.org/installer | php -- --disable-tls && mv composer.phar /usr/local/bin/composer
     - docker-php-ext-install mysqli pdo pdo_mysql zip
