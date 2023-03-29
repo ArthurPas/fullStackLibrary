@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Author;
-use App\Entity\Book;
 use App\Entity\User;
 use App\Entity\Borrow;
 use App\Repository\BorrowRepository;
@@ -72,7 +70,6 @@ class ApiController extends AbstractController
     #[AnnotationsView(serializerGroups: ['livre'])]
     #[Route('/books', name: 'app_api', methods: "GET")]
     public function index(
-        EntityManagerInterface $em,
         Request $request,
         BookRepository $book
     ) {
@@ -94,6 +91,18 @@ class ApiController extends AbstractController
         }
         return $books;
     }
+
+    #[AnnotationsView(serializerGroups: ['livre'])]
+    #[Route('/book/{id}', name: 'app_api_book')]
+    public function getBook(BookRepository $book, int $id)
+    {
+        $book = $book->findById($id);
+        if ($book == null) { // if there is not any book with this id
+            return new JsonResponse(['error' => 'This book doesn\'t exists'], Response::HTTP_NOT_FOUND);
+        }
+        return $book;
+    }
+
 
    /**
     * Route that returns the author depending on his id

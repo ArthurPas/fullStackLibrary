@@ -68,7 +68,7 @@ class Book
     /**
      * @var \DateTime|null
      *
-     * @ORM\Column(name="RELEASE_DATE", type="date", nullable=true)
+     * @ORM\Column(name="RELEASE_DATE", type="string", length=100, nullable=true)
      */
     #[Groups(['livre'])]
     private $releaseDate;

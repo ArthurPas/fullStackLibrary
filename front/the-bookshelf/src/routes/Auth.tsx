@@ -27,7 +27,8 @@ function Auth() {
         const response = await loginUser({email, password});
 
         if ('accessToken' in response) {
-          swal("Success", response.message, "success", {
+          const user = response['user'];
+          swal("Connected !", `Welcome back, ${user.firstname} ${user.lastname}`, "success", {
             timer: 2000,
           })
           .then((value) => {
@@ -36,7 +37,7 @@ function Auth() {
             navigate('/');
           });
         } else {
-          swal("Failed", response.message, "error");
+          swal("Invalid credentials", "If the error persists, please refresh the page.", "error");
         }    
       }
 
