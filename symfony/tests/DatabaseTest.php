@@ -278,6 +278,31 @@ class DatabaseTest extends WebTestCase
     }
 
     
+    /**
+     * Test la route /api/books
+     */
+    public function testBooks(): void
+    {
+        $client = static::createClient();
+        $br = static::getContainer()->get(BookRepository::class);
+        $client->jsonRequest('GET', '/api/books');
+        $this->assertResponseStatusCodeSame(200);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals(count($br->findAll()), count($data));
+    }
 
+    /**
+     * Test la route /api/books
+     */
+    public function testBooksAuthor(): void
+    {
+        $client = static::createClient();
+        $br = static::getContainer()->get(BookRepository::class);
+        $author="Voltaire";
+        $client->jsonRequest('GET', '/api/books?author='.$author);
+        $this->assertResponseStatusCodeSame(200);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals(count($br->findByAuthor($author)), count($data));
+    }
 
 }

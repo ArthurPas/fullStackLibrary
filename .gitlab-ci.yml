@@ -1,57 +1,38 @@
 image: jakzal/phpqa:php8.1
 
 before_script:
-  - cd symfony
-  - composer install
-
-variables:
-  SQLVAR: "$SCRIPT_SQL"
+    - cd symfony
+    - composer install
 
 cache:
-  paths:
-    - vendor/
+    paths:
+        - vendor/
 
 stages:
-  - SecurityChecker
-  - CodingStandards
-  - UnitTests
+    - SecurityChecker
+    - CodingStandards
+    - UnitTests
 
 security-checker:
-  stage: SecurityChecker
-  script:
-    - local-php-security-checker  --path=./composer.lock
-  allow_failure: false
+    stage: SecurityChecker
+    script:
+        - local-php-security-checker  --path=./composer.lock
+    allow_failure: false
 
 phpcs:
-  stage: CodingStandards
-  script:
-    - phpcs -v --standard=PSR12 --ignore=./src/Kernel.php ./src --exclude=Generic.Files.LineLength
-  allow_failure: false
+    stage: CodingStandards
+    script:
+        - phpcs -v --standard=PSR12 --ignore=./src/Kernel.php ./src
+    allow_failure: false
 
 phpstan:
-  stage: CodingStandards
-  script:
-    - phpstan analyse ./src
-  allow_failure: false
+    stage: CodingStandards
+    script:
+        - phpstan analyse ./src
+    allow_failure: false
 
 phpunit:
-  image: php:8.1-apache
-  stage: UnitTests
-  services:
-    - name: mysql:8.0
-      alias: mysql
-  variables:
-    MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-    MYSQL_DATABASE: bhooks
-    DATABASE_URL: "mysql://root:@mysql:3306/bhooks"
-  before_script:
-    - apt-get update && apt-get install -y git libzip-dev
-    - curl -sSk https://getcomposer.org/installer | php -- --disable-tls && mv composer.phar /usr/local/bin/composer
-    - docker-php-ext-install mysqli pdo pdo_mysql zip
-    - echo "$SCRIPT_SQL"
-    - cat "$SCRIPT_SQL"
-    - echo "test"
-    - mysql -u root -p  bhooks<"$SQLVAR"
-  script:
-    - php bin/phpunit
-  allow_failure: false
+    stage: UnitTests
+    script:
+        - php bin/phpunit
+    allow_failure: false
