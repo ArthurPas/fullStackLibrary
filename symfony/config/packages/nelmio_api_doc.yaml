@@ -44,7 +44,7 @@ nelmio_api_doc:
                         title:
                             type: "string"
                             description: "title of books"
-                        nbLastBooks:
+                        nbBooks:
                             type: "integer"
                             description: "number of books"
                         type:

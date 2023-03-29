@@ -27,8 +27,8 @@ class ApiController extends AbstractController
    /**
     * Route that returns a json of the books from an author or from
     * a title or a number of books depending on the number in the URL
-    * param "nbLastBooks" sorted by recent or old depending on the
-    * param "type" but not all in the same time only "nbLastBooks" and
+    * param "nbBooks" sorted by recent or old depending on the
+    * param "type" but not all in the same time only "nbBooks" and
     * "type" can be combined
     * If there is not parameters the route return a json with all
     * the books
@@ -51,16 +51,16 @@ class ApiController extends AbstractController
         schema: new OA\Schema(ref: "#/components/schemas/Books/properties/title")
     )]
     #[OA\Parameter(
-        name: "nbLastBooks",
+        name: "nbBooks",
         in: "query",
         description: "Number of books to retrieve (need to be with type)",
         required: false,
-        schema: new OA\Schema(ref: "#/components/schemas/Books/properties/nbLastBooks")
+        schema: new OA\Schema(ref: "#/components/schemas/Books/properties/nbBooks")
     )]
     #[OA\Parameter(
         name: "type",
         in: "query",
-        description: "Type of books to retrieve (need to be with nbLastBooks)",
+        description: "Type of books to retrieve (need to be with nbBooks)",
         example: "recent or old",
         required: false,
         schema: new OA\Schema(ref: "#/components/schemas/Books/properties/type")
@@ -80,7 +80,6 @@ class ApiController extends AbstractController
     #[AnnotationsView(serializerGroups: ['livre'])]
     #[Route('/books', name: 'app_api', methods: "GET")]
     public function index(
-        EntityManagerInterface $em,
         Request $request,
         BookRepository $book
     ) {
@@ -88,11 +87,11 @@ class ApiController extends AbstractController
         $nbBooks = $request->query->get('nbResults');
         $type = $request->query->get('type');
         $title = $request->query->get('title');
-        if ($author != null && $nbLastBooks == null && $type == null && $title == null) {
+        if ($author != null && $nbBooks == null && $type == null && $title == null) {
             $books = $book->findByAuthor($author);
-        } elseif ($nbLastBooks != null && $type !== null && $author == null && $title == null) {
-            $books = $book->findByNb($nbLastBooks, $type);
-        } elseif ($title != null && $author == null && $nbLastBooks == null && $type == null) {
+        } elseif ($nbBooks != null && $type !== null && $author == null && $title == null) {
+            $books = $book->findByNb($nbBooks, $type);
+        } elseif ($title != null && $author == null && $nbBooks == null && $type == null) {
             $books = $book->findByTitle($title);
         } else {
             $books = $book->findByNb($nbBooks, $type);
@@ -107,7 +106,6 @@ class ApiController extends AbstractController
     * Route that returns the author depending on his id
     */
     #[OA\Tag(name: "Author")]
-    #[OA\Tag(name: "Books")]
     #[OA\Parameter(
         name: "id",
         in: "path",
@@ -116,7 +114,7 @@ class ApiController extends AbstractController
     )]
     #[OA\Response(
         response: "200",
-        description: "Books information retrieved successfully",
+        description: "Author information retrieved successfully",
     )]
     #[OA\Response(
         response: "404",
@@ -127,7 +125,7 @@ class ApiController extends AbstractController
         description: "Query syntax error",
     )]
     #[AnnotationsView()]
-    #[Route('/author/{id}', name: 'app_api_author')]
+    #[Route('/author/{id}', name: 'app_api_author', methods: "GET")]
     public function getAuthorById(AuthorRepository $a, int $id)
     {
         $author = $a->findAuthorById($id);
@@ -212,6 +210,9 @@ class ApiController extends AbstractController
     }
 
 
+    /**
+    * Route that allows a user to follow another user
+    */
     #[OA\Tag(name: "Follow")]
     #[OA\Parameter(
         name: "idUser",
@@ -254,6 +255,9 @@ class ApiController extends AbstractController
     }
 
 
+    /**
+     * Route that allows a user to unfollow another user
+     */
     #[OA\Tag(name: "Follow")]
     #[OA\Parameter(
         name: "idUser",
