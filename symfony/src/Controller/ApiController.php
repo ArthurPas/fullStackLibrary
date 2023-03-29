@@ -27,8 +27,8 @@ class ApiController extends AbstractController
    /**
     * Route that returns a json of the books from an author or from
     * a title or a number of books depending on the number in the URL
-    * param "nbLastBooks" sorted by recent or old depending on the
-    * param "type" but not all in the same time only "nbLastBooks" and
+    * param "nbBooks" sorted by recent or old depending on the
+    * param "type" but not all in the same time only "nbBooks" and
     * "type" can be combined
     * If there is not parameters the route return a json with all
     * the books
@@ -39,21 +39,29 @@ class ApiController extends AbstractController
     #[OA\Parameter(
         name: "author",
         in: "query",
-        description: "Get the book by author name",
-        required: true,
+        description: "Get the book by author name (need to be alone)",
+        required: false,
         schema: new OA\Schema(ref: "#/components/schemas/Books/properties/author")
     )]
     #[OA\Parameter(
-        name: "nbLastBooks",
+        name: "title",
         in: "query",
-        description: "Number of books to retrieve",
+        description: "Get the book by title (need to be alone)",
         required: false,
-        schema: new OA\Schema(ref: "#/components/schemas/Books/properties/nbLastBooks")
+        schema: new OA\Schema(ref: "#/components/schemas/Books/properties/title")
+    )]
+    #[OA\Parameter(
+        name: "nbBooks",
+        in: "query",
+        description: "Number of books to retrieve (need to be with type)",
+        required: false,
+        schema: new OA\Schema(ref: "#/components/schemas/Books/properties/nbBooks")
     )]
     #[OA\Parameter(
         name: "type",
         in: "query",
-        description: "Type of books to retrieve",
+        description: "Type of books to retrieve (need to be with nbBooks)",
+        example: "recent or old",
         required: false,
         schema: new OA\Schema(ref: "#/components/schemas/Books/properties/type")
     )]
@@ -72,7 +80,6 @@ class ApiController extends AbstractController
     #[AnnotationsView(serializerGroups: ['livre'])]
     #[Route('/books', name: 'app_api', methods: "GET")]
     public function index(
-        EntityManagerInterface $em,
         Request $request,
         BookRepository $book
     ) {
@@ -80,11 +87,11 @@ class ApiController extends AbstractController
         $nbBooks = $request->query->get('nbResults');
         $type = $request->query->get('type');
         $title = $request->query->get('title');
-        if ($author != null && $nbBooks == null) {
+        if ($author != null && $nbBooks == null && $type == null && $title == null) {
             $books = $book->findByAuthor($author);
-        } elseif ($nbBooks != null && $author == null && $title == null) {
+        } elseif ($nbBooks != null && $type !== null && $author == null && $title == null) {
             $books = $book->findByNb($nbBooks, $type);
-        } elseif ($title != null && $author == null && $nbBooks == null) {
+        } elseif ($title != null && $author == null && $nbBooks == null && $type == null) {
             $books = $book->findByTitle($title);
         } else {
             $books = $book->findByNb($nbBooks, $type);
@@ -99,7 +106,6 @@ class ApiController extends AbstractController
     * Route that returns the author depending on his id
     */
     #[OA\Tag(name: "Author")]
-    #[OA\Tag(name: "Books")]
     #[OA\Parameter(
         name: "id",
         in: "path",
@@ -108,7 +114,7 @@ class ApiController extends AbstractController
     )]
     #[OA\Response(
         response: "200",
-        description: "Books information retrieved successfully",
+        description: "Author information retrieved successfully",
     )]
     #[OA\Response(
         response: "404",
@@ -119,7 +125,7 @@ class ApiController extends AbstractController
         description: "Query syntax error",
     )]
     #[AnnotationsView()]
-    #[Route('/author/{id}', name: 'app_api_author')]
+    #[Route('/author/{id}', name: 'app_api_author', methods: "GET")]
     public function getAuthorById(AuthorRepository $a, int $id)
     {
         $author = $a->findAuthorById($id);
@@ -138,6 +144,7 @@ class ApiController extends AbstractController
         in: "path",
         description: "The ID of the user to get the list of the users he follows",
         required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/Follow(ed)/properties/idUser")
     )]
     #[OA\Response(
         response: "200",
@@ -172,8 +179,9 @@ class ApiController extends AbstractController
     #[OA\Parameter(
         name: "id",
         in: "path",
-        description: "The ID of the user to get the list of the users he follows",
+        description: "The ID of the user to get the list of the users who follow him",
         required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/Follow(ed)/properties/idUserFollowed")
     )]
     #[OA\Response(
         response: "200",
@@ -198,6 +206,96 @@ class ApiController extends AbstractController
         if (count($users) === 0) {// if the request return 0 lines
             return new JsonResponse(['error' => 'Nobody follow this person'], Response::HTTP_NOT_FOUND);
         }
+        return $this->json($users);
+    }
+
+
+    /**
+    * Route that allows a user to follow another user
+    */
+    #[OA\Tag(name: "Follow")]
+    #[OA\Parameter(
+        name: "idUser",
+        in: "query",
+        description: "id of the user who wants to follow",
+        required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/Follow(ed)/properties/idUser")
+    )]
+    #[OA\Parameter(
+        name: "idUserFollowed",
+        in: "query",
+        description: "id of the user followed",
+        required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/Follow(ed)/properties/idUserFollowed")
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "Followed successfully",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "User not found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+    #[Route('/addfollow', name: 'app_addfollow_id', methods: "GET")]
+    public function addfollowId(Request $request, UserRepository $userRepository): Response
+    {
+        $id = $request->query->get('idUser');
+        $idfollow = $request->query->get('idUserFollowed');
+        $exist = $userRepository->find($id);
+        $existfollow = $userRepository->find($idfollow);
+        if ($exist == null || $existfollow == null) {
+            return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
+        }
+        $users = $userRepository->addFollow($idfollow, $id);
+        return $this->json($users);
+    }
+
+
+    /**
+     * Route that allows a user to unfollow another user
+     */
+    #[OA\Tag(name: "Follow")]
+    #[OA\Parameter(
+        name: "idUser",
+        in: "query",
+        description: "id of the user who wants to unfollow",
+        required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/Follow(ed)/properties/idUser")
+    )]
+    #[OA\Parameter(
+        name: "idUserFollowed",
+        in: "query",
+        description: "id of the user who will be unfollowed",
+        required: true,
+        schema: new OA\Schema(ref: "#/components/schemas/Follow(ed)/properties/idUserFollowed")
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "The user is no longer followed",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "User not found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+    #[Route('/unfollow', name: 'app_unfollow_id', methods: "DELETE")]
+    public function unFollow(Request $request, UserRepository $userRepository): Response
+    {
+        $id = $request->query->get('idUser');
+        $idfollow = $request->query->get('idUserFollowed');
+        $exist = $userRepository->find($id);
+        $existfollow = $userRepository->find($idfollow);
+        if ($exist == null || $existfollow == null) {
+            return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
+        }
+        $users = $userRepository->unFollow($idfollow, $id);
         return $this->json($users);
     }
 
