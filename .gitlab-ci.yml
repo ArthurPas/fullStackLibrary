@@ -31,8 +31,23 @@ phpstan:
         - phpstan analyse ./src
     allow_failure: false
 
+services:
+  - mysql:8.0
+
+variables:
+  MYSQL_DATABASE: etu_ajessondanie
+  MYSQL_ROOT_PASSWORD: 3m8MFs8q
+  DATABASE_URL: mysql://ajessondanie:3m8MFs8q@mysql/etu_ajessondanie
+
+before_script:
+  - cd symfony
+  - composer install
+  - php bin/console doctrine:database:create --if-not-exists
+  - php bin/console doctrine:schema:update --force --no-interaction
+
 phpunit:
-    stage: UnitTests
-    script:
-        - php bin/phpunit
-    allow_failure: false
+  stage: test
+  script:
+    - php bin/console doctrine:fixtures:load --no-interaction
+    - php bin/phpunit --stop-on-failure
+  allow_failure: false
