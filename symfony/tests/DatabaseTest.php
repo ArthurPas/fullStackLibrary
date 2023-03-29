@@ -285,24 +285,122 @@ class DatabaseTest extends WebTestCase
     {
         $client = static::createClient();
         $br = static::getContainer()->get(BookRepository::class);
-        $client->jsonRequest('GET', '/api/books');
-        $this->assertResponseStatusCodeSame(200);
+        //nbResults & type
+        $nbRes=10;
+        $type="ASC";
+        $client->jsonRequest('GET', '/api/books?nbResults='.$nbRes.'&type='.$type);
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals(count($br->findAll()), count($data));
-    }
-
-    /**
-     * Test la route /api/books
-     */
-    public function testBooksAuthor(): void
-    {
-        $client = static::createClient();
-        $br = static::getContainer()->get(BookRepository::class);
+        
+        $this->assertEquals(count($br->findByNb($nbRes,$type)), count($data));
+        $this->assertResponseStatusCodeSame(200);
+        // title
+        $title ="It";
+        $client->jsonRequest('GET', '/api/books?title='.$title);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals(count($br->findByTitle($title)),count($data));
+        $this->assertResponseStatusCodeSame(200);
+        // author
         $author="Voltaire";
         $client->jsonRequest('GET', '/api/books?author='.$author);
-        $this->assertResponseStatusCodeSame(200);
         $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertResponseStatusCodeSame(200);
         $this->assertEquals(count($br->findByAuthor($author)), count($data));
     }
 
+    public function testAuthorById()
+    {
+        $client = static::createClient();
+        $ar = static::getContainer()->get(AuthorRepository::class);
+        //known author
+        $authorId=4;
+        $client->jsonRequest('GET', '/api/author/'.$authorId);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals(count($ar->findAuthorById($authorId)), count($data));
+        $this->assertResponseStatusCodeSame(200);
+        //unknown author
+        $authorId=3875932759573987;
+        $client->jsonRequest('GET', '/api/author/'.$authorId);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testFollow()
+    {
+        $client = static::createClient();
+        $ur = static::getContainer()->get(UserRepository::class);
+        //user who follow someone
+        $followId=5;
+        $client->jsonRequest('GET', '/api/follow/'.$followId);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals(count($ur->findUserFollowings($followId)), count($data));
+        $this->assertResponseStatusCodeSame(200);
+        //user who follow no one
+        $followId=6;
+        $client->jsonRequest('GET', '/api/follow/'.$followId);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testFollowed()
+    {
+        $client = static::createClient();
+        $ur = static::getContainer()->get(UserRepository::class);
+        //user who follow someone
+        $followId=6;
+        $client->jsonRequest('GET', '/api/followed/'.$followId);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals(count($ur->findByUserIsFollowed($followId)), count($data));
+        $this->assertEquals($ur->findByUserIsFollowed($followId)[0]["idUser"], $data[0]['idUser']);
+        $this->assertResponseStatusCodeSame(200);
+        //user who follow no one
+        $followId=5;
+        $client->jsonRequest('GET', '/api/followed/'.$followId);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testInfoUser()
+    {
+        $client = static::createClient();
+        $ur = static::getContainer()->get(UserRepository::class);
+
+        $UserId=6;
+        $client->jsonRequest('GET', '/api/user/'.$UserId);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals(count($ur->infoUser($UserId)), count($data));
+        $this->assertEquals($ur->infoUser($UserId)[0]["idUser"], $data[0]['idUser']);
+        $this->assertEquals($ur->infoUser($UserId)[0]["email"], $data[0]['email']);
+        $this->assertEquals($ur->infoUser($UserId)[0]["firstname"], $data[0]['firstname']);
+        $this->assertEquals($ur->infoUser($UserId)[0]["lastname"], $data[0]['lastname']);
+        $this->assertResponseStatusCodeSame(200);
+        //
+        $UserId=5160465154;
+        $client->jsonRequest('GET', '/api/user/'.$UserId);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertResponseStatusCodeSame(404);
+    }
+    /*
+    public function testAutocomplet()
+    {
+        $client = static::createClient();
+        $ar = static::getContainer()->get(AuthorRepository::class);
+        //valid autocomplet (length >= 4)
+        $debut="zola";
+        $client->jsonRequest('GET', '/api/autocompletion/?debut='.$debut);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        //$this->assertEquals(count($ar->autocompleter($debut)), count($data));
+        var_dump($data);
+        //$this->assertResponseStatusCodeSame(200);
+        //invalid autocomplet (length<4)
+        $debut="kin";
+        $client->jsonRequest('GET', '/api/autocompletion/?debut='.$debut);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertResponseStatusCodeSame(301);
+        $this->assertEquals(null,$data);
+        //0 line answered
+        $debut="+=^";
+        $client->jsonRequest('GET', '/api/autocompletion/?debut='.$debut);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertResponseStatusCodeSame(204);
+    }*/
 }

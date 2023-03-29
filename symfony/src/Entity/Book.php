@@ -67,9 +67,9 @@ class Book
     private $editor;
 
     /**
-     * @var \DateTime|null
+     * @var \string|null
      *
-     * @ORM\Column(name="RELEASE_DATE", type="date", nullable=true)
+     * @ORM\Column(name="RELEASE_DATE", type="text", nullable=true)
      */
     #[Groups(['livre'])]
     private $releaseDate;
@@ -192,12 +192,12 @@ class Book
         return $this;
     }
 
-    public function getReleaseDate(): ?\DateTimeInterface
+    public function getReleaseDate(): ?string
     {
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(?\DateTimeInterface $releaseDate): self
+    public function setReleaseDate(?string $releaseDate): self
     {
         $this->releaseDate = $releaseDate;
 
