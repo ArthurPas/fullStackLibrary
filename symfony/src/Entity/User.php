@@ -75,7 +75,7 @@ class User
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Book", inversedBy="idUser")
-     * @ORM\JoinTable(name="RATING",
+     * @ORM\JoinTable(name="rating",
      *   joinColumns={
      *     @ORM\JoinColumn(name="ID_USER", referencedColumnName="ID_USER")
      *   },
