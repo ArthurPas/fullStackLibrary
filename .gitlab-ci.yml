@@ -3,6 +3,9 @@ image: jakzal/phpqa:php8.1
 before_script:
     - cd symfony
     - composer install
+    - php bin/console doctrine:database:create --if-not-exists
+    - php bin/console doctrine:schema:update --force --no-interaction
+    
 
 cache:
     paths:
@@ -38,12 +41,6 @@ variables:
   MYSQL_DATABASE: etu_ajessondanie
   MYSQL_ROOT_PASSWORD: 3m8MFs8q
   DATABASE_URL: mysql://ajessondanie:3m8MFs8q@mysql/etu_ajessondanie
-
-before_script:
-  - cd symfony
-  - composer install
-  - php bin/console doctrine:database:create --if-not-exists
-  - php bin/console doctrine:schema:update --force --no-interaction
 
 phpunit:
   stage: test
