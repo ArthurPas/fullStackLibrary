@@ -4,5 +4,7 @@ export { default as SearchInput } from './forms/inputs/SearchInput';
 export { default as HeroBanner } from './header/HeroBanner';
 export { default as Footer } from './footer/Footer';
 export { default as BookSection } from './books/BookSection';
+export { default as BackToHomeButton } from './buttons/BackToHomeButton';
+export { default as LogoutButton } from './buttons/LogoutButton';
 
 

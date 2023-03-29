@@ -82,13 +82,18 @@ class BookRepository extends ServiceEntityRepository
     * Request that find a book by its id
     */
 
-    public function findById(int $id): ?Book
+    public function findById(int $id): ?array
     {
         return $this->createQueryBuilder('b')
+            ->leftJoin('b.idAuthor', 'a')
+            ->leftJoin('b.idCategory', 'c')
+            ->leftJoin('b.idLanguage', 'l')
+            ->select('b.title, b.idBook, b.image, b.description, b.numberOfPages, b.editor, b.releaseDate,
+            a.idAuthor, c.idCategory, l.idLanguage')
             ->where('b.idBook = :id')
             ->setParameter('id', $id)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
     }
     /**
     * Request that find books by a part of its

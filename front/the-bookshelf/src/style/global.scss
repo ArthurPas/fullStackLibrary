@@ -1,39 +1,38 @@
-@use 'variables' as v;
+@use "variables" as v;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Satisfy&display=swap");
 
 /*---------------------
    CSS Reset
 ---------------------*/
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
 /*---------------------
     Background
 ---------------------*/
 body {
-  background-image: url(../assets/background.svg);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-color: rgba(255, 255, 255 ,0.5);
-  background-blend-mode: lighten;
-  min-height: 100vh;
-
+	background-image: url(../assets/background.svg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-color: rgba(255, 255, 255, 0.5);
+	background-blend-mode: lighten;
+	min-height: 100vh;
 }
 
 a {
-  text-decoration: none;
-  color: inherit;
+	text-decoration: none;
+	color: inherit;
 
-  &:hover {
-    text-decoration: none;
-    filter: brightness(0.8);
-  }
+	&:hover {
+		text-decoration: none;
+		filter: brightness(0.8);
+	}
 }
 
 /*---------------------
@@ -41,51 +40,188 @@ a {
 ---------------------*/
 
 #root {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-family: v.$primary-font;
-  color: #2E2E2E;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	font-family: v.$primary-font;
+	color: #2e2e2e;
 
-  & > * {
-    margin: 1.5em 0;
-  }
+	& > * {
+		margin: 1.5em 0;
+	}
 }
 
 .btn__text {
-  color: v.$color-secondary;
-  font-family: 'Poppins';
-  letter-spacing: -0.025em;
-  font-size: .9em;
+	color: v.$color-secondary;
+	font-family: "Poppins";
+	letter-spacing: -0.025em;
+	font-size: 0.9em;
 }
 
 .btn__primary {
-  background-color: v.$color-secondary;
-  border-radius: 15px;
-  padding: 0.5em 3em;
-  color: white;
-  cursor: pointer;
+	background-color: v.$color-secondary;
+	border-radius: 15px;
+	padding: 0.5em 3em;
+	color: white;
+	cursor: pointer;
 }
 
 .btn__secondary {
-  background-color: v.$color-primary;
-  color: white;
-  border-radius: 15px;
-  padding: 0.5em 3em;
+	background-color: v.$color-primary;
+	color: white;
+	border-radius: 15px;
+	padding: 0.5em 3em;
+}
+
+.card__glass {
+	background: rgba(255, 255, 255, 0.3);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(7px);
+	border: 2px solid rgba(208, 208, 208, 0.3);
+	border-radius: 25px;
 }
 
 /*---------------------
    Home Page
 ---------------------*/
 .content__books {
-  display: grid;
-  grid-template-columns: repeat(1, 2fr);
-  grid-gap: 2em;
-  width: 80%;
-  
-  & > * > * {
+	display: grid;
+	grid-template-columns: repeat(1, 2fr);
+	grid-gap: 2em;
+	width: 80%;
+
+	& > * > * {
+		margin: 1em 0;
+	}
+}
+
+.book__infos {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 80%;
+	height: 100%;
+	padding: 2em 5em;
+	border-radius: 15px;
+	transition: all 0.3s ease-in-out;
+  margin-bottom: 5em !important ;
+
+  & > .book__infos__title {
+    font-size: 1.5em;
+    color: #707070;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
     margin: 1em 0;
+  }
+
+  & > .book__infos__content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin: 5px;
+
+    & > img {
+      width: 15em;
+      height: 20em;
+      border-radius: 15px;
+      margin-right: 2em;
+    }
+
+    & > .book__infos__content__details {
+
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      
+      & > .book__infos__content__item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        gap: .5em;
+        margin: 1em 0;
+
+        &.synopsis {
+          flex-direction: column;
+          align-items: flex-start;
+
+          & > .book__infos__synopsis {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: .5em;
+          }
+
+          & p {
+            font-size: .5em;
+          }
+        }
+
+        & > svg {
+          width: 1.3em;
+          height: 1.3em;
+        }
+
+        & h3 {
+          color: v.$color-secondary;
+          font-weight: 800;
+        }
+
+        & p {
+          color: #707070;
+          letter-spacing: 0.035em;
+        }
+      }
+    }
+
+
+  }
+}
+
+.profile__infos {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5em;
+  padding: 2em;
+
+  & > img {
+    width: 6em;
+    height: 6em;
+    border-radius: 50%;
+    margin-bottom: 1em;
+  }
+
+  & > .profile__content {
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    & > * {
+      
+      margin: .5em 0;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: .5em;
+
+      & > svg {
+        width: 1.1em;
+        color: v.$color-secondary;
+      }
+    }
+  }
+
+  & > .btn__text {
+    margin-top: 1em;
   }
 }
