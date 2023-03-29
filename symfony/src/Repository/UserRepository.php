@@ -81,16 +81,33 @@ class UserRepository extends ServiceEntityRepository
     }
 
 
-    // public function follow(User $user, User $followedUser): void
-    // {
-    //     $user->addFollowedUser($followedUser);
-    //     $this->save($user, true);
-    // }
-
-    // public function listFollowedUsers(User $user): array
-    // {
-    //     return $user->getFollowedUsers()->toArray();
-    // }
+    public function addFollow(int $id, int $idUser): void
+    {
+        $entityManager = $this->getEntityManager();
+        $userRepo = $entityManager->getRepository(User::class);
+    
+        $user = $userRepo->find($id);
+        $userToFollow = $userRepo->find($idUser);
+    
+        $user->addIdUserFollow($userToFollow);
+    
+        $entityManager->persist($user);
+        $entityManager->flush();
+    }
+    
+    public function unFollow(int $id, int $idUser): void
+    {
+        $entityManager = $this->getEntityManager();
+        $userRepo = $entityManager->getRepository(User::class);
+    
+        $user = $userRepo->find($id);
+        $userToUnfollow = $userRepo->find($idUser);
+    
+        $user->removeIdUserFollow($userToUnfollow);
+    
+        $entityManager->persist($user);
+        $entityManager->flush();
+    }
 
     //    /**
     //     * @return User[] Returns an array of User objects
