@@ -4,9 +4,6 @@ before_script:
   - cd symfony
   - composer install
 
-variables:
-  SQLVAR: "$SCRIPT_SQL"
-
 cache:
   paths:
     - vendor/
@@ -14,6 +11,7 @@ cache:
 stages:
   - SecurityChecker
   - CodingStandards
+  - setup
   - UnitTests
 
 security-checker:
@@ -33,10 +31,23 @@ phpstan:
   script:
     - phpstan analyse ./src
   allow_failure: false
+  
+create-db:
+  stage: setup
+  image: mysql:8.0
+  services:
+    - name: mysql:8.0
+      alias: mysql
+  variables:
+    MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    MYSQL_DATABASE: bhooks
+  script:
+    - mysql -hmysql -uroot -e "CREATE DATABASE bhooks"
+    - mysql -hmysql -uroot bhooks < ../Livrables/script_final_bd_grp8.sql
 
 phpunit:
-  image: php:8.1-apache
   stage: UnitTests
+  image: php:8.1-apache
   services:
     - name: mysql:8.0
       alias: mysql
@@ -48,11 +59,6 @@ phpunit:
     - apt-get update && apt-get install -y git libzip-dev
     - curl -sSk https://getcomposer.org/installer | php -- --disable-tls && mv composer.phar /usr/local/bin/composer
     - docker-php-ext-install mysqli pdo pdo_mysql zip
-    - echo $SCRIPT_SQL
-    - cat $SCRIPT_SQL
-    - echo ${!SQLVAR}
-    - cat ${!SQLVAR}
-    - mysql -u root -p  bhooks<"$SQLVAR"
   script:
     - php bin/phpunit
   allow_failure: false
