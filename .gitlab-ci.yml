@@ -50,8 +50,7 @@ phpunit:
     - docker-php-ext-install mysqli pdo pdo_mysql zip
     - echo $SCRIPT_SQL
     - cat $SCRIPT_SQL
-    - echo ${!SQLVAR}
-    - cat ${!SQLVAR}
+    - echo "test"
     - mysql -u root -p  bhooks<"$SQLVAR"
   script:
     - php bin/phpunit
