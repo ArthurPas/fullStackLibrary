@@ -43,7 +43,7 @@ variables:
   DATABASE_URL: mysql://ajessondanie:3m8MFs8q@mysql/etu_ajessondanie
 
 phpunit:
-  stage: test
+  stage: UnitTests
   script:
     - php bin/console doctrine:fixtures:load --no-interaction
     - php bin/phpunit --stop-on-failure
