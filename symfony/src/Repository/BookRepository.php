@@ -39,31 +39,6 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Book[] Returns an array of Book objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Book
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
-
     public function findOneById($value): ?Book
     {
         return $this->createQueryBuilder('b')
@@ -97,4 +72,87 @@ class BookRepository extends ServiceEntityRepository
             ->getScalarResult()
         ;
     }
+    public function findByNb(int $nb, string $type): array
+    {
+        if ($type != 'ASC' && $type != 'DESC') {
+            return [];
+        }
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.idAuthor', 'a')
+            ->leftJoin('b.idCategory', 'c')
+            ->leftJoin('b.idLanguage', 'l')
+            ->orderBy('b.idBook', $type)
+            ->select('b.title, b.idBook, b.image, b.description, b.numberOfPages, b.editor, b.releaseDate, 
+            a.idAuthor, c.idCategory, l.idLanguage')
+            ->setMaxResults($nb)
+            ->getQuery()
+            ->getResult();
+    }
+    /**
+    * Request that find the books from an author
+    */
+
+    public function findByAuthor(string $author): array
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.idAuthor', 'a')
+            ->leftJoin('b.idCategory', 'c')
+            ->leftJoin('b.idUser', 'u')
+            ->select('b.title, b.idBook, b.image, b.description, b.numberOfPages, b.editor, b.releaseDate, 
+            a.idAuthor, c.idCategory, a.idAuthor, u.idUser')
+            ->andWhere('a.authorName LIKE :author_name')
+            ->setParameter('author_name', '%' . $author . '%')
+            ->getQuery()
+            ->getResult();
+    }
+    /**
+    * Request that find a book by its id
+    */
+
+    public function findById(int $id): ?Book
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.idBook = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+    /**
+    * Request that find books by a part of its
+    * title
+    */
+
+    public function findByTitle(string $title)
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.title LIKE :title')
+            ->setParameter('title', '%' . $title . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    //    /**
+    //     * @return Book[] Returns an array of Book objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('b')
+    //            ->andWhere('b.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('b.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?Book
+    //    {
+    //        return $this->createQueryBuilder('b')
+    //            ->andWhere('b.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

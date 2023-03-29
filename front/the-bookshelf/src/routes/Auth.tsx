@@ -1,7 +1,7 @@
 import AuthForm from "@/components/forms/AuthForm";
 import { useState } from "react";
 import swal from "sweetalert";
-import { BASE_API_URL } from "@/main";
+import { BASE_API_URL } from "@/utils/Constants";
 import { useNavigate } from "react-router-dom";
 
 function Auth() {

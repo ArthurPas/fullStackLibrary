@@ -5,9 +5,10 @@
     background: white;
     border-radius: 20px;
     width: fit-content;
-    padding: 1em 0.5em;
+    padding: .7em 0.7em;
+    transition: all .3s ease-in-out;
 
-    & > input {
+    & > input[type="text"] {
         padding-left: .5em;
         width: 18em;
         border: none;
@@ -20,6 +21,16 @@
             color: #878181;
         }
     }
+}
+
+input.btn__primary {
+    border: none;
+    background-color: #086969;
+    border-radius: 13px;
+    padding: 0.5em 3.5em;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
 }
 
 .auth__input {

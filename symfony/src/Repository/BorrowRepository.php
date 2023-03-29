@@ -47,6 +47,9 @@ class BorrowRepository extends ServiceEntityRepository
         ->getResult()
         ;
     }
+    /**
+     * Request that find the borrows of an user
+     */
     public function findBorrowByUser($utilisateur): array
     {
         return $this->createQueryBuilder('bo')
@@ -57,7 +60,9 @@ class BorrowRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
+    /**
+     * Request that find the date of a borrow by its id
+     */
     public function findDateOfBorrow($id): array
     {
         return $this->createQueryBuilder('bo')
@@ -67,7 +72,9 @@ class BorrowRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
+    /**
+     * Request that finds a borrow by its id
+     */
     public function findById(int $id): ?Borrow
     {
         return $this->createQueryBuilder('bo')
