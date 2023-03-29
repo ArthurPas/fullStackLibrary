@@ -100,8 +100,31 @@ class ApiController extends AbstractController
         return $books;
     }
 
+
+    /**
+    * Route that returns the book depending on his id
+    */
+    #[OA\Tag(name: "Books")]
+    #[OA\Parameter(
+        name: "id",
+        in: "path",
+        description: "Get the book by id",
+        required: true,
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "Book information retrieved successfully",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "No book found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
     #[AnnotationsView(serializerGroups: ['livre'])]
-    #[Route('/book/{id}', name: 'app_api_book')]
+    #[Route('/book/{id}', name: 'app_api_book', methods: "GET")]
     public function getBook(BookRepository $book, int $id)
     {
         $book = $book->findById($id);
@@ -119,7 +142,7 @@ class ApiController extends AbstractController
     #[OA\Parameter(
         name: "id",
         in: "path",
-        description: "Get the list of books by author id",
+        description: "Get the author by id",
         required: true,
     )]
     #[OA\Response(
@@ -444,7 +467,7 @@ class ApiController extends AbstractController
     }
 
 
-   /**
+      /**
     * Route that create a borrow and return a json with the borrow date,id and a success
     * message
     */
