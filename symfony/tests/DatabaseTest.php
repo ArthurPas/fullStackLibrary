@@ -251,6 +251,7 @@ class DatabaseTest extends WebTestCase
     /**
      * Test la connexion et la déconnexion d'un utilisateur
      */
+    
     public function testLoginAndLogout(): void
     {
         $client = static::createClient();
@@ -276,6 +277,7 @@ class DatabaseTest extends WebTestCase
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals(null, $ur->findOneByToken($user->getToken()));
     }
+    
 
 
     /**
@@ -417,7 +419,7 @@ class DatabaseTest extends WebTestCase
         $emailUser = "Aaron@gmail.com";
         $client->jsonRequest('GET', '/api/borrow/user/' . $emailUser);
         $data = json_decode($client->getResponse()->getContent(), true);
-        //$this->assertResponseStatusCodeSame(404);
+        $this->assertResponseStatusCodeSame(404);
         //invalid user email
         $invalidEmailUser = "ibebefz@@@.e.€±å@±eå±@gmail.com";
         $client->jsonRequest('GET', '/api/borrow/user/' . $invalidEmailUser);
@@ -446,22 +448,17 @@ class DatabaseTest extends WebTestCase
     {
         $client = static::createClient();
         $br = static::getContainer()->get(BorrowRepository::class);
-        //user id with borrow
-        $userId = 4;
-        $client->jsonRequest('GET', '/api/borrow/date/' . $userId);
+        //known borrow id
+        $borrowId = 4;
+        $client->jsonRequest('GET', '/api/borrow/date/' . $borrowId);
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals(count($br->findDateOfBorrow($userId)), count($data));
-        $expectedDate = $br->findDateOfBorrow($userId)[0]["startDate"]->format('Y-m-d');
+        $this->assertEquals(count($br->findDateOfBorrow($borrowId)), count($data));
+        $expectedDate = $br->findDateOfBorrow($borrowId)[0]["startDate"]->format('Y-m-d');
         $this->assertTrue(str_contains($data[0]["startDate"], $expectedDate));
         $this->assertResponseStatusCodeSame(200);
-        //user without borrow
-        $userId = 495;
-        $client->jsonRequest('GET', '/api/borrow/date/' . $userId);
-        $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertResponseStatusCodeSame(404);
-        //unknown user id
-        $userId = 546876456879875;
-        $client->jsonRequest('GET', '/api/borrow/date/' . $userId);
+        //unknown borrow id
+        $borrowId = 546876456879875;
+        $client->jsonRequest('GET', '/api/borrow/date/' . $borrowId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(404);
     }
