@@ -384,20 +384,20 @@ class DatabaseTest extends WebTestCase
         $client = static::createClient();
         $ar = static::getContainer()->get(AuthorRepository::class);
         //valid autocomplet (length >= 4)
-        $debut = "zola";
-        $client->jsonRequest('GET', '/api/autocompletion?debut=' . $debut);
+        $startby = "zola";
+        $client->jsonRequest('GET', '/api/autocompletion?startby=' . $startby);
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals(count($ar->autocompleter($debut)), count($data));
+        $this->assertEquals(count($ar->autocompletion($startby)), count($data));
         $this->assertResponseStatusCodeSame(200);
         //invalid autocomplet (length<4)
-        $debut = "kin";
-        $client->jsonRequest('GET', '/api/autocompletion?debut=' . $debut);
+        $startby = "kin";
+        $client->jsonRequest('GET', '/api/autocompletion?startby=' . $startby);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(204);
         $this->assertEquals(null, $data);
         //0 line answered
-        $debut = "+=^";
-        $client->jsonRequest('GET', '/api/autocompletion?debut=' . $debut);
+        $startby = "+=^";
+        $client->jsonRequest('GET', '/api/autocompletion?startby=' . $startby);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(204);
     }
