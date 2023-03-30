@@ -4,6 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Book;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -50,33 +53,36 @@ class BookRepository extends ServiceEntityRepository
         if ($type != 'ASC' && $type != 'DESC') {
             return [];
         }
-        return $this->createQueryBuilder('b')
-            ->leftJoin('b.idAuthor', 'a')
-            ->leftJoin('b.idCategory', 'c')
-            ->leftJoin('b.idLanguage', 'l')
-            ->orderBy('b.idBook', $type)
-            ->select('b.title, b.idBook, b.image, b.description, b.numberOfPages, b.editor, b.releaseDate, 
-            a.idAuthor, c.idCategory, l.idLanguage')
-            ->setMaxResults($nb)
-            ->getQuery()
-            ->getResult();
+
+        $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, 
+                    b.editor, b.release_date, 
+                    GROUP_CONCAT(a.author_name) as author_names
+                FROM BOOK b
+                LEFT JOIN WWRITE w ON b.id_book = w.id_book
+                LEFT JOIN AUTHOR a ON w.id_author = a.id_author
+                GROUP BY b.id_book
+                ORDER BY b.id_book DESC
+                LIMIT 4";
+
+        $books = $this->getBookQuery($sql);
+
+        return $books;
     }
+
     /**
     * Request that find the books from an author
     */
-
-    public function findByAuthor(string $author): array
+    public function findByAuthor(string $author): ?array
     {
-        return $this->createQueryBuilder('b')
-            ->leftJoin('b.idAuthor', 'a')
-            ->leftJoin('b.idCategory', 'c')
-            ->leftJoin('b.idUser', 'u')
-            ->select('b.title, b.idBook, b.image, b.description, b.numberOfPages, b.editor, b.releaseDate, 
-            a.idAuthor, c.idCategory, a.idAuthor, u.idUser')
-            ->andWhere('a.authorName LIKE :author_name')
-            ->setParameter('author_name', '%' . $author . '%')
-            ->getQuery()
-            ->getResult();
+        $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, 
+                    b.release_date, GROUP_CONCAT(a.author_name) as author_names
+                FROM BOOK b
+                LEFT JOIN WWRITE w ON b.id_book = w.id_book
+                LEFT JOIN AUTHOR a ON w.id_author = a.id_author
+                WHERE a.author_name LIKE '%$author%'
+                GROUP BY b.id_book";
+
+        return $this->getBookQuery($sql);
     }
     /**
     * Request that find a book by its id
@@ -84,16 +90,17 @@ class BookRepository extends ServiceEntityRepository
 
     public function findById(int $id): ?array
     {
-        return $this->createQueryBuilder('b')
-            ->leftJoin('b.idAuthor', 'a')
-            ->leftJoin('b.idCategory', 'c')
-            ->leftJoin('b.idLanguage', 'l')
-            ->select('b.title, b.idBook, b.image, b.description, b.numberOfPages, b.editor, b.releaseDate,
-            a.idAuthor, c.idCategory, l.idLanguage')
-            ->where('b.idBook = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getResult();
+        $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, b.release_date, 
+                    GROUP_CONCAT(a.author_name) as author_names
+                FROM BOOK b
+                LEFT JOIN WWRITE w ON b.id_book = w.id_book
+                LEFT JOIN AUTHOR a ON w.id_author = a.id_author
+                WHERE b.id_book = $id
+                GROUP BY b.id_book
+                ORDER BY b.id_book DESC
+                LIMIT 4";
+
+        return $this->getBookQuery($sql);
     }
     /**
     * Request that find books by a part of its
@@ -107,6 +114,21 @@ class BookRepository extends ServiceEntityRepository
             ->setParameter('title', '%' . $title . '%')
             ->getQuery()
             ->getResult();
+    }
+
+    public function getBookQuery(string $sql)
+    {
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addScalarResult('id_book', 'idBook', 'integer');
+        $rsm->addScalarResult('title', 'title');
+        $rsm->addScalarResult('image', 'image');
+        $rsm->addScalarResult('description', 'description');
+        $rsm->addScalarResult('number_of_pages', 'numberOfPages', 'integer');
+        $rsm->addScalarResult('editor', 'editor');
+        $rsm->addScalarResult('release_date', 'releaseDate', 'datetime');
+        $rsm->addScalarResult('author_names', 'authors');
+
+        return $this->getEntityManager()->createNativeQuery($sql, $rsm)->getResult();
     }
 
     //    /**

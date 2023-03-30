@@ -8,8 +8,6 @@ function Profile() {
 
     const [currentUser, setCurrentUser] = useState<User>(JSON.parse(localStorage.getItem('user')!));
 
-    console.log(localStorage.getItem('user'))
-
     return (
         <>
             {currentUser && (

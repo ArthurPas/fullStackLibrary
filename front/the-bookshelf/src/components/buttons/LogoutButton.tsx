@@ -21,8 +21,6 @@ function Logout() {
 			localStorage.removeItem("accessToken");
 			localStorage.removeItem("user");
 			window.location.reload();
-		} else {
-			console.log(localStorage.getItem("accessToken"));
 		}
 	};
 
