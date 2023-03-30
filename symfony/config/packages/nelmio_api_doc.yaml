@@ -65,6 +65,17 @@ nelmio_api_doc:
                             type: "integer"
                             description: "id of the user who borrow the book"
                             example: "1"
+                Pagination:
+                    type: "object"
+                    properties:
+                        page:
+                            type: "integer"
+                            description: "page number"
+                            example: "1"
+                        limit:
+                            type: "integer"
+                            description: "number of books to display"
+                            example: "10"
     areas: # to filter documented areas
         path_patterns:
             - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
