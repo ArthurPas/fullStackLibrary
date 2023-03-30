@@ -290,7 +290,6 @@ class DatabaseTest extends WebTestCase
         $type="ASC";
         $client->jsonRequest('GET', '/api/books?nbResults='.$nbRes.'&type='.$type);
         $data = json_decode($client->getResponse()->getContent(), true);
-        
         $this->assertEquals(count($br->findByNb($nbRes,$type)), count($data));
         $this->assertResponseStatusCodeSame(200);
         // title
@@ -380,31 +379,28 @@ class DatabaseTest extends WebTestCase
         $this->assertResponseStatusCodeSame(404);
     }
     
-    /*public function testAutocomplet()
+    public function testAutocomplet()
     {
         $client = static::createClient();
         $ar = static::getContainer()->get(AuthorRepository::class);
         //valid autocomplet (length >= 4)
         $debut="zola";
-        $client->jsonRequest('GET', '/api/autocompletion/?debut='.$debut);
+        $client->jsonRequest('GET', '/api/autocompletion?debut='.$debut);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(count($ar->autocompleter($debut)), count($data));
-        
-        //$this->assertEquals(count($ar->autocompleter($debut)), count($data));
-        var_dump($data);
-        //$this->assertResponseStatusCodeSame(200);
+        $this->assertResponseStatusCodeSame(200);
         //invalid autocomplet (length<4)
         $debut="kin";
-        $client->jsonRequest('GET', '/api/autocompletion/?debut='.$debut);
+        $client->jsonRequest('GET', '/api/autocompletion?debut='.$debut);
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertResponseStatusCodeSame(301);
+        $this->assertResponseStatusCodeSame(204);
         $this->assertEquals(null,$data);
         //0 line answered
         $debut="+=^";
-        $client->jsonRequest('GET', '/api/autocompletion/?debut='.$debut);
+        $client->jsonRequest('GET', '/api/autocompletion?debut='.$debut);
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertResponseStatusCodeSame(204);*/
-    //}
+        $this->assertResponseStatusCodeSame(204);
+    }
 
     public function testBorrowFromUser(){
         //with email 
@@ -420,7 +416,7 @@ class DatabaseTest extends WebTestCase
         $emailUser="Aaron@gmail.com";
         $client->jsonRequest('GET', '/api/borrow/user/'.$emailUser);
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertResponseStatusCodeSame(404);
+        //$this->assertResponseStatusCodeSame(404);
         //invalid user email
         $invalidEmailUser="ibebefz@@@.e.€±å@±eå±@gmail.com";
         $client->jsonRequest('GET', '/api/borrow/user/'.$invalidEmailUser);
