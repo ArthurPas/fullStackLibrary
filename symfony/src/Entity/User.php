@@ -10,7 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table(name="USER")
+ * @ORM\Table(name="USER", uniqueConstraints={@ORM\UniqueConstraint(name="EMAIL",
+ * columns={"EMAIL"})})
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User
@@ -27,28 +28,32 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="FIRSTNAME", type="string", length=255, nullable=false, options={"fixed"=true})
+     * @ORM\Column(name="FIRSTNAME", type="string", length=255, nullable=false,
+     * options={"fixed"=true})
      */
     private $firstname;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="LASTNAME", type="string", length=255, nullable=false, options={"fixed"=true})
+     * @ORM\Column(name="LASTNAME", type="string", length=255, nullable=false,
+     * options={"fixed"=true})
      */
     private $lastname;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="EMAIL", type="string", length=255, nullable=false, options={"fixed"=true})
+     * @ORM\Column(name="EMAIL", type="string", length=255, nullable=false,
+     * options={"fixed"=true})
      */
     private $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="PASSWORD", type="string", length=255, nullable=false, options={"fixed"=true})
+     * @ORM\Column(name="PASSWORD", type="string", length=255, nullable=false,
+     * options={"fixed"=true})
      */
     private $password;
 

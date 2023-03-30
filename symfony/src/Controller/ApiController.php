@@ -461,7 +461,11 @@ class ApiController extends AbstractController
     #[Route('/borrow/user/{utilisateur}', name: 'app_api_borrow_user', methods: "GET")]
     public function getBorrowByUser(BorrowRepository $borrow, string $utilisateur)
     {
-        $borrows = $borrow->findBorrowByUser($utilisateur);
+        if (!filter_var($utilisateur, FILTER_VALIDATE_EMAIL)) {
+            $borrows = $borrow->findBorrowByIdUser($utilisateur);
+        } else {
+            $borrows = $borrow->findBorrowByUser($utilisateur);
+        }
         if (count($borrows) === 0) { // if the request return 0 line
             return new JsonResponse(['error' => 'No borrows or users found'], Response::HTTP_NOT_FOUND);
         }
@@ -688,7 +692,6 @@ class ApiController extends AbstractController
 
     #[Route('/logout', name: 'app_api_logout', methods: "POST")]
     public function logout(
-        EntityManagerInterface $em,
         Request $request,
         UserRepository $ur
     ): Response {
@@ -700,7 +703,7 @@ class ApiController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
         $ExpectedUser->setToken(null);
-        $em->persist($ExpectedUser);
+        $ur->save($ExpectedUser, true);
         return $this->json([
            'message' => 'success',
         ], Response::HTTP_OK);

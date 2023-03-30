@@ -9,9 +9,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * Borrow
  *
- * @ORM\Table(name="BORROW", indexes={@ORM\Index(name="I_FK_BORROW_BOOK", columns={"ID_BOOK"}),
+ * @ORM\Table(name="BORROW", indexes={@ORM\Index(name="I_FK_BORROW_BOOK",
+ * columns={"ID_BOOK"}),
  * @ORM\Index(name="I_FK_BORROW_USER", columns={"ID_USER"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\BorrowRepository")
  */
 class Borrow
 {

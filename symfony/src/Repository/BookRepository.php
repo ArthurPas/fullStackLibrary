@@ -41,13 +41,40 @@ class BookRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    /**
-    * Request that finds a certain number of books
-    * depending on the param nb. It will be sorted
-    * by ASC if the param is "recent" and DESC if
-    * it's "old"
-    */
 
+    public function findOneById($value): ?Book
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.idBook = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    public function findSomeWithSeveralAuthors(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->innerjoin('b.idAuthor', 'a')
+            ->groupBy('b.idBook')
+            ->having('COUNT(a.idAuthor) > :val')
+            ->setParameter('val', 1)
+            ->getQuery()
+            ->getScalarResult()
+        ;
+    }
+
+    public function findSomeWithOneAuthor(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->innerjoin('b.idAuthor', 'a')
+            ->groupBy('b.idBook')
+            ->having('COUNT(a.idAuthor) = :val')
+            ->setParameter('val', 1)
+            ->getQuery()
+            ->getScalarResult()
+        ;
+    }
     public function findByNb(int $nb, string $type): array
     {
         if ($type != 'ASC' && $type != 'DESC') {
