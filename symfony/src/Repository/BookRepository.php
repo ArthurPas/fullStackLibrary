@@ -43,7 +43,7 @@ class BookRepository extends ServiceEntityRepository
     }
 
     /**
-     * Request that find the books from a his id 
+     * Request that find the books from a his id
      */
     public function findOneById($value): ?Book
     {
