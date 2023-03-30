@@ -4,20 +4,34 @@ import { User } from "@/utils/Types";
 import { useState } from "react";
 import { useQuery } from "react-query";
 
+/**
+ * @component Follows - A page to display the users followed by the logged in user
+ * 
+ * @returns {JSX.Element} - The Follows component
+ * 
+ * @example <Follows/>
+ */
 function Follows() {
 
-    const [follows, setFollows] = useState<any>([]);
-
+    // Store the logged in user in a state
     const [user , setUser] = useState<User>(JSON.parse(localStorage.getItem("user")!));
 
+    // Fetch the users followed by the logged in user using react-query's useQuery hook
     const { data, status } = useQuery("follows", () => fetchFollows());
 
-    const { data: recommendations, status: statusrecommendations } = useQuery("recommendations", () => fetchrecommendations(), {
+    // Get recommandations of users to follow using react-query's useQuery hook
+    const { data: recommendations, status: statusrecommendations } = useQuery("recommendations", () => fetchRecommendations(), {
         enabled: localStorage.getItem("accessToken") ? true : false,
         refetchOnWindowFocus: false,
     });
 
-    const fetchrecommendations = async () => {
+    /**
+     * @function fetchRecommendations - Fetch recommendations of users to follow
+     * details: the recommanded users are not already followed by the logged in user
+     * 
+     * @returns {Promise<User[]>} - The users to follow
+     */
+    const fetchRecommendations = async () => {
         const response = await fetch(`${BASE_API_URL}/recommendation?idUser=${user.idUser}`);
 
         if (!response.ok) {
@@ -27,6 +41,11 @@ function Follows() {
         return await response.json();
     }
 
+    /**
+     * @function fetchFollows - Fetch the users followed by the logged in user
+     * 
+     * @returns {Promise<User[]>} - The users followed by the logged in user
+     */
     const fetchFollows = async () => {
         const response = await fetch(`${BASE_API_URL}/follow/${user.idUser}`);
 
@@ -37,6 +56,13 @@ function Follows() {
         return await response.json();
     }
 
+    /**
+     * @function statusHandler - Handle the status of the fetch request
+     * 
+     * @param {string} status - The status of the fetch request
+     * 
+     * @returns {JSX.Element} - The JSX element to display according to the status
+     */
     const statusHandler = (status: string) => {
         switch (status) {
             case "loading":
@@ -49,7 +75,6 @@ function Follows() {
                 }
                 return (
                     data.map((follow: User) => {
-                        console.log(follow)
                         return (
                             <UserCard user={follow} key={follow.idUser} following={true}/>
                         );

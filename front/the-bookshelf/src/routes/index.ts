@@ -1,3 +1,6 @@
+/**
+ * @fileoverview used to export all the routes in the routes folder
+ */
 export {default as Home } from './Home';
 export {default as Auth } from './Auth';
 export {default as Root } from './Root';

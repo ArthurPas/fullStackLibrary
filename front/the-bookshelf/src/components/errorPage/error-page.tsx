@@ -1,10 +1,15 @@
-import { useRouteError } from "react-router-dom";
 import "@lottiefiles/lottie-player";
 import "./_error-page.scss";
 import BackToHome from "../buttons/BackToHomeButton";
 
+/**
+ * @component ErrorPage - Display a page when an error occurs
+ * 
+ * @returns {JSX.Element} - The ErrorPage component
+ * 
+ * @example <ErrorPage/>
+ */
 function ErrorPage() {
-	const error = useRouteError();
 
 	return (
         <div className="error__page">

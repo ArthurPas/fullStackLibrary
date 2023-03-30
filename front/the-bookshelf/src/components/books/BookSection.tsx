@@ -2,11 +2,26 @@ import { Book } from "@/utils/Types";
 import BookCard from "./BookCard";
 import "./_books.scss"
 
+/**
+ * @interface BookSectionProps - Defines the props of the BookSection component
+ * 
+ * @property {string} title - The title of the section
+ * @property {Book[]} books - The books to display
+ */
 interface BookSectionProps {
     title: string;
-    books: Object[];
+    books: Book[];
 }
 
+/**
+ * @component BookSection - Display a section with a title and a list of books
+ * 
+ * @param {BookSectionProps} props - The props of the component
+ * 
+ * @returns {JSX.Element} - The BookSection component
+ * 
+ * @example <BookSection title="Recently added books" books={newBooks}/>
+ */
 function BookSection({title, books}: BookSectionProps) {
 
     return (

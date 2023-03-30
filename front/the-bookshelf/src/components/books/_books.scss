@@ -8,7 +8,6 @@
     & > .books__row {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(v.$book-card-img-size, 1fr));
-        grid-template-rows: 5fr auto;
         row-gap: 2em;
         width: 100%;
     }
@@ -17,7 +16,6 @@
 .book__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-    grid-template-rows: 5fr auto;
     row-gap: 4em;
     width: 80%;
     place-items: center;

@@ -1,6 +1,14 @@
 import "@lottiefiles/lottie-player";
 import "./_placeholder.scss";
 
+/**
+ * @component StartSearching - Display a placeholder on the home page
+ * when the user is not logged in.
+ * 
+ * @returns {JSX.Element} - The StartSearching component
+ * 
+ * @example <StartSearching/>
+ */
 function StartSearching() {
 
     return (

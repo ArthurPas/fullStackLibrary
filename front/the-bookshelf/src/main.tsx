@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { ErrorPage } from "@/components";
 import { Auth, Home, Root, Search, BookPage, Profile, Follows } from "@/routes";
-import '@/style/global.scss';
+import '@/style/_global.scss';
 
 const router = createBrowserRouter([
 	{

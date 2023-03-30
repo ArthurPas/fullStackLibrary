@@ -1,6 +1,12 @@
-import Logo from "../../assets/logo-iut.svg";
 import "./_hero-banner.scss";
 
+/**
+ * @component HeroBanner - Display the hero banner of the home page
+ * 
+ * @returns {JSX.Element} - The HeroBanner component
+ * 
+ * @example <HeroBanner/>
+ */
 function HeroBanner() {
 	return (
 		<div className="hero__banner">

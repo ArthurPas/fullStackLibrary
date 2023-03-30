@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Types for entities used in the application 
+ */
+
 export type User = {
     idUser: number;
     firstname: string;

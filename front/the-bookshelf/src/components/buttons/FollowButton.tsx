@@ -3,12 +3,28 @@ import { User } from "@/utils/Types";
 import { useState } from "react";
 import { FiUserPlus, FiUserMinus } from "react-icons/fi";
 
+/**
+ * @interface FollowButtonProps - The props for the FollowButton component
+ * 
+ * @property {User} targetUser - The user to follow/unfollow
+ * @property {boolean} following - Whether the user is following the targetUser or not
+ * @property {function} setFollowing - A function to set the following state
+ */
 interface FollowButtonProps {
     targetUser: User;
     following: boolean;
     setFollowing: (following: boolean) => void;
 }
 
+/**
+ * @component FollowButton - A button to follow/unfollow a user
+ * 
+ * @param {FollowButtonProps} props - The props for the FollowButton component
+ * 
+ * @returns {JSX.Element} - The FollowButton component
+ * 
+ * @example <FollowButton targetUser={user} following={following} setFollowing={setFollowing}/>
+ */
 function FollowButton({ targetUser, following, setFollowing }: FollowButtonProps) {
 
     const [user, setUser] = useState<User>(JSON.parse(localStorage.getItem("user")!));

@@ -1,17 +1,29 @@
-import { useState } from "react";
-import { FaFeatherAlt } from "react-icons/fa";
-import { useQuery } from "react-query";
-import { BASE_API_URL } from "@/utils/Constants";
-import { FaBook } from "react-icons/fa";
+import { FaFeatherAlt, FaBook } from "react-icons/fa";
 import { BsFillCalendarDateFill, BsBroadcastPin } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { Book } from "@/utils/Types";
 
+/**
+ * @interface BookCardProps - Defines the props for the BookCard component
+ * 
+ * @property {Book} book - The book to display
+ * @property {boolean} small - If the card is small or not, if true, the card                         will be smaller and display less information
+ */
 interface BookCardProps {
     book: Book;
     small: boolean;
 }
 
+/**
+ * @component BookCard - Display a book card with the book's information
+ * 
+ * @param {BookCardProps} props - The props of the component
+ * 
+ * @returns {JSX.Element} - The BookCard component
+ * 
+ * @example <BookCard book={book} small={false}/>
+ * 
+ */
 function BookCard({book, small}: BookCardProps) {
 
     return (

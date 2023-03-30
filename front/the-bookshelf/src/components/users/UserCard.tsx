@@ -8,17 +8,40 @@ import BookCard from "../books/BookCard";
 import FollowButton from "../buttons/FollowButton";
 import "./_user-card.scss";
 
+/**
+ * @interface UserCardProps - The props for the UserCard component
+ * 
+ * @property {User} user - The user to display on the card
+ * @property {boolean} following - Whether the user who's logged in is 
+ *                                 following the user of the card or not
+ */
 interface UserCardProps {
     user: User;
     following: boolean;
 }
 
+/**
+ * @component UserCard - A card to display a user's information
+ * 
+ * @param {UserCardProps} props - The props for the UserCard component
+ * 
+ * @returns {JSX.Element} - The UserCard component
+ * 
+ * @example <UserCard user={user} following={following}/>
+ */
 function UserCard({ user, following }: UserCardProps) {
 
+    // Tell if the logged in user is following the user of the card
     const [isFollowing, setIsFollowing] = useState<boolean>(following);
 
-    const { data: borrowedBooks, status } = useQuery(["borrowedBooks", user.email], () => fetchBorrowedBooks());
+    // Fetch the books borrowed by the user of the card using useQuery
+    const { data: borrowedBooks } = useQuery(["borrowedBooks", user.email], () => fetchBorrowedBooks());
 
+    /**
+     * @function fetchBorrowedBooks - Fetch the books borrowed by the user of the card
+     * 
+     * @returns {Promise<any>} - The last 3 books borrowed by the user of the card
+     */
     const fetchBorrowedBooks = async () => {
         const response = await fetch(`${BASE_API_URL}/borrow/user/${user.email}`);
 
@@ -26,7 +49,10 @@ function UserCard({ user, following }: UserCardProps) {
             throw new Error("Something went wrong");
         }
 
-        return await response.json();
+        let booksArray = await response.json();
+        if(booksArray.length > 0)booksArray = booksArray.slice(0, 3)
+
+        return booksArray;
     }
 
     return (

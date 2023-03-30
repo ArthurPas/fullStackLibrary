@@ -1,3 +1,6 @@
+/**
+ * @fileoverview used to export all the components in the components folder
+ */
 export { default as ErrorPage } from './errorPage/error-page';
 export { default as Nav } from './nav/Nav';
 export { default as SearchInput } from './forms/inputs/SearchInput';
