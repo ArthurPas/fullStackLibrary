@@ -74,7 +74,8 @@ class BookRepository extends ServiceEntityRepository
     */
     public function findByAuthor(string $author): ?array
     {
-        $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, b.release_date, GROUP_CONCAT(a.author_name) as author_names
+        $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, 
+                    b.release_date, GROUP_CONCAT(a.author_name) as author_names
                 FROM BOOK b
                 LEFT JOIN WWRITE w ON b.id_book = w.id_book
                 LEFT JOIN AUTHOR a ON w.id_author = a.id_author
@@ -89,7 +90,8 @@ class BookRepository extends ServiceEntityRepository
 
     public function findById(int $id): ?array
     {
-        $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, b.release_date, GROUP_CONCAT(a.author_name) as author_names
+        $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, b.release_date, 
+                    GROUP_CONCAT(a.author_name) as author_names
                 FROM BOOK b
                 LEFT JOIN WWRITE w ON b.id_book = w.id_book
                 LEFT JOIN AUTHOR a ON w.id_author = a.id_author
