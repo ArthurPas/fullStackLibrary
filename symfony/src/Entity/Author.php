@@ -31,7 +31,7 @@ class Author
      * @ORM\Column(name="AUTHOR_NAME", type="string", length=255, nullable=false,
      * options={"fixed"=true})
      */
-    #[Groups(['nomAuteur'])]
+    #[Groups(['AuthorName'])]
     private $authorName;
 
     /**

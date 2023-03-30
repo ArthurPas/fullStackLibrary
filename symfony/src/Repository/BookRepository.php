@@ -42,16 +42,21 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Request that find the books from a his id
+     */
     public function findOneById($value): ?Book
     {
         return $this->createQueryBuilder('b')
             ->andWhere('b.idBook = :val')
             ->setParameter('val', $value)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
 
+    /*
+    * Request that find the books from a his title
+    */
     public function findSomeWithSeveralAuthors(): array
     {
         return $this->createQueryBuilder('b')
@@ -60,8 +65,7 @@ class BookRepository extends ServiceEntityRepository
             ->having('COUNT(a.idAuthor) > :val')
             ->setParameter('val', 1)
             ->getQuery()
-            ->getScalarResult()
-        ;
+            ->getScalarResult();
     }
 
     public function findSomeWithOneAuthor(): array
@@ -72,15 +76,13 @@ class BookRepository extends ServiceEntityRepository
             ->having('COUNT(a.idAuthor) = :val')
             ->setParameter('val', 1)
             ->getQuery()
-            ->getScalarResult()
-        ;
+            ->getScalarResult();
     }
     public function findByNb(int $nb, string $type): array
     {
         if ($type != 'ASC' && $type != 'DESC') {
             return [];
         }
-
         $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, 
                     b.editor, b.release_date, 
                     GROUP_CONCAT(a.author_name) as author_names
@@ -88,8 +90,8 @@ class BookRepository extends ServiceEntityRepository
                 LEFT JOIN WWRITE w ON b.id_book = w.id_book
                 LEFT JOIN AUTHOR a ON w.id_author = a.id_author
                 GROUP BY b.id_book
-                ORDER BY b.id_book DESC
-                LIMIT 4";
+                ORDER BY b.id_book $type
+                LIMIT $nb";
 
         $books = $this->getBookQuery($sql);
 
@@ -97,8 +99,8 @@ class BookRepository extends ServiceEntityRepository
     }
 
     /**
-    * Request that find the books from an author
-    */
+     * Request that find the books from an author
+     */
     public function findByAuthor(string $author): ?array
     {
         $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, 
@@ -112,9 +114,47 @@ class BookRepository extends ServiceEntityRepository
         return $this->getBookQuery($sql);
     }
     /**
-    * Request that find a book by its id
-    */
+     * Request that find a book by its id
+     */
+    public function findByIds(int $id): ?Book
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.idBook = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
+    public function findTitleByBookId(int $id): ?array
+    {
+        return $this->createQueryBuilder('b')
+            ->select('b.title')
+            ->where('b.idBook = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /*
+     * Request that find the author of a book by the id of the book
+     */
+    public function findAuthorByBookId(int $id): ?array
+    {
+        $sql = "SELECT a.author_name
+                FROM AUTHOR a
+                LEFT JOIN WWRITE w ON a.id_author = w.id_author
+                LEFT JOIN BOOK b ON w.id_book = b.id_book
+                WHERE b.id_book = $id";
+
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addScalarResult('author_name', 'authorName');
+
+        return $this->getEntityManager()->createNativeQuery($sql, $rsm)->getResult();
+    }
+
+    /*
+     * Request that find the author of a book by its id
+     */
     public function findById(int $id): ?array
     {
         $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, b.release_date, 
@@ -130,18 +170,23 @@ class BookRepository extends ServiceEntityRepository
         return $this->getBookQuery($sql);
     }
     /**
-    * Request that find books by a part of its
-    * title
-    */
+     * Request that find books by a part of its
+     * title
+     */
 
     public function findByTitle(string $title)
     {
-        return $this->createQueryBuilder('b')
-            ->where('b.title LIKE :title')
-            ->setParameter('title', '%' . $title . '%')
-            ->getQuery()
-            ->getResult();
+        $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, b.release_date, 
+                    GROUP_CONCAT(a.author_name) as author_names
+                FROM BOOK b
+                LEFT JOIN WWRITE w ON b.id_book = w.id_book
+                LEFT JOIN AUTHOR a ON w.id_author = a.id_author
+                WHERE b.title LIKE '%$title%'
+                GROUP BY b.id_book";
+
+        return $this->getBookQuery($sql);
     }
+
 
     public function getBookQuery(string $sql)
     {

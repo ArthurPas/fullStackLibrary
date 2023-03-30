@@ -10,8 +10,8 @@ function Home() {
 
     const { data, status } = useQuery('books', () => fetchRecentsBooks(4));
 
-    const fetchRecentsBooks = async (nbBooks: number) => {
-        const response = await fetch(`${BASE_API_URL}/books?nbResults=${nbBooks}&type=DESC`);
+    const fetchRecentsBooks = async (nbResults: number) => {
+        const response = await fetch(`${BASE_API_URL}/books?nbResults=${nbResults}&type=DESC`);
 
         if (!response.ok) {
             throw new Error('Something went wrong');

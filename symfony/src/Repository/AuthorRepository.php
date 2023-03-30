@@ -85,7 +85,7 @@ class AuthorRepository extends ServiceEntityRepository
     * Request that finds all the author with the same
     * beginning of the name
     */
-    public function autocompleter(string $mot): array
+    public function autocompletion(string $mot): array
     {
         return $this->createQueryBuilder('a')
            ->andWhere('a.authorName LIKE :mot')

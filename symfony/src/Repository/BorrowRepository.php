@@ -45,33 +45,25 @@ class BorrowRepository extends ServiceEntityRepository
     public function findSomeBorrowNotReturned(): array
     {
         return $this->createQueryBuilder('b')
-        ->andWhere('b.endDate IS NULL')
-        ->getQuery()
-        ->getResult()
-        ;
+            ->andWhere('b.endDate IS NULL')
+            ->getQuery()
+            ->getResult();
     }
 
     /**
      * Request that find the borrows of an user
      */
-    public function findBorrowByUser($utilisateur): array
+    public function findBorrowByUser($user): array
     {
-        $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, b.release_date,
-                    GROUP_CONCAT(a.author_name) as author_names
-                FROM BOOK b
-                LEFT JOIN WWRITE w ON b.id_book = w.id_book
-                LEFT JOIN AUTHOR a ON w.id_author = a.id_author
-                WHERE b.id_book IN (
-                    SELECT bo.id_book
-                    FROM BORROW bo
-                    LEFT JOIN USER u ON bo.id_user = u.id_user
-                    WHERE u.email = '$utilisateur'
-                )
-                GROUP BY b.id_book
-                ORDER BY b.id_book DESC";
-
-
-        return $this->bookRepository->getBookQuery($sql);
+        return $this->createQueryBuilder('bo')
+            ->leftJoin('bo.idUser', 'u')
+            ->leftJoin('bo.idBook', 'b')
+            ->select('bo.endDate, bo.startDate, b.idBook, b.title, b.image', 'b.description, 
+            b.numberOfPages, b.editor, b.releaseDate', 'bo.idBorrow')
+            ->andWhere('u.email = :id')
+            ->setParameter('id', $user)
+            ->getQuery()
+            ->getResult();
     }
 
     public function findBorrowByIdUser($id): array
@@ -110,4 +102,29 @@ class BorrowRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    //    /**
+    //     * @return Borrow[] Returns an array of Borrow objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('b')
+    //            ->andWhere('b.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('b.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?Borrow
+    //    {
+    //        return $this->createQueryBuilder('b')
+    //            ->andWhere('b.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }
