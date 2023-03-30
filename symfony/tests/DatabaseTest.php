@@ -277,7 +277,7 @@ class DatabaseTest extends WebTestCase
         $this->assertEquals(null, $ur->findOneByToken($user->getToken()));
     }
 
-    
+
     /**
      * Test la route /api/books
      */
@@ -286,21 +286,21 @@ class DatabaseTest extends WebTestCase
         $client = static::createClient();
         $br = static::getContainer()->get(BookRepository::class);
         //nbResults & type
-        $nbRes=10;
-        $type="ASC";
-        $client->jsonRequest('GET', '/api/books?nbResults='.$nbRes.'&type='.$type);
+        $nbRes = 10;
+        $type = "ASC";
+        $client->jsonRequest('GET', '/api/books?nbResults=' . $nbRes . '&type=' . $type);
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals(count($br->findByNb($nbRes,$type)), count($data));
+        $this->assertEquals(count($br->findByNb($nbRes, $type)), count($data));
         $this->assertResponseStatusCodeSame(200);
         // title
-        $title ="It";
-        $client->jsonRequest('GET', '/api/books?title='.$title);
+        $title = "It";
+        $client->jsonRequest('GET', '/api/books?title=' . $title);
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals(count($br->findByTitle($title)),count($data));
+        $this->assertEquals(count($br->findByTitle($title)), count($data));
         $this->assertResponseStatusCodeSame(200);
         // author
-        $author="Voltaire";
-        $client->jsonRequest('GET', '/api/books?author='.$author);
+        $author = "Voltaire";
+        $client->jsonRequest('GET', '/api/books?author=' . $author);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals(count($br->findByAuthor($author)), count($data));
@@ -311,14 +311,14 @@ class DatabaseTest extends WebTestCase
         $client = static::createClient();
         $ar = static::getContainer()->get(AuthorRepository::class);
         //known author
-        $authorId=4;
-        $client->jsonRequest('GET', '/api/author/'.$authorId);
+        $authorId = 4;
+        $client->jsonRequest('GET', '/api/author/' . $authorId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(count($ar->findAuthorById($authorId)), count($data));
         $this->assertResponseStatusCodeSame(200);
         //unknown author
-        $authorId=3875932759573987;
-        $client->jsonRequest('GET', '/api/author/'.$authorId);
+        $authorId = 3875932759573987;
+        $client->jsonRequest('GET', '/api/author/' . $authorId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(404);
     }
@@ -328,14 +328,14 @@ class DatabaseTest extends WebTestCase
         $client = static::createClient();
         $ur = static::getContainer()->get(UserRepository::class);
         //user who follow someone
-        $followId=5;
-        $client->jsonRequest('GET', '/api/follow/'.$followId);
+        $followId = 5;
+        $client->jsonRequest('GET', '/api/follow/' . $followId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(count($ur->findUserFollowings($followId)), count($data));
         $this->assertResponseStatusCodeSame(200);
         //user who follow no one
-        $followId=6;
-        $client->jsonRequest('GET', '/api/follow/'.$followId);
+        $followId = 6;
+        $client->jsonRequest('GET', '/api/follow/' . $followId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(404);
     }
@@ -345,15 +345,15 @@ class DatabaseTest extends WebTestCase
         $client = static::createClient();
         $ur = static::getContainer()->get(UserRepository::class);
         //user who follow someone
-        $followId=6;
-        $client->jsonRequest('GET', '/api/followed/'.$followId);
+        $followId = 6;
+        $client->jsonRequest('GET', '/api/followed/' . $followId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(count($ur->findByUserIsFollowed($followId)), count($data));
         $this->assertEquals($ur->findByUserIsFollowed($followId)[0]["idUser"], $data[0]['idUser']);
         $this->assertResponseStatusCodeSame(200);
         //user who follow no one
-        $followId=5;
-        $client->jsonRequest('GET', '/api/followed/'.$followId);
+        $followId = 5;
+        $client->jsonRequest('GET', '/api/followed/' . $followId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(404);
     }
@@ -363,8 +363,8 @@ class DatabaseTest extends WebTestCase
         $client = static::createClient();
         $ur = static::getContainer()->get(UserRepository::class);
 
-        $UserId=6;
-        $client->jsonRequest('GET', '/api/user/'.$UserId);
+        $UserId = 6;
+        $client->jsonRequest('GET', '/api/user/' . $UserId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(count($ur->infoUser($UserId)), count($data));
         $this->assertEquals($ur->infoUser($UserId)[0]["idUser"], $data[0]['idUser']);
@@ -373,70 +373,71 @@ class DatabaseTest extends WebTestCase
         $this->assertEquals($ur->infoUser($UserId)[0]["lastname"], $data[0]['lastname']);
         $this->assertResponseStatusCodeSame(200);
         //
-        $UserId=5160465154;
-        $client->jsonRequest('GET', '/api/user/'.$UserId);
+        $UserId = 5160465154;
+        $client->jsonRequest('GET', '/api/user/' . $UserId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(404);
     }
-    
+
     public function testAutocomplet()
     {
         $client = static::createClient();
         $ar = static::getContainer()->get(AuthorRepository::class);
         //valid autocomplet (length >= 4)
-        $debut="zola";
-        $client->jsonRequest('GET', '/api/autocompletion?debut='.$debut);
+        $debut = "zola";
+        $client->jsonRequest('GET', '/api/autocompletion?debut=' . $debut);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(count($ar->autocompleter($debut)), count($data));
         $this->assertResponseStatusCodeSame(200);
         //invalid autocomplet (length<4)
-        $debut="kin";
-        $client->jsonRequest('GET', '/api/autocompletion?debut='.$debut);
+        $debut = "kin";
+        $client->jsonRequest('GET', '/api/autocompletion?debut=' . $debut);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(204);
-        $this->assertEquals(null,$data);
+        $this->assertEquals(null, $data);
         //0 line answered
-        $debut="+=^";
-        $client->jsonRequest('GET', '/api/autocompletion?debut='.$debut);
+        $debut = "+=^";
+        $client->jsonRequest('GET', '/api/autocompletion?debut=' . $debut);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(204);
     }
 
-    public function testBorrowFromUser(){
-        //with email 
+    public function testBorrowFromUser()
+    {
+        //with email
         // user email with borrow
         $client = static::createClient();
         $br = static::getContainer()->get(BorrowRepository::class);
-        $emailUser="Evan@gmail.com";
-        $client->jsonRequest('GET', '/api/borrow/user/'.$emailUser);
+        $emailUser = "Evan@gmail.com";
+        $client->jsonRequest('GET', '/api/borrow/user/' . $emailUser);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(count($br->findBorrowByUser($emailUser)), count($data));
         $this->assertResponseStatusCodeSame(200);
         //user email without borrow
-        $emailUser="Aaron@gmail.com";
-        $client->jsonRequest('GET', '/api/borrow/user/'.$emailUser);
+        $emailUser = "Aaron@gmail.com";
+        $client->jsonRequest('GET', '/api/borrow/user/' . $emailUser);
         $data = json_decode($client->getResponse()->getContent(), true);
         //$this->assertResponseStatusCodeSame(404);
         //invalid user email
-        $invalidEmailUser="ibebefz@@@.e.€±å@±eå±@gmail.com";
-        $client->jsonRequest('GET', '/api/borrow/user/'.$invalidEmailUser);
+        $invalidEmailUser = "ibebefz@@@.e.€±å@±eå±@gmail.com";
+        $client->jsonRequest('GET', '/api/borrow/user/' . $invalidEmailUser);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(404);
         //with id
         //user id with borrow
-        $idUser=2;
-        $client->jsonRequest('GET', '/api/borrow/user/'.$idUser);
+        $idUser = 2;
+        $client->jsonRequest('GET', '/api/borrow/user/' . $idUser);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(count($br->findBorrowByIdUser($idUser)), count($data));
         $this->assertResponseStatusCodeSame(200);
         //id user without borrow
-        $idUser=495;
-        $client->jsonRequest('GET', '/api/borrow/user/'.$idUser);
+        $idUser = 495;
+        $client->jsonRequest('GET', '/api/borrow/user/' . $idUser);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(404);
         //unknown id user
-        $idUser=49554544578797;
-        $client->jsonRequest('GET', '/api/borrow/user/'.$idUser);
+        $idUser = 49554544578797;
+        $client->jsonRequest('GET', '/api/borrow/user/' . $idUser);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(404);
     }
@@ -446,21 +447,21 @@ class DatabaseTest extends WebTestCase
         $client = static::createClient();
         $br = static::getContainer()->get(BorrowRepository::class);
         //user id with borrow
-        $userId=4;
-        $client->jsonRequest('GET', '/api/borrow/date/'.$userId);
+        $userId = 4;
+        $client->jsonRequest('GET', '/api/borrow/date/' . $userId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(count($br->findDateOfBorrow($userId)), count($data));
         $expectedDate = $br->findDateOfBorrow($userId)[0]["startDate"]->format('Y-m-d');
-        $this->assertTrue(str_contains($data[0]["startDate"],$expectedDate));
+        $this->assertTrue(str_contains($data[0]["startDate"], $expectedDate));
         $this->assertResponseStatusCodeSame(200);
         //user without borrow
-        $userId=495;
-        $client->jsonRequest('GET', '/api/borrow/date/'.$userId);
+        $userId = 495;
+        $client->jsonRequest('GET', '/api/borrow/date/' . $userId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(404);
         //unknown user id
-        $userId=546876456879875;
-        $client->jsonRequest('GET', '/api/borrow/date/'.$userId);
+        $userId = 546876456879875;
+        $client->jsonRequest('GET', '/api/borrow/date/' . $userId);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertResponseStatusCodeSame(404);
     }

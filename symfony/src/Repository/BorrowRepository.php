@@ -50,7 +50,7 @@ class BorrowRepository extends ServiceEntityRepository
         ->getResult()
         ;
     }
-    
+
     /**
      * Request that find the borrows of an user
      */
@@ -80,7 +80,7 @@ class BorrowRepository extends ServiceEntityRepository
             ->leftJoin('bo.idUser', 'u')
             ->leftJoin('bo.idBook', 'b')
             ->select('bo.endDate, bo.startDate, b.idBook, b.title, b.image', 'b.description, 
-            b.numberOfPages, b.editor, b.releaseDate','bo.idBorrow')
+            b.numberOfPages, b.editor, b.releaseDate', 'bo.idBorrow')
             ->andWhere('u.idUser = :id')
             ->setParameter('id', $id)
             ->getQuery()
