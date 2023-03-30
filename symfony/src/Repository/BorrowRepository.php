@@ -47,12 +47,26 @@ class BorrowRepository extends ServiceEntityRepository
             ->leftJoin('bo.idUser', 'u')
             ->leftJoin('bo.idBook', 'b')
             ->select('bo.endDate, bo.startDate, b.idBook, b.title, b.image', 'b.description, 
-            b.numberOfPages, b.editor, b.releaseDate')
+            b.numberOfPages, b.editor, b.releaseDate','bo.idBorrow')
             ->andWhere('u.email = :email_utilisateur')
             ->setParameter('email_utilisateur', $utilisateur)
             ->getQuery()
             ->getResult();
     }
+
+    public function findBorrowByIdUser($id): array
+    {
+        return $this->createQueryBuilder('bo')
+            ->leftJoin('bo.idUser', 'u')
+            ->leftJoin('bo.idBook', 'b')
+            ->select('bo.endDate, bo.startDate, b.idBook, b.title, b.image', 'b.description, 
+            b.numberOfPages, b.editor, b.releaseDate','bo.idBorrow')
+            ->andWhere('u.idUser = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * Request that find the date of a borrow by its id
      */

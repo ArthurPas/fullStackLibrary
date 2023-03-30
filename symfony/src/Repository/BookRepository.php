@@ -39,11 +39,11 @@ class BookRepository extends ServiceEntityRepository
         }
     }
     /**
-    * Request that finds a certain number of books
-    * depending on the param nb. It will be sorted
-    * by ASC if the param is "recent" and DESC if
-    * it's "old"
-    */
+     * Request that finds a certain number of books
+     * depending on the param nb. It will be sorted
+     * by ASC if the param is "recent" and DESC if
+     * it's "old"
+     */
 
     public function findByNb(int $nb, string $type): array
     {
@@ -62,8 +62,8 @@ class BookRepository extends ServiceEntityRepository
             ->getResult();
     }
     /**
-    * Request that find the books from an author
-    */
+     * Request that find the books from an author
+     */
 
     public function findByAuthor(string $author): array
     {
@@ -79,26 +79,48 @@ class BookRepository extends ServiceEntityRepository
             ->getResult();
     }
     /**
-    * Request that find a book by its id
-    */
-
-    public function findById(int $id): ?array
+     * Request that find a book by its id
+     */
+    public function findById(int $id): ?Book
     {
         return $this->createQueryBuilder('b')
-            ->leftJoin('b.idAuthor', 'a')
-            ->leftJoin('b.idCategory', 'c')
-            ->leftJoin('b.idLanguage', 'l')
-            ->select('b.title, b.idBook, b.image, b.description, b.numberOfPages, b.editor, b.releaseDate,
-            a.idAuthor, c.idCategory, l.idLanguage')
             ->where('b.idBook = :id')
             ->setParameter('id', $id)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
+    }
+
+
+    /*
+        * Request that find the title of a book by its id
+        */
+    public function findTitleByBookId(int $id): ?array
+    {
+        return $this->createQueryBuilder('b')
+            ->select('b.title')
+            ->where('b.idBook = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /*
+     * Request that find the author of a book by its id
+     */
+    public function findAuthorByBookId(int $id): ?array
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.idAuthor', 'a')
+            ->select('a.authorName, a.idAuthor')
+            ->where('b.idBook = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
     /**
-    * Request that find books by a part of its
-    * title
-    */
+     * Request that find books by a part of its
+     * title
+     */
 
     public function findByTitle(string $title)
     {
