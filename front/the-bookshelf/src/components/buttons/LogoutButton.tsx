@@ -3,6 +3,8 @@ import { FiLogOut } from "react-icons/fi";
 
 function Logout() {
 	const logoutUser = async () => {
+
+		console.log( localStorage.getItem("accessToken"))
 		return fetch(`${BASE_API_URL}/logout`, {
 			method: "POST",
 			headers: {
@@ -17,7 +19,7 @@ function Logout() {
 	const handleLogout = async () => {
 		const response = await logoutUser();
 
-		if (response.message == "success") {
+		if (response.message == "success logout") {
 			localStorage.removeItem("accessToken");
 			localStorage.removeItem("user");
 			window.location.reload();

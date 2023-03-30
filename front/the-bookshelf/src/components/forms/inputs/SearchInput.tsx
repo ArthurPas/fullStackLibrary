@@ -24,7 +24,7 @@ function SearchInput({ queryString }: SearchInputProps) {
 
 	const getAutocomplete = async (query: string) => {
 		const response = await fetch(
-			`${BASE_API_URL}/autocompletion?startby=${query}`
+			`${BASE_API_URL}/autocompletion?debut=${query}`
 		);
 		if (!response.ok) {
 			throw new Error("Something went wrong");

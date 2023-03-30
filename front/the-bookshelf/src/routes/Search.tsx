@@ -12,7 +12,7 @@ function Search() {
 
 	const { data, status } = useQuery("books", () => searchBooks(20));
 
-	const searchBooks = async (nbResults: number) => {
+	const searchBooks = async (nbBooks: number) => {
 		const response = await fetch(
 			`${BASE_API_URL}/books?author=${query.get("q")}&type=DESC`
 		);

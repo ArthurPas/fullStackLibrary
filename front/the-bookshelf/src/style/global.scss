@@ -225,3 +225,11 @@ a {
     margin-top: 1em;
   }
 }
+
+
+.follows__list {
+  width: 80%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 3em;
+}

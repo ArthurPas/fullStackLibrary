@@ -197,4 +197,18 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findRandomUsers($id) {
+
+        $sql = "SELECT u.id_user, u.firstname, u.lastname, u.email, u.avatar
+                FROM USER u
+                WHERE u.id_user != :id
+                AND u.id_user NOT IN (SELECT f.id_user_is_followed FROM FOLLOW f WHERE f.id_user_follow = :id)
+                ORDER BY RAND()
+                LIMIT 4";
+
+        $stmt = $this->getEntityManager()->getConnection()->executeQuery($sql, ['id' => $id]);
+
+        return $stmt->fetchAllAssociative();
+    }
 }

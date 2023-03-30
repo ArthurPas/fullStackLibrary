@@ -18,6 +18,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints\DateTime;
+use FOS\RestBundle\View\View;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -440,8 +441,18 @@ class ApiController extends AbstractController
         return null;
     }
 
-
-
+    #
+    #[Route('/recommendation', name: 'app_recommendation', methods: "GET")]
+    public function recommendation(Request $request, UserRepository $userRepository): Response
+    {
+        $id = $request->query->get('idUser');
+        $exist = $userRepository->findById($id);
+        if ($exist == null) {
+            return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
+        }
+        $recommendation = $userRepository->findRandomUsers($id);
+        return $this->json($recommendation);
+    }
 
     /**
      * Route that returns all the books borrowed by an user
@@ -478,7 +489,7 @@ class ApiController extends AbstractController
             $borrows = $borrow->findBorrowByUser($user);
         }
         if (count($borrows) === 0) { // if the request return 0 line
-            return new JsonResponse(['error' => 'No borrows or users found'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'No borrows or users found'], Response::HTTP_OK);
         }
         return $borrows;
     }
@@ -655,6 +666,7 @@ class ApiController extends AbstractController
         response: "500",
         description: "Query syntax error",
     )]
+    #[View(serializerGroups: ['user_login'])]
     #[Route('/login', name: 'app_api_login', methods: "POST")]
     public function login(
         Request $request,
@@ -669,11 +681,12 @@ class ApiController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
         if ($ExpectedUser->getPassword() == $credentials->getPassword()) {
-            $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-'), '=');
-            $ExpectedUser->setToken($token);
-            $ur->save($ExpectedUser, true);
-
-
+            if ($ExpectedUser->getToken() == null) {
+                $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-'), '=');
+                $ExpectedUser->setToken($token);
+                $ur->save($ExpectedUser, true);
+            }
+            $token = $ExpectedUser->getToken();
             return $this->json([
                 'accessToken' => $token,
                 'user' => $ExpectedUser,
@@ -715,10 +728,8 @@ class ApiController extends AbstractController
         if ($ExpectedUser == null) {
             return $this->json([
                 'message' => 'error',
-            ], Response::HTTP_UNAUTHORIZED);
+            ], Response::HTTP_BAD_REQUEST);
         }
-        $ExpectedUser->setToken(null);
-        $ur->save($ExpectedUser, true);
         return $this->json([
             'message' => 'success logout',
         ], Response::HTTP_OK);

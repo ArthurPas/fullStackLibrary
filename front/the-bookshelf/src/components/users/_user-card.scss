@@ -1,0 +1,31 @@
+@use "../../style/variables" as v;
+
+.user__card {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1em;
+
+    & > img {
+        width: 6em;
+        height: 6em;
+        border-radius: 50%;
+        margin-bottom: 1em;
+    }
+
+    & * {
+        margin: .2em 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: .4em;
+    }
+
+    & svg {
+        color: v.$color-secondary;
+        width: 1em;
+        height: 1em;
+    }
+}

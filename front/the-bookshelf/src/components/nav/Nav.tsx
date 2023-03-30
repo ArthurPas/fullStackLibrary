@@ -18,11 +18,13 @@ function Nav() {
 			</Link>
 			<ul className="nav__items">
 				<Link to="/" className="nav__item">Home</Link>
-				<Link to="/friends" className="nav__item">Friends</Link>
 				{ !localStorage.getItem('accessToken') ? (
 					<Link to={"/login"} className="nav__item btn__secondary">Login</Link>
 				) : (
-					<NavProfile	/>
+					<>
+						<Link to="/follows" className="nav__item">Friends</Link>
+						<NavProfile	/>
+					</>
 				)}
 			</ul>
 		</nav>

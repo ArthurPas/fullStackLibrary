@@ -10,8 +10,8 @@ function Home() {
 
     const { data, status } = useQuery('books', () => fetchRecentsBooks(4));
 
-    const fetchRecentsBooks = async (nbResults: number) => {
-        const response = await fetch(`${BASE_API_URL}/books?nbResults=${nbResults}&type=DESC`);
+    const fetchRecentsBooks = async (nbBooks: number) => {
+        const response = await fetch(`${BASE_API_URL}/books?nbResults=${nbBooks}&type=DESC`);
 
         if (!response.ok) {
             throw new Error('Something went wrong');
@@ -28,6 +28,10 @@ function Home() {
             }
 
             const borrows = await responseBorrowed.json();
+
+            if (borrows.length === 0) {
+                return newBooks;
+            }
 
             return {
                 newBooks: newBooks,

@@ -5,7 +5,7 @@ import {
 	RouterProvider,
 } from "react-router-dom";
 import { ErrorPage } from "@/components";
-import { Auth, Home, Root, Search, BookPage, Profile } from "@/routes";
+import { Auth, Home, Root, Search, BookPage, Profile, Follows } from "@/routes";
 import '@/style/global.scss';
 
 const router = createBrowserRouter([
@@ -32,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile />,
+      },
+      {
+        path: "/follows",
+        element: <Follows />,
       },
       {
         path: "*",

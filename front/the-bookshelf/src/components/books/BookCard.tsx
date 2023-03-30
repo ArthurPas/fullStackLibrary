@@ -9,18 +9,19 @@ import { Book } from "@/utils/Types";
 
 interface BookCardProps {
     book: Book;
+    small: boolean;
 }
 
-function BookCard({book}: BookCardProps) {
+function BookCard({book, small}: BookCardProps) {
 
     return (
-        <Link to={`/book/${book.idBook}`} className="book__card">
+        <Link to={`/book/${book.idBook}`} className={small ? "book__card small" : "book__card"}>
             <img src={book.image || "/src/assets/book-placeholder.png"} alt=""/>
             <div className="book__card__info">
-                    <p><FaFeatherAlt/> { book.authors || "No author" }</p>
+                    {!small && (<p><FaFeatherAlt/> { book.authors || "No author" }</p>)}
                     <p><FaBook/> { book.title || "No Title" }</p>
-                    <p><BsFillCalendarDateFill/> { book.releaseDate || "-" }</p>
-                    <p><BsBroadcastPin/> { book.editor || "No editor"} </p>
+                    {!small && (<p><BsFillCalendarDateFill/> { book.releaseDate || "-" }</p>)}
+                    {!small && (<p><BsBroadcastPin/> { book.editor || "No editor"} </p>)}
             </div>
         </Link>
     )

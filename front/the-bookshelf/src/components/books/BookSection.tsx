@@ -14,8 +14,8 @@ function BookSection({title, books}: BookSectionProps) {
             <h4>{title}</h4>
             <div className="books__row">
 
-                {books ? books.map((book, index) => {
-                    return <BookCard book={(book as Book)} key={index}/>
+                {books && books.length > 0 ? books.map((book, index) => {
+                    return <BookCard small={false} book={(book as Book)} key={index}/>
                 }): <p>No books found</p>}
             </div>
         </div>

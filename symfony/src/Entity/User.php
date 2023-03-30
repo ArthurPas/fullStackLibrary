@@ -10,8 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table(name="USER", uniqueConstraints={@ORM\UniqueConstraint(name="EMAIL",
- * columns={"EMAIL"})})
+ * @ORM\Table(name="USER")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User
@@ -28,32 +27,28 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="FIRSTNAME", type="string", length=255, nullable=false,
-     * options={"fixed"=true})
+     * @ORM\Column(name="FIRSTNAME", type="string", length=255, nullable=false, options={"fixed"=true})
      */
     private $firstname;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="LASTNAME", type="string", length=255, nullable=false,
-     * options={"fixed"=true})
+     * @ORM\Column(name="LASTNAME", type="string", length=255, nullable=false, options={"fixed"=true})
      */
     private $lastname;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="EMAIL", type="string", length=255, nullable=false,
-     * options={"fixed"=true})
+     * @ORM\Column(name="EMAIL", type="string", length=255, nullable=false, options={"fixed"=true})
      */
     private $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="PASSWORD", type="string", length=255, nullable=false,
-     * options={"fixed"=true})
+     * @ORM\Column(name="PASSWORD", type="string", length=255, nullable=false, options={"fixed"=true})
      */
     private $password;
 
@@ -65,9 +60,9 @@ class User
     private $avatar;
 
     /**
-     * @var string|null
+     * @var string
      *
-     * @ORM\Column(name="TOKEN", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="TOKEN", type="text", length=65535, nullable=false)
      */
     private $token;
 
@@ -125,6 +120,7 @@ class User
         $this->idBook = new \Doctrine\Common\Collections\ArrayCollection();
         $this->idUserFollow = new \Doctrine\Common\Collections\ArrayCollection();
         $this->idUserIsFollowed = new ArrayCollection();
+        $this->token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
     }
 
     public function getIdUser(): ?string
@@ -277,8 +273,8 @@ class User
     /**
      * @return Collection<int, User>
      */
-    public function getIdUserIsFollowed(): Collection
+    public function getIdUserIsFollowed(): ?Collection
     {
-        return $this->idUserIsFollowed;
+        return null;
     }
 }

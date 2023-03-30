@@ -1,3 +1,5 @@
+@use "../../style/variables" as v;
+
 .btn__text {
     color: #898989 !important;
     display: flex;
@@ -22,4 +24,30 @@
     100% {
         transform: translateX(0);
     }
+}
+
+.follow__button {
+
+    margin: 1em 0 !important;
+    padding: .5em 1em;
+    border-radius: 1em;
+    border: none;
+    background-color: v.$color-primary;
+    color: white;
+    cursor: pointer;
+
+    &.red {
+        background-color: rgb(249, 109, 109);
+    }
+
+    & > svg {
+        width: 1.2em !important;
+        height: 1.2em !important;
+        color: white !important;
+    }
+
+    &:hover {
+        filter: brightness(0.8);
+    }
+
 }
