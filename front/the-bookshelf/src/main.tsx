@@ -5,7 +5,7 @@ import {
 	RouterProvider,
 } from "react-router-dom";
 import { ErrorPage } from "@/components";
-import { Auth, Home, Root, Search } from "@/routes";
+import { Auth, Home, Root, Search, BookPage, Profile } from "@/routes";
 import '@/style/global.scss';
 
 const router = createBrowserRouter([
@@ -24,6 +24,14 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <Search />,
+      },
+      {
+        path: "/book/:id",
+        element: <BookPage />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
       },
       {
         path: "*",

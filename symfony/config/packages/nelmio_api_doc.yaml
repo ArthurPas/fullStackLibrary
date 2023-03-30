@@ -3,7 +3,7 @@ nelmio_api_doc:
         info:
             title: API the-bookshelf
             description: This is the API documentation for the-bookshelf.
-            version: 1.0.0
+            version: 1.1.0
         components:
             schemas:
                 Login:
@@ -25,29 +25,36 @@ nelmio_api_doc:
                             description: "token of the user"
                             example: "CxFQHyVyI5O0fAmv0oBH1J/6vHcx0I95oiDjCyHSces"
                 Follow(ed):
-                    type: "integer"
-                    description: "id of the user"
-                    example: "1"
+                    type: "object"
+                    properties:
+                        idUser:
+                            type: "integer"
+                            description: "id of the user who follows"
+                            example: "1"
+                        idUserFollowed:
+                            type: "integer"
+                            description: "id of the user followed"
+                            example: "2"
                 Books:
                     type: "string"
                     properties:
                         author:
                             type: "string"
                             description: "cherch by the author name"
-                            example: "Emile Zola"
-                        nbLastBooks:
+                        title:
+                            type: "string"
+                            description: "title of books"
+                        nbBooks:
                             type: "integer"
                             description: "number of books"
-                            example: "2"
                         type:
                             type: "string"
                             description: "type of books"
-                            example: "fiction"
                 Authors:
                     type: "string"
-                    description: "cherch by author"
+                    description: "cherch by author name"
                     example: "Emil"
-                Borrows: 
+                Borrows:
                     type: "string"
                     properties:
                         idBook:

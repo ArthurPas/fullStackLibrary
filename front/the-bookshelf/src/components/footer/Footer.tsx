@@ -7,6 +7,7 @@ import {
 	AiOutlineTwitter,
 } from "react-icons/ai";
 import { GrLanguage } from "react-icons/gr";
+import { Link } from "react-router-dom";
 
 function Footer() {
 	return (
@@ -57,7 +58,7 @@ function Footer() {
             <div className="footer__bottom">
                 <a>Terms of Service</a>
                 <p>|</p>
-                <a><GrLanguage/> English</a>
+                <Link to="/404"><GrLanguage/> English</Link>
              </div>
 		</footer>
 	);

@@ -89,16 +89,33 @@ class UserRepository extends ServiceEntityRepository
     }
 
 
-    // public function follow(User $user, User $followedUser): void
-    // {
-    //     $user->addFollowedUser($followedUser);
-    //     $this->save($user, true);
-    // }
+    public function addFollow(int $id, int $idUser): void
+    {
+        $entityManager = $this->getEntityManager();
+        $userRepo = $entityManager->getRepository(User::class);
 
-    // public function listFollowedUsers(User $user): array
-    // {
-    //     return $user->getFollowedUsers()->toArray();
-    // }
+        $user = $userRepo->find($id);
+        $userToFollow = $userRepo->find($idUser);
+
+        $user->addIdUserFollow($userToFollow);
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+    }
+
+    public function unFollow(int $id, int $idUser): void
+    {
+        $entityManager = $this->getEntityManager();
+        $userRepo = $entityManager->getRepository(User::class);
+
+        $user = $userRepo->find($id);
+        $userToUnfollow = $userRepo->find($idUser);
+
+        $user->removeIdUserFollow($userToUnfollow);
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+    }
 
     //    /**
     //     * @return User[] Returns an array of User objects
@@ -114,20 +131,20 @@ class UserRepository extends ServiceEntityRepository
     //            ->getResult()
     //        ;
     //    }
-//    /**
-//     * @return User[] Returns an array of User objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('u.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //    /**
+    //     * @return User[] Returns an array of User objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('u')
+    //            ->andWhere('u.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('u.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
     public function findOneByEmail($value): ?User
     {
@@ -135,8 +152,7 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere('u.email = :val')
             ->setParameter('val', $value)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
 
     public function findSomeWithoutBorrow(): array
@@ -180,6 +196,5 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('token', $token)
             ->getQuery()
             ->getOneOrNullResult();
-        ;
     }
 }

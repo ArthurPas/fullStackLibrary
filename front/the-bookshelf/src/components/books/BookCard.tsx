@@ -3,7 +3,7 @@ import { FaFeatherAlt } from "react-icons/fa";
 import { useQuery } from "react-query";
 import { BASE_API_URL } from "@/utils/Constants";
 import { FaBook } from "react-icons/fa";
-import { BsFillCalendarDateFill } from "react-icons/bs";
+import { BsFillCalendarDateFill, BsBroadcastPin } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
 interface BookCardProps {
@@ -33,6 +33,7 @@ function BookCard({book}: BookCardProps) {
                         <p><FaFeatherAlt/> { data[0].authorName || "No author" }</p>
                         <p><FaBook/> { book.title || "No Title" }</p>
                         <p><BsFillCalendarDateFill/> { book.releaseDate || "-" }</p>
+                        <p><BsBroadcastPin/> { book.editor || "No editor"} </p>
                     </>
                 )}
             </div>

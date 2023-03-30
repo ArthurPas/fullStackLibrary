@@ -1,0 +1,25 @@
+.btn__text {
+    color: #898989 !important;
+    display: flex;
+    align-items: center;
+
+    & > * {
+        margin: 0 .5em;
+    }
+
+    &:hover > svg {
+        animation: slideIn 1s infinite;
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(0%);
+    }
+    50% {
+        transform: translateX(-50%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}

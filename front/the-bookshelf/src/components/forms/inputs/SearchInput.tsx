@@ -24,7 +24,7 @@ function SearchInput({queryString}: SearchInputProps) {
 
     return (
         <form className="input__search" onSubmit={handleSearch}>
-            <input type="text" placeholder="Book, author, tag..." value={query} onChange={(e) => setQuery(e.target.value)}/>
+            <input type="text" placeholder="Type an author..." value={query} onChange={(e) => setQuery(e.target.value)}/>
             <input className="btn__primary" type="submit" value="Search"/>
         </form>
     )
