@@ -18,7 +18,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints\DateTime;
-use FOS\RestBundle\View\View;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -666,7 +665,6 @@ class ApiController extends AbstractController
         response: "500",
         description: "Query syntax error",
     )]
-    #[View(serializerGroups: ['user_login'])]
     #[Route('/login', name: 'app_api_login', methods: "POST")]
     public function login(
         Request $request,
