@@ -22,7 +22,6 @@ class BookRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Book::class);
-
     }
 
     public function save(Book $entity, bool $flush = false): void
@@ -69,7 +68,7 @@ class BookRepository extends ServiceEntityRepository
 
         return $books;
     }
-    
+
     /**
     * Request that find the books from an author
     */
@@ -98,7 +97,7 @@ class BookRepository extends ServiceEntityRepository
                 GROUP BY b.id_book
                 ORDER BY b.id_book DESC
                 LIMIT 4";
-        
+
         return $this->getBookQuery($sql);
     }
     /**
@@ -114,8 +113,9 @@ class BookRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-   
-    public function getBookQuery(string $sql) {
+
+    public function getBookQuery(string $sql)
+    {
         $rsm = new ResultSetMappingBuilder($this->getEntityManager());
         $rsm->addScalarResult('id_book', 'idBook', 'integer');
         $rsm->addScalarResult('title', 'title');
