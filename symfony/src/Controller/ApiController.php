@@ -129,7 +129,6 @@ class ApiController extends AbstractController
         return $book;
     }
 
-
     /**
      * Route that returns the author depending on his id
      */
@@ -452,6 +451,57 @@ class ApiController extends AbstractController
         $recommendation = $userRepository->findRandomUsers($id);
         return $this->json($recommendation);
     }
+
+    /**
+     * Route that returns a paginated list of books.
+     */
+    #[OA\Tag(name: "Books")]
+    #[OA\Parameter(
+        name: "page",
+        in: "query",
+        description: "The page number of the results.",
+        required: false,
+        schema: new OA\Schema(ref: "#/components/schemas/Pagination/properties/page")
+    )]
+    #[OA\Parameter(
+        name: "limit",
+        in: "query",
+        description: "The maximum number of results per page.",
+        required: false,
+        schema: new OA\Schema(ref: "#/components/schemas/Pagination/properties/limit")
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "Paginated list of books retrieved successfully",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "No books found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+
+
+    #[AnnotationsView(serializerGroups: ['Books'])]
+    #[Route('/pagination', name: 'app_api_pagination', methods: "GET")]
+    public function pagination(Request $request, BookRepository $book)
+    {
+        $page = $request->query->getInt('page');
+        $limit = $request->query->getInt('limit');
+        $books = $book->findPaginated($page, $limit);
+
+        if (count($books) === 0) { // if the request returns 0 line
+            return new JsonResponse(['error' => 'No books found'], Response::HTTP_NOT_FOUND);
+        }
+        return $books;
+    }
+
+
+
+
+>>>>>>> symfony/src/Controller/ApiController.php
 
     /**
      * Route that returns all the books borrowed by an user
