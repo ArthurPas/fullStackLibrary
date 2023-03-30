@@ -47,6 +47,7 @@ class BorrowRepository extends ServiceEntityRepository
         ->getResult()
         ;
     }
+    
     /**
      * Request that find the borrows of an user
      */
@@ -56,12 +57,26 @@ class BorrowRepository extends ServiceEntityRepository
             ->leftJoin('bo.idUser', 'u')
             ->leftJoin('bo.idBook', 'b')
             ->select('bo.endDate, bo.startDate, b.idBook, b.title, b.image', 'b.description, 
-            b.numberOfPages, b.editor, b.releaseDate')
+            b.numberOfPages, b.editor, b.releaseDate','bo.idBorrow')
             ->andWhere('u.email = :email_utilisateur')
             ->setParameter('email_utilisateur', $utilisateur)
             ->getQuery()
             ->getResult();
     }
+
+    public function findBorrowByIdUser($id): array
+    {
+        return $this->createQueryBuilder('bo')
+            ->leftJoin('bo.idUser', 'u')
+            ->leftJoin('bo.idBook', 'b')
+            ->select('bo.endDate, bo.startDate, b.idBook, b.title, b.image', 'b.description, 
+            b.numberOfPages, b.editor, b.releaseDate','bo.idBorrow')
+            ->andWhere('u.idUser = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * Request that find the date of a borrow by its id
      */
@@ -85,29 +100,4 @@ class BorrowRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-
-//    /**
-//     * @return Borrow[] Returns an array of Borrow objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Borrow
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
