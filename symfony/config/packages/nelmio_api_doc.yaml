@@ -1,0 +1,70 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: API the-bookshelf
+            description: This is the API documentation for the-bookshelf.
+            version: 1.3.0
+        components:
+            schemas:
+                Login:
+                    type: "object"
+                    properties:
+                        email:
+                            type: "string"
+                            description: "Email of the user"
+                            example: "Nathan@gmail.com"
+                        password:
+                            type: "string"
+                            description: "Password of the user"
+                            example: "Nathan33"
+                Logout:
+                    type: "object"
+                    properties:
+                        token:
+                            type: "string"
+                            description: "token of the user"
+                            example: "CxFQHyVyI5O0fAmv0oBH1J/6vHcx0I95oiDjCyHSces"
+                Follow(ed):
+                    type: "object"
+                    properties:
+                        idUser:
+                            type: "integer"
+                            description: "id of the user who follows"
+                            example: "1"
+                        idUserFollowed:
+                            type: "integer"
+                            description: "id of the user followed"
+                            example: "2"
+                Books:
+                    type: "string"
+                    properties:
+                        author:
+                            type: "string"
+                            description: "cherch by the author name"
+                        title:
+                            type: "string"
+                            description: "title of books"
+                        nbResults:
+                            type: "integer"
+                            description: "number of books to display"
+                        type:
+                            type: "string"
+                            description: "type of books"
+                Authors:
+                    type: "string"
+                    description: "cherch by author name"
+                    example: "Emil"
+                Borrows:
+                    type: "string"
+                    properties:
+                        idBook:
+                            type: "integer"
+                            description: "id of the book to borrow"
+                            example: "1"
+                        idUser:
+                            type: "integer"
+                            description: "id of the user who borrow the book"
+                            example: "1"
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

@@ -1,0 +1,186 @@
+@use '../../style/variables' as v;
+
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 2em;
+    font-family: 'Poppins';
+    width: 100%;
+
+    margin: 0 !important;
+
+    & > * {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    & > .nav__logo {
+        gap: 1em;
+
+        & img {
+            width: v.$nav-logo-size;
+        }
+
+        & h1 {
+            font-family: 'JetBrains Mono';
+            font-weight: 400;
+            font-size: 1.5em;
+            letter-spacing: -0.07em;
+        }
+    }
+
+    & .nav__items {
+        gap: 4em;
+        list-style-type: none;
+    }
+}
+
+// Hide navbar
+nav.login__nav {
+    justify-content: center;
+    align-items: center;
+    margin: 2em 0 !important;
+}
+
+.nav__profile {
+
+    background-color: #F3F3F3;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    & > div { 
+        
+        display: flex;
+        flex-direction: row;
+        padding: .4em;
+        align-items: center;
+        justify-content: flex-start;
+        z-index: 3;
+        cursor: pointer;
+
+        & > img {
+            width: 2em;
+            border-radius: 13px;
+        }
+        
+        & > h3 {
+            font-weight: 400;
+            margin: 0 1em;
+            font-size: 1em;
+            font-family: 'Poppins';
+            display: flex;
+            align-items: center;
+            gap: .5em;
+        }
+    }
+
+    & > .nav__profile__dropdown {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #F3F3F3;
+        border-radius: 20px;
+        position: absolute;
+        top: 100px;
+        right: 70px;
+        z-index: 1;
+        padding: .4em .8em;
+        border: 1px solid rgba($color: #000000, $alpha: 0.05);
+        box-shadow: 0px 5px 5px rgba($color: #000000, $alpha: 0.15);
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: 30px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid #F3F3F3;
+        }
+
+        & > a {
+            font-size: .8em;
+            cursor: pointer;
+            font-family: 'Poppins';
+            font-weight: 400;
+            color: #2E2E2E;
+            margin: 0.6em 0;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5em;
+            border-radius: 5px;
+            padding: .5em;
+            width: 100%;
+
+            & > svg {
+                width: 1.2em;
+                height: 1.2em;
+            }
+            
+            &:hover {
+                background: rgba($color: #000000, $alpha: 0.05)
+            }
+
+            & > div > p {
+                font-size: .2em;
+            }
+        }
+
+        & > h5 {
+            font-size: 1em;
+            font-weight: 400;
+            color: #2E2E2E;
+            margin: 0.6em 0;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5em;
+            border-radius: 5px;
+            padding: .5em;
+            width: 100%;
+
+            & > div {
+
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: center;
+                gap: .1em;
+
+                & > p {
+                    font-size: .6em;
+                    color:rgba($color: #000000, $alpha: .7)
+                }
+                
+                & > a {
+                    color: v.$color-primary;
+                    font-family: 'Poppins';
+                    font-size: .4em;
+                }
+            }
+
+            & > img {
+                width: 1.6em;
+                height: 1.6 em;
+                border-radius: 100%;
+            }
+        }
+
+        & > hr {
+            width: 80%;
+        }
+    }
+
+}

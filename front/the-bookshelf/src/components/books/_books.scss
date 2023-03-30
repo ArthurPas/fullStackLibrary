@@ -1,0 +1,84 @@
+@use '../../style/variables' as v;
+
+.section__books {
+    color: v.$color-secondary;
+    font-size: 20px;
+    
+
+    & > .books__row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(v.$book-card-img-size, 1fr));
+        grid-template-rows: 5fr auto;
+        row-gap: 2em;
+        width: 100%;
+    }
+}
+
+.book__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    grid-template-rows: 5fr auto;
+    row-gap: 4em;
+    width: 80%;
+    place-items: center;
+}
+
+.book__card {
+
+    width: v.$book-card-img-size;
+    height: v.$book-card-img-size*1.3;
+    position: relative;
+
+    & > .book__card__info {
+        display: block;
+        background-color: rgba(255, 255, 255, .9);
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        position: absolute;
+        top: 0;
+        opacity: 0;
+        transition: all .2s ease-in-out;
+        padding: 1em;
+
+        & > p {
+            color: #676767;
+            font-size: .7em;
+            margin: 0;
+            display: block;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+
+            & > svg {
+                transform: translateY(10%);
+            }
+        }
+    }
+
+    & > img {
+        border-radius: 10px;
+        width: v.$book-card-img-size;
+        height: v.$book-card-img-size*1.3;
+    }
+
+    &:hover {
+
+        filter: none;
+
+        & > .book__card__info {
+            opacity: 1;
+        }
+    }
+
+}
+
+@media screen and (max-width: 768px) {
+    .section__books {
+        & > .books__row {
+            place-items: center;
+        }
+    }
+}

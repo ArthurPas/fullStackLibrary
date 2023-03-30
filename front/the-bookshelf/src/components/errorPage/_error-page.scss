@@ -1,0 +1,24 @@
+.error__page {
+    width: 500px;
+    margin-top: 0 !important   ;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &>*{
+        margin-bottom: 1.5em;
+    }
+    
+    &>a {
+        color: #898989;
+        display: flex;
+        align-items: center;
+        gap: .5em;
+        font-size: 1em;
+
+        &:hover > svg {
+            animation: slideIn 1s infinite;
+        }   
+    }
+}
