@@ -155,6 +155,40 @@ class UserRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findSomeWithoutBorrow(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u.idUser')
+            ->leftJoin('App\Entity\Borrow', 'b', 'WITH', 'u.idUser = b.idUser')
+            ->where('b.idUser IS NULL')
+            ->getQuery()
+            ->getScalarResult()
+        ;
+    }
+
+    public function findSomeUserBorrowMoreThanOneBook(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u.idUser')
+            ->leftJoin('App\Entity\Borrow', 'b', 'WITH', 'u.idUser = b.idUser')
+            ->groupBy('u.idUser')
+            ->having('COUNT(b.idUser) > 1')
+            ->getQuery()
+            ->getScalarResult()
+        ;
+    }
+
+    public function findSomeUserBorrowSameBookTwice(): array
+    {
+        return $this->createQueryBuilder('u')
+        ->select('u.idUser')
+        ->leftJoin('App\Entity\Borrow', 'b', 'WITH', 'u.idUser = b.idUser')
+        ->groupBy('u.idUser, b.idBook')
+        ->having('COUNT(b.idBook) > 1')
+        ->getQuery()
+        ->getScalarResult()
+        ;
+    }
     public function findOneByToken($token): ?User
     {
         return $this->createQueryBuilder('u')

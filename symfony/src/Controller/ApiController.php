@@ -707,7 +707,6 @@ class ApiController extends AbstractController
 
     #[Route('/logout', name: 'app_api_logout', methods: "POST")]
     public function logout(
-        EntityManagerInterface $em,
         Request $request,
         UserRepository $ur
     ): Response {
@@ -719,7 +718,7 @@ class ApiController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
         $ExpectedUser->setToken(null);
-        $em->persist($ExpectedUser);
+        $ur->save($ExpectedUser, true);
         return $this->json([
             'message' => 'success logout',
         ], Response::HTTP_OK);

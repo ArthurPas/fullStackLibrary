@@ -10,7 +10,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * Book
  *
- * @ORM\Table(name="BOOK", indexes={@ORM\Index(name="I_FK_BOOK_LANGUAGE", columns={"ID_LANGUAGE"})})
+ * @ORM\Table(name="BOOK", indexes={@ORM\Index(name="I_FK_BOOK_LANGUAGE",
+ * columns={"ID_LANGUAGE"})})
  * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
  */
 class Book
@@ -65,7 +66,7 @@ class Book
     private $editor;
 
     /**
-     * @var \DateTime|null
+     * @var \string|null
      *
      * @ORM\Column(name="RELEASE_DATE", type="string", length=100, nullable=true)
      */
@@ -190,12 +191,12 @@ class Book
         return $this;
     }
 
-    public function getReleaseDate(): ?\DateTimeInterface
+    public function getReleaseDate(): ?string
     {
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(?\DateTimeInterface $releaseDate): self
+    public function setReleaseDate(?string $releaseDate): self
     {
         $this->releaseDate = $releaseDate;
 

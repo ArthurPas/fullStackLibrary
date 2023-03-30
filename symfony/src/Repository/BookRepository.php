@@ -41,13 +41,43 @@ class BookRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    /**
-     * Request that finds a certain number of books
-     * depending on the param nb. It will be sorted
-     * by ASC if the param is "recent" and DESC if
-     * it's "old"
-     */
 
+    /**
+     * Request that find the books from a his id 
+     */
+    public function findOneById($value): ?Book
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.idBook = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /*
+    * Request that find the books from a his title
+    */
+    public function findSomeWithSeveralAuthors(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->innerjoin('b.idAuthor', 'a')
+            ->groupBy('b.idBook')
+            ->having('COUNT(a.idAuthor) > :val')
+            ->setParameter('val', 1)
+            ->getQuery()
+            ->getScalarResult();
+    }
+
+    public function findSomeWithOneAuthor(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->innerjoin('b.idAuthor', 'a')
+            ->groupBy('b.idBook')
+            ->having('COUNT(a.idAuthor) = :val')
+            ->setParameter('val', 1)
+            ->getQuery()
+            ->getScalarResult();
+    }
     public function findByNb(int $nb, string $type): array
     {
         if ($type != 'ASC' && $type != 'DESC') {
@@ -95,10 +125,6 @@ class BookRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-
-    /*
-        * Request that find the title of a book by its id
-        */
     public function findTitleByBookId(int $id): ?array
     {
         return $this->createQueryBuilder('b')
@@ -109,6 +135,9 @@ class BookRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /*
+     * Request that find the author of a book by the id of the book
+     */
     public function findAuthorByBookId(int $id): ?array
     {
         $sql = "SELECT a.author_name
@@ -122,8 +151,6 @@ class BookRepository extends ServiceEntityRepository
 
         return $this->getEntityManager()->createNativeQuery($sql, $rsm)->getResult();
     }
-
-
 
     /*
      * Request that find the author of a book by its id
@@ -159,6 +186,7 @@ class BookRepository extends ServiceEntityRepository
 
         return $this->getBookQuery($sql);
     }
+
 
     public function getBookQuery(string $sql)
     {

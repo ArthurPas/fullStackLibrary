@@ -41,6 +41,15 @@ class BorrowRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function findSomeBorrowNotReturned(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.endDate IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * Request that find the borrows of an user
      */
