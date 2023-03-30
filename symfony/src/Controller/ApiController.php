@@ -85,19 +85,16 @@ class ApiController extends AbstractController
         $nbBooks = $request->query->get('nbResults');
         $type = $request->query->get('type');
         $title = $request->query->get('title');
-        if ($author != null && $nbBooks == null && $type == null && $title == null) {
-            $books = $book->findByAuthor($author);
-        } elseif ($nbBooks != null && $type !== null && $author == null && $title == null) {
-            $books = $book->findByNb($nbBooks, $type);
-        } elseif ($title != null && $author == null && $nbBooks == null && $type == null) {
-            $books = $book->findByTitle($title);
-        } else {
-            $books = $book->findByNb($nbBooks, $type);
+        if ($author != null) {
+            return $book->findByAuthor($author);
         }
-        if (count($books) === 0) { // if there is not any book in the request
-            return new JsonResponse(['error' => 'No books found'], Response::HTTP_NOT_FOUND);
+        if ($title != null) {
+            return $book->findByTitle($title);
         }
-        return $books;
+        if ($nbBooks != null && $type != null) {
+            return $book->findByNb($nbBooks, $type);
+        }
+        return $book->findAll();
     }
 
 

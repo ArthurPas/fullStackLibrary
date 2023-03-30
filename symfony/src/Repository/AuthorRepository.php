@@ -62,7 +62,7 @@ class AuthorRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
            ->andWhere('a.authorName LIKE :mot')
-           ->setParameter('mot', $mot . '%')
+           ->setParameter('mot', '%' . $mot . '%')
            ->setMaxResults(10)
            ->getQuery()
            ->getResult();
