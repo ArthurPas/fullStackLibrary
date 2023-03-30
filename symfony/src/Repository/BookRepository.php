@@ -203,6 +203,19 @@ class BookRepository extends ServiceEntityRepository
         return $this->getEntityManager()->createNativeQuery($sql, $rsm)->getResult();
     }
 
+    public function findPaginated($page, $perPage)
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->orderBy('b.idBook', 'ASC')
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        $query = $qb->getQuery();
+        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($query);
+
+        return $paginator;
+    }
+
     //    /**
     //     * @return Book[] Returns an array of Book objects
     //     */
