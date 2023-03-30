@@ -12,9 +12,12 @@ function Follows() {
 
     const { data, status } = useQuery("follows", () => fetchFollows());
 
-    const { data: recommandations, status: statusRecommandations } = useQuery("recommandations", () => fetchRecommandations());
+    const { data: recommendations, status: statusrecommendations } = useQuery("recommendations", () => fetchrecommendations(), {
+        enabled: localStorage.getItem("accessToken") ? true : false,
+        refetchOnWindowFocus: false,
+    });
 
-    const fetchRecommandations = async () => {
+    const fetchrecommendations = async () => {
         const response = await fetch(`${BASE_API_URL}/recommendation?idUser=${user.idUser}`);
 
         if (!response.ok) {
@@ -46,6 +49,7 @@ function Follows() {
                 }
                 return (
                     data.map((follow: User) => {
+                        console.log(follow)
                         return (
                             <UserCard user={follow} key={follow.idUser} following={true}/>
                         );
@@ -55,19 +59,23 @@ function Follows() {
     }
 
     return (
-        <div className="follows__list">
-            {statusHandler(status)}
-            {statusRecommandations == "success" && (
-                <div className="follows__recommandations">
-                    <h2>Recommandations</h2>
-                    {recommandations.map((recommandation: User) => {
-                        return (
-                            <UserCard user={recommandation} key={recommandation.idUser} following={false}/>
-                        );
-                    })}
+        <>
+            <div className="follows__list">
+                {statusHandler(status)}
+            </div>
+            {statusrecommendations == "success" && (
+                <div className="follows__recommendations">
+                    <h2>recommendations</h2>
+                    <div className="recommendations__grid">
+                        {recommendations.map((recommendation: any) => {
+                            return (
+                                <UserCard user={recommendation} key={recommendation.id_user} following={false}/>
+                            );
+                        })}
+                    </div>
                 </div>
             )}
-        </div>
+        </>
     )
 
 }

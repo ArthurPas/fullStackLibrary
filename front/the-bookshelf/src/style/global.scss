@@ -83,6 +83,10 @@ a {
 	border-radius: 25px;
 }
 
+.space {
+  height: 300px;
+}
+
 /*---------------------
    Home Page
 ---------------------*/
@@ -227,9 +231,24 @@ a {
 }
 
 
-.follows__list {
+.follows__list, .recommendations__grid {
   width: 80%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 3em;
+}
+
+.follows__recommendations {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & > h2 {
+    font-size: 1.5em;
+    color: #707070;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+    margin: 1em 0;
+  }
 }
