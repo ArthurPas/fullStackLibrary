@@ -198,7 +198,8 @@ class UserRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findRandomUsers($id) {
+    public function findRandomUsers($id)
+    {
 
         $sql = "SELECT u.id_user, u.firstname, u.lastname, u.email, u.avatar
                 FROM USER u
