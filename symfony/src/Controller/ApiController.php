@@ -18,7 +18,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints\DateTime;
-use FOS\RestBundle\View\View; 
+use FOS\RestBundle\View\View;
+
 #[Route('/api')]
 class ApiController extends AbstractController
 {
