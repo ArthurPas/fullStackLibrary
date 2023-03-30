@@ -548,7 +548,7 @@ class ApiController extends AbstractController
         UserRepository $user
     ) {
         $idBook = $request->query->get('idBook');
-        $idBook = $book->findById($idBook);
+        $idBook = $book->findByIds($idBook);
         $idUser = $request->query->get('idUser');
         $idUser = $user->findById($idUser);
         if ($idBook === null && $idUser === null) {
