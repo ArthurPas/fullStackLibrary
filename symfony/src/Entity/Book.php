@@ -29,7 +29,7 @@ class Book
      *
      * @ORM\Column(name="TITLE", type="text", length=65535, nullable=false)
      */
-    #[Groups(['livre'])]
+    #[Groups(['Books'])]
     private $title;
 
     /**
@@ -37,7 +37,7 @@ class Book
      *
      * @ORM\Column(name="IMAGE", type="text", length=65535, nullable=true)
      */
-    #[Groups(['livre'])]
+    #[Groups(['Books'])]
     private $image;
 
     /**
@@ -45,7 +45,7 @@ class Book
      *
      * @ORM\Column(name="DESCRIPTION", type="text", length=65535, nullable=true)
      */
-    #[Groups(['livre'])]
+    #[Groups(['Books'])]
     private $description;
 
     /**
@@ -53,7 +53,7 @@ class Book
      *
      * @ORM\Column(name="NUMBER_OF_PAGES", type="bigint", nullable=true)
      */
-    #[Groups(['livre'])]
+    #[Groups(['Books'])]
     private $numberOfPages;
 
     /**
@@ -61,7 +61,7 @@ class Book
      *
      * @ORM\Column(name="EDITOR", type="text", length=65535, nullable=true)
      */
-    #[Groups(['livre'])]
+    #[Groups(['Books'])]
     private $editor;
 
     /**
@@ -69,7 +69,7 @@ class Book
      *
      * @ORM\Column(name="RELEASE_DATE", type="string", length=100, nullable=true)
      */
-    #[Groups(['livre'])]
+    #[Groups(['Books'])]
     private $releaseDate;
 
     /**
@@ -80,7 +80,7 @@ class Book
      *   @ORM\JoinColumn(name="ID_LANGUAGE", referencedColumnName="ID_LANGUAGE")
      * })
      */
-    #[Groups(['livre'])]
+    #[Groups(['Books'])]
     private $idLanguage;
 
     /**
@@ -88,7 +88,7 @@ class Book
      *
      * @ORM\ManyToMany(targetEntity="Author", mappedBy="idBook")
      */
-    #[Groups(['livre'])]
+    #[Groups(['Books'])]
     private $idAuthor = array();
 
     /**
@@ -96,7 +96,7 @@ class Book
      *
      * @ORM\ManyToMany(targetEntity="User", mappedBy="idBook")
      */
-    #[Groups(['livre'])]
+    #[Groups(['Books'])]
     private $idUser = array();
 
     /**
@@ -112,7 +112,7 @@ class Book
      *   }
      * )
      */
-    #[Groups(['livre'])]
+    #[Groups(['Books'])]
     private $idCategory = array();
 
     /**

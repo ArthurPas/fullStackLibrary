@@ -29,7 +29,7 @@ class Borrow
      *
      * @ORM\Column(name="START_DATE", type="date", nullable=false)
      */
-    #[Groups(['emprunt'])]
+    #[Groups(['borrow'])]
     private $startDate;
 
     /**
@@ -37,7 +37,7 @@ class Borrow
      *
      * @ORM\Column(name="END_DATE", type="date", nullable=true)
      */
-    #[Groups(['emprunt'])]
+    #[Groups(['borrow'])]
     private $endDate;
 
     /**
@@ -48,7 +48,7 @@ class Borrow
      *   @ORM\JoinColumn(name="ID_USER", referencedColumnName="ID_USER")
      * })
      */
-    #[Groups(['emprunt'])]
+    #[Groups(['borrow'])]
     private $idUser;
 
     /**
@@ -59,7 +59,7 @@ class Borrow
      *   @ORM\JoinColumn(name="ID_BOOK", referencedColumnName="ID_BOOK")
      * })
      */
-    #[Groups(['emprunt'])]
+    #[Groups(['borrow'])]
     private $idBook;
 
     public function getIdBorrow(): ?string

@@ -25,8 +25,8 @@ class ApiController extends AbstractController
     /**
      * Route that returns a json of the books from an author or from
      * a title or a number of books depending on the number in the URL
-     * param "nbBooks" sorted by recent or old depending on the
-     * param "type" but not all in the same time only "nbBooks" and
+     * param "nbResults" sorted by recent or old depending on the
+     * param "type" but not all in the same time only "nbResults" and
      * "type" can be combined
      * If there is not parameters the route return a json with all
      * the books
@@ -49,17 +49,17 @@ class ApiController extends AbstractController
         schema: new OA\Schema(ref: "#/components/schemas/Books/properties/title")
     )]
     #[OA\Parameter(
-        name: "nbBooks",
+        name: "nbResults",
         in: "query",
         description: "Number of books to retrieve (need to be with type)",
         required: false,
-        schema: new OA\Schema(ref: "#/components/schemas/Books/properties/nbBooks")
+        schema: new OA\Schema(ref: "#/components/schemas/Books/properties/nbResults")
     )]
     #[OA\Parameter(
         name: "type",
         in: "query",
-        description: "Type of books to retrieve (need to be with nbBooks)",
-        example: "recent or old",
+        description: "Type of books to retrieve (need to be with nbResults)",
+        example: "ASC or DESC",
         required: false,
         schema: new OA\Schema(ref: "#/components/schemas/Books/properties/type")
     )]
@@ -75,24 +75,22 @@ class ApiController extends AbstractController
         response: "500",
         description: "Query syntax error",
     )]
-    #[AnnotationsView(serializerGroups: ['livre'])]
+    #[AnnotationsView(serializerGroups: ['Books'])]
     #[Route('/books', name: 'app_api', methods: "GET")]
     public function index(
         Request $request,
         BookRepository $book
     ) {
         $author = $request->query->get('author');
-        $nbBooks = $request->query->get('nbResults');
+        $nbResults = $request->query->get('nbResults');
         $type = $request->query->get('type');
         $title = $request->query->get('title');
         if ($author != null) {
             return $book->findByAuthor($author);
-        }
-        if ($title != null) {
+        } elseif ($title != null) {
             return $book->findByTitle($title);
-        }
-        if ($nbBooks != null && $type != null) {
-            return $book->findByNb($nbBooks, $type);
+        } elseif ($nbResults != null && $type != null) {
+            return $book->findByNb($nbResults, $type);
         }
         return $book->findAll();
     }
@@ -120,7 +118,7 @@ class ApiController extends AbstractController
         response: "500",
         description: "Query syntax error",
     )]
-    #[AnnotationsView(serializerGroups: ['livre'])]
+    #[AnnotationsView(serializerGroups: ['Books'])]
     #[Route('/book/{id}', name: 'app_api_book', methods: "GET")]
     public function getBook(BookRepository $book, int $id)
     {
@@ -319,7 +317,6 @@ class ApiController extends AbstractController
             'message' => 'Followed successfully',
             'userFollowed' => $idfollow,
         ]);
-        
     }
 
 
@@ -363,8 +360,11 @@ class ApiController extends AbstractController
         if ($exist == null || $existfollow == null) {
             return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
         }
-        $users = $userRepository->unFollow($idfollow, $id);
-        return $this->json($users);
+        $userRepository->unFollow($idfollow, $id);
+        return $this->json([
+            'message' => 'The user is no longer followed',
+            'userFollowed' => $idfollow,
+        ]);
     }
 
     /**
@@ -406,7 +406,7 @@ class ApiController extends AbstractController
 
     #[OA\Tag(name: "Author")]
     #[OA\Parameter(
-        name: "debut",
+        name: "startby",
         in: "query",
         description: "Get the book by author name",
         required: true,
@@ -420,15 +420,18 @@ class ApiController extends AbstractController
         response: "204",
         description: "No author found",
     )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
 
-
-    #[AnnotationsView(serializerGroups: ['nomAuteur'])]
+    #[AnnotationsView(serializerGroups: ['AuthorName'])]
     #[Route('/autocompletion', name: 'app_autocompletion', methods: "GET")]
     public function autocompletion(AuthorRepository $a, Request $request)
     {
-        $debut = $request->query->get('debut');
-        if (strlen($debut) >= 4) { // We only start at 4 character
-            $author = $a->autocompleter($debut);
+        $startby = $request->query->get('startby');
+        if (strlen($startby) >= 4) { // We only start at 4 character
+            $author = $a->autocompletion($startby);
             if (count($author) === 0) { // if the request returns 0 line
                 return new JsonResponse(['error' => 'No author found'], Response::HTTP_NO_CONTENT);
             }
@@ -447,7 +450,7 @@ class ApiController extends AbstractController
 
     #[OA\Tag(name: "Borrow")]
     #[OA\Parameter(
-        name: "utilisateur",
+        name: "user",
         in: "path",
         description: "Get the list of books that the user has borrowed by his email or id",
         required: true,
@@ -461,14 +464,18 @@ class ApiController extends AbstractController
         response: "404",
         description: "No borrows or users found",
     )]
-    #[AnnotationsView(serializerGroups: ['emprunt'])]
-    #[Route('/borrow/user/{utilisateur}', name: 'app_api_borrow_user', methods: "GET")]
-    public function getBorrowByUser(BorrowRepository $borrow, string $utilisateur)
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+    #[AnnotationsView(serializerGroups: ['borrow'])]
+    #[Route('/borrow/user/{user}', name: 'app_api_borrow_user', methods: "GET")]
+    public function getBorrowByUser(BorrowRepository $borrow, string $user)
     {
-        if (!filter_var($utilisateur, FILTER_VALIDATE_EMAIL)) {
-            $borrows = $borrow->findBorrowByIdUser($utilisateur);
+        if (!filter_var($user, FILTER_VALIDATE_EMAIL)) {
+            $borrows = $borrow->findBorrowByIdUser($user);
         } else {
-            $borrows = $borrow->findBorrowByUser($utilisateur);
+            $borrows = $borrow->findBorrowByUser($user);
         }
         if (count($borrows) === 0) { // if the request return 0 line
             return new JsonResponse(['error' => 'No borrows or users found'], Response::HTTP_NOT_FOUND);
@@ -494,7 +501,11 @@ class ApiController extends AbstractController
         response: "404",
         description: "No borrows found",
     )]
-    #[AnnotationsView(serializerGroups: ['emprunt'])]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+    #[AnnotationsView(serializerGroups: ['borrow'])]
     #[Route('/borrow/date/{id}', name: 'app_api_borrow_date', methods: "GET")]
     public function getDateOfBorrow(BorrowRepository $borrow, int $id)
     {
@@ -538,9 +549,9 @@ class ApiController extends AbstractController
         description: "Query syntax error",
     )]
     #[OA\Tag(name: "Borrow")]
-    #[AnnotationsView(serializerGroups: ['emprunt'])]
-    #[Route('/borrow/emprunter', name: 'app_api_borrow_emprunter', methods: "GET")]
-    public function emprunter(
+    #[AnnotationsView(serializerGroups: ['borrow'])]
+    #[Route('/borrow/new', name: 'app_api_borrow_new', methods: "GET")]
+    public function newBorrow(
         EntityManagerInterface $em,
         Request $request,
         BorrowRepository $borrow,
@@ -565,12 +576,11 @@ class ApiController extends AbstractController
         $borrow->setIdBook($idBook);
         $em->persist($borrow);
         $em->flush();
-        //return $borrow && new JsonResponse(['success' => 'Borrow created'], Response::HTTP_OK);
         return $this->json([
             'IdBorrow' => $borrow->getIdBorrow(),
             'StartDate' => $borrow->getStartDate(),
-            'Utilisateur' => $borrow->getIdUser()->getEmail(),
-            'message' => 'Borrow returned successfully',
+            'user' => $borrow->getIdUser()->getEmail(),
+            'message' => 'Borrow created'
         ], Response::HTTP_OK);
     }
 
@@ -597,9 +607,9 @@ class ApiController extends AbstractController
         response: "500",
         description: "Query syntax error",
     )]
-    #[AnnotationsView(serializerGroups: ['emprunt'])]
-    #[Route('/borrow/rendre', name: 'app_api_borrow_rendre', methods: "GET")]
-    public function rendre(
+    #[AnnotationsView(serializerGroups: ['borrow'])]
+    #[Route('/borrow/return', name: 'app_api_borrow_return', methods: "GET")]
+    public function return(
         EntityManagerInterface $em,
         Request $request,
         BorrowRepository $borrow,
@@ -615,7 +625,7 @@ class ApiController extends AbstractController
         $em->flush();
         return $this->json([
             'EndDate' => $date,
-            'message' => 'success',
+            'message' => 'Borrow returned successfully',
         ], Response::HTTP_OK);
     }
 
@@ -667,7 +677,7 @@ class ApiController extends AbstractController
             return $this->json([
                 'accessToken' => $token,
                 'user' => $ExpectedUser,
-                'message' => 'success',
+                'message' => 'success login',
             ], Response::HTTP_OK);
         } else {
             return $this->json([
@@ -711,7 +721,7 @@ class ApiController extends AbstractController
         $ExpectedUser->setToken(null);
         $em->persist($ExpectedUser);
         return $this->json([
-            'message' => 'success',
+            'message' => 'success logout',
         ], Response::HTTP_OK);
     }
 }
