@@ -85,23 +85,43 @@ class ApiController extends AbstractController
         $nbBooks = $request->query->get('nbResults');
         $type = $request->query->get('type');
         $title = $request->query->get('title');
-        if ($author != null && $nbBooks == null && $type == null && $title == null) {
-            $books = $book->findByAuthor($author);
-        } elseif ($nbBooks != null && $type !== null && $author == null && $title == null) {
-            $books = $book->findByNb($nbBooks, $type);
-        } elseif ($title != null && $author == null && $nbBooks == null && $type == null) {
-            $books = $book->findByTitle($title);
-        } else {
-            $books = $book->findByNb($nbBooks, $type);
+        if ($author != null) {
+            return $book->findByAuthor($author);
         }
-        if (count($books) === 0) { // if there is not any book in the request
-            return new JsonResponse(['error' => 'No books found'], Response::HTTP_NOT_FOUND);
+        if ($title != null) {
+            return $book->findByTitle($title);
         }
-        return $books;
+        if ($nbBooks != null && $type != null) {
+            return $book->findByNb($nbBooks, $type);
+        }
+        return $book->findAll();
     }
 
+
+    /**
+    * Route that returns the book depending on his id
+    */
+    #[OA\Tag(name: "Books")]
+    #[OA\Parameter(
+        name: "id",
+        in: "path",
+        description: "Get the book by id",
+        required: true,
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "Book information retrieved successfully",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "No book found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
     #[AnnotationsView(serializerGroups: ['livre'])]
-    #[Route('/book/{id}', name: 'app_api_book')]
+    #[Route('/book/{id}', name: 'app_api_book', methods: "GET")]
     public function getBook(BookRepository $book, int $id)
     {
         $book = $book->findById($id);
@@ -119,7 +139,7 @@ class ApiController extends AbstractController
     #[OA\Parameter(
         name: "id",
         in: "path",
-        description: "Get the list of books by author id",
+        description: "Get the author by id",
         required: true,
     )]
     #[OA\Response(
@@ -143,6 +163,40 @@ class ApiController extends AbstractController
             return new JsonResponse(['error' => 'No author found'], Response::HTTP_NOT_FOUND);
         }
         return $author;
+    }
+
+    /**
+    * Route that returns the author depending on the book id
+    */
+    #[OA\Tag(name: "Author")]
+    #[OA\Parameter(
+        name: "id",
+        in: "path",
+        description: "Get the author by book id",
+        required: true,
+    )]
+    #[OA\Response(
+        response: "200",
+        description: "Author information retrieved successfully",
+    )]
+    #[OA\Response(
+        response: "404",
+        description: "No book found",
+    )]
+    #[OA\Response(
+        response: "500",
+        description: "Query syntax error",
+    )]
+    #[AnnotationsView()]
+    #[Route('/author/book/{id}', name: 'app_api_authorbybook', methods: "GET")]
+    public function getAuthorByBookId(BookRepository $b, int $id)
+    {
+        $books = $b ->findTitleByBookId($id);
+        $author = $b->findAuthorByBookId($id);
+        if (count($author) === 0) { // if there is not any result of the request
+            return new JsonResponse(['error' => 'No author or book found'], Response::HTTP_NOT_FOUND);
+        }
+        return $books + $author;
     }
 
    /**
@@ -260,7 +314,7 @@ class ApiController extends AbstractController
         if ($exist == null || $existfollow == null) {
             return new JsonResponse(['error' => 'No users found'], Response::HTTP_NOT_FOUND);
         }
-        $users = $userRepository->addFollow($idfollow, $id);
+        $users = $userRepository->addFollow($id, $idfollow);
         return $this->json($users);
     }
 
@@ -444,7 +498,7 @@ class ApiController extends AbstractController
     }
 
 
-   /**
+      /**
     * Route that create a borrow and return a json with the borrow date,id and a success
     * message
     */

@@ -4,6 +4,7 @@ import { HeroBanner, SearchInput } from "@/components";
 import { BASE_API_URL } from "@/utils/Constants";
 import { User } from "@/utils/Types";
 import { useState } from "react";
+import { uID } from "@/utils/UtilsFunctions";
 
 function Home() {
 
@@ -17,7 +18,7 @@ function Home() {
         }
 
         const newBooks = await response.json();
-
+        
         if (localStorage.getItem('accessToken')) {
             const user: User = JSON.parse(localStorage.getItem('user')!);
             const responseBorrowed = await fetch(`${BASE_API_URL}/borrow/user/${user.email}`);
@@ -28,20 +29,9 @@ function Home() {
 
             const borrows = await responseBorrowed.json();
 
-            let borrowedBooks = borrows.map((borrow: any) => {
-                // Return new book object
-                return {
-                    idBook: borrow.idBook,
-                    title: borrow.title,
-                    image: borrow.image,
-                }
-            })
-
-            borrowedBooks = borrowedBooks.slice(0, 4);
-
             return {
                 newBooks: newBooks,
-                borrowedBooks: borrowedBooks,
+                borrowedBooks: borrows,
             }
         }
 
@@ -56,12 +46,12 @@ function Home() {
                 return <p>Error fetching data</p>;
             case 'success':
                 if (localStorage.getItem('accessToken')) {
-                    console.log(data);
                     return (
                         <div className="content__books">
-                            <BookSection title="Recently added books" books={data.newBooks}/>
-                            <BookSection title="Your last borrowed books" books={data.borrowedBooks}/>
+                            <BookSection title="Recently added books" books={data.newBooks} key={uID.next().value as number}/>
+                            <BookSection title="Last borrowed books" books={data.borrowedBooks} key={uID.next().value as number}/>
                         </div>
+
                     );
                 }
                 return (

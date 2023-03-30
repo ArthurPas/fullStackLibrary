@@ -36,8 +36,7 @@ function Search() {
 			case "error":
 				return <p>Error fetching data</p>;
 			case "success":
-				// how to check if data is undefined or empty?
-				if (data == undefined || data.length == 0) {
+				if (data.length == 0 || !(data instanceof Array)) {
 					return (
                             <div className="books__no__results">
                                 <p>No books found for "{query.get("q")}"</p>

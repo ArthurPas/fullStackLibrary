@@ -8,35 +8,23 @@ import {
 } from "react-icons/bs";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Book } from "@/utils/Types";
 
 function BookPage() {
-	const { id, setId } = useParams();
+	const { id } = useParams();
 
 	const navigate = useNavigate();
 
-	const { data, status } = useQuery("book", () => fetchBookAndAuthor());
+	const { data, status } = useQuery("book", () => fetchBook());
 
-	const [book, setBook] = useState<any>();
-
-	const fetchBookAndAuthor = async () => {
+	const fetchBook = async () => {
 		const response = await fetch(`${BASE_API_URL}/book/${id}`);
 		if (!response.ok) {
 			navigate("/404");
 		}
-		const book = await response.json();
-		const authorResponse = await fetch(
-			`${BASE_API_URL}/author/${book[0].idAuthor}`
-		);
-		if (!authorResponse.ok) {
-			navigate("/404");
-		}
-		const author = await authorResponse.json();
-		return { ...book[0], authorName: author[0].authorName };
-	};
 
-	if ((data && !book) || data !== book) {
-		setBook(data);
-	}
+		return await response.json();
+	};
 
 	const statusHandler = (status: string) => {
 		switch (status) {
@@ -45,7 +33,7 @@ function BookPage() {
 			case "error":
 				return <p>Error fetching data</p>;
 			case "success":
-				if (!book) return;
+				const book: Book = data[0];
 				return (
 					<div className="book__infos card__glass">
 						<h2 className="book__infos__title">
@@ -62,7 +50,7 @@ function BookPage() {
 							<div className="book__infos__content__details">
 								<div className="book__infos__content__item">
 									<FaFeatherAlt /> <h3>Author</h3>
-									<p>{book.authorName || "No author"}</p>
+									<p>{book.authors || "No author"}</p>
 								</div>
 								<div className="book__infos__content__item">
 									<BsFillCalendarDateFill />{" "}

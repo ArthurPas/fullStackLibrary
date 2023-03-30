@@ -16,9 +16,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BorrowRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+
+    private BookRepository $bookRepository;
+
+    public function __construct(ManagerRegistry $registry, BookRepository $bookRepository)
     {
         parent::__construct($registry, Borrow::class);
+        $this->bookRepository = $bookRepository;
     }
 
     public function save(Borrow $entity, bool $flush = false): void
@@ -43,15 +47,22 @@ class BorrowRepository extends ServiceEntityRepository
      */
     public function findBorrowByUser($utilisateur): array
     {
-        return $this->createQueryBuilder('bo')
-            ->leftJoin('bo.idUser', 'u')
-            ->leftJoin('bo.idBook', 'b')
-            ->select('bo.endDate, bo.startDate, b.idBook, b.title, b.image', 'b.description, 
-            b.numberOfPages, b.editor, b.releaseDate')
-            ->andWhere('u.email = :email_utilisateur')
-            ->setParameter('email_utilisateur', $utilisateur)
-            ->getQuery()
-            ->getResult();
+
+        $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, b.release_date, GROUP_CONCAT(a.author_name) as author_names
+                FROM BOOK b
+                LEFT JOIN WWRITE w ON b.id_book = w.id_book
+                LEFT JOIN AUTHOR a ON w.id_author = a.id_author
+                WHERE b.id_book IN (
+                    SELECT bo.id_book
+                    FROM BORROW bo
+                    LEFT JOIN USER u ON bo.id_user = u.id_user
+                    WHERE u.email = '$utilisateur'
+                )
+                GROUP BY b.id_book
+                ORDER BY b.id_book DESC";
+
+
+        return $this->bookRepository->getBookQuery($sql);
     }
     /**
      * Request that find the date of a borrow by its id
