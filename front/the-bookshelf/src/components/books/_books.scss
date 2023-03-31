@@ -22,13 +22,14 @@
 }
 
 .book__card {
-    position: relative;
-    aspect-ratio: 1;
+
     width: v.$book-card-img-size;
+    height: v.$book-card-img-size*1.3;
+    position: relative;
 
     &.small {
-        aspect-ratio: .5;
-        
+        width: calc(v.$book-card-img-size/2);
+        height: (v.$book-card-img-size*1.3/2);
     }
 
     & > .book__card__info {
@@ -36,13 +37,12 @@
         background-color: rgba(255, 255, 255, .9);
         width: 100%;
         height: 100%;
-        border-radius: 15px;
+        border-radius: 10px;
         position: absolute;
         top: 0;
         opacity: 0;
         transition: all .2s ease-in-out;
         padding: 1em;
-        overflow: hidden;
 
         & > p {
             color: #676767;
@@ -84,10 +84,12 @@
     & > img {
         border-radius: 10px;
         width: v.$book-card-img-size;
+        height: v.$book-card-img-size*1.3;
     }
 
     &.small > img {
         width: calc(v.$book-card-img-size/2);
+        height: calc(v.$book-card-img-size*1.3/2);
     }
 
     &:hover {
