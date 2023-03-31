@@ -711,7 +711,7 @@ class ApiController extends AbstractController
         description: "Query syntax error",
     )]
     #[Route('/login', name: 'app_api_login', methods: "POST")]
-    
+
     public function login(
         Request $request,
         UserRepository $ur,
