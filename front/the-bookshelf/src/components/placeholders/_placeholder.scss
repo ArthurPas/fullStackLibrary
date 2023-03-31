@@ -1,0 +1,9 @@
+.placeholder {
+    display: block;
+    height: 15rem;
+
+    & > h1 {
+        font-family: 'Satisfy', cursive;
+        border-radius: 0.25rem;
+    }
+}

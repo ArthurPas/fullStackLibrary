@@ -8,7 +8,6 @@
     & > .books__row {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(v.$book-card-img-size, 1fr));
-        grid-template-rows: 5fr auto;
         row-gap: 2em;
         width: 100%;
     }
@@ -17,7 +16,6 @@
 .book__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-    grid-template-rows: 5fr auto;
     row-gap: 4em;
     width: 80%;
     place-items: center;
@@ -28,6 +26,11 @@
     width: v.$book-card-img-size;
     height: v.$book-card-img-size*1.3;
     position: relative;
+
+    &.small {
+        width: calc(v.$book-card-img-size/2);
+        height: (v.$book-card-img-size*1.3/2);
+    }
 
     & > .book__card__info {
         display: block;
@@ -58,10 +61,35 @@
         }
     }
 
+    &.small > .book__card__info {
+
+        padding: .3em;
+        overflow: hidden;
+        margin: 0 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & > p {
+            display: flex;
+            flex-direction: column;
+            font-size: .5em;
+        }
+
+        &:first-child {
+            display: none;
+        }
+    }
+
     & > img {
         border-radius: 10px;
         width: v.$book-card-img-size;
         height: v.$book-card-img-size*1.3;
+    }
+
+    &.small > img {
+        width: calc(v.$book-card-img-size/2);
+        height: calc(v.$book-card-img-size*1.3/2);
     }
 
     &:hover {

@@ -1,5 +1,9 @@
+/**
+ * @fileoverview Types for entities used in the application 
+ */
+
 export type User = {
-    id: number;
+    idUser: number;
     firstname: string;
     lastname: string;
     email: string;

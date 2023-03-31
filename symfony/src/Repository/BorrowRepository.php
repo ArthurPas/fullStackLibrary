@@ -55,15 +55,21 @@ class BorrowRepository extends ServiceEntityRepository
      */
     public function findBorrowByUser($user): array
     {
-        return $this->createQueryBuilder('bo')
-            ->leftJoin('bo.idUser', 'u')
-            ->leftJoin('bo.idBook', 'b')
-            ->select('bo.endDate, bo.startDate, b.idBook, b.title, b.image', 'b.description, 
-            b.numberOfPages, b.editor, b.releaseDate', 'bo.idBorrow')
-            ->andWhere('u.email = :id')
-            ->setParameter('id', $user)
-            ->getQuery()
-            ->getResult();
+        $sql = "SELECT b.id_book, b.title, b.image, b.description, b.number_of_pages, b.editor, b.release_date,
+                    GROUP_CONCAT(a.author_name) as author_names
+                FROM BOOK b
+                LEFT JOIN WWRITE w ON b.id_book = w.id_book
+                LEFT JOIN AUTHOR a ON w.id_author = a.id_author
+                WHERE b.id_book IN (
+                    SELECT bo.id_book
+                    FROM BORROW bo
+                    LEFT JOIN USER u ON bo.id_user = u.id_user
+                    WHERE u.email = '$user'
+                )
+                GROUP BY b.id_book
+                ORDER BY b.id_book DESC";
+
+        return $this->bookRepository->getBookQuery($sql);
     }
 
     public function findBorrowByIdUser($id): array

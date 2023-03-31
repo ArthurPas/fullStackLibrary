@@ -5,13 +5,28 @@ import { Link } from "react-router-dom";
 import "./_forms.scss"
 import { BackToHomeButton } from "@/components";
 
+/**
+ * @interface AuthFormProps - Defines the props of the AuthForm component
+ * 
+ * @property {Function} setEmail - The function to call when the email input value changes
+ * @property {Function} setPassword - The function to call when the password input value changes
+ * @property {Function} onSubmit - The function to call when the form is submitted
+ */
 interface AuthFormProps {
-    
     setEmail: (email: string) => void;
     setPassword: (password: string) => void;
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
+/**
+ * @component AuthForm - Display the authentication form
+ * 
+ * @param {AuthFormProps} props - The props of the component
+ * 
+ * @returns {JSX.Element} - The AuthForm component
+ *
+ * @example <AuthForm setEmail={setEmail} setPassword={setPassword} onSubmit={onSubmit}/>
+ */
 function AuthForm({setEmail, setPassword, onSubmit}: AuthFormProps) {
 
     return (

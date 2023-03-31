@@ -1,26 +1,39 @@
-import { useState } from "react";
-import { FaFeatherAlt } from "react-icons/fa";
-import { useQuery } from "react-query";
-import { BASE_API_URL } from "@/utils/Constants";
-import { FaBook } from "react-icons/fa";
+import { FaFeatherAlt, FaBook } from "react-icons/fa";
 import { BsFillCalendarDateFill, BsBroadcastPin } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { Book } from "@/utils/Types";
 
+/**
+ * @interface BookCardProps - Defines the props for the BookCard component
+ * 
+ * @property {Book} book - The book to display
+ * @property {boolean} small - If the card is small or not, if true, the card                         will be smaller and display less information
+ */
 interface BookCardProps {
     book: Book;
+    small: boolean;
 }
 
-function BookCard({book}: BookCardProps) {
+/**
+ * @component BookCard - Display a book card with the book's information
+ * 
+ * @param {BookCardProps} props - The props of the component
+ * 
+ * @returns {JSX.Element} - The BookCard component
+ * 
+ * @example <BookCard book={book} small={false}/>
+ * 
+ */
+function BookCard({book, small}: BookCardProps) {
 
     return (
-        <Link to={`/book/${book.idBook}`} className="book__card">
+        <Link to={`/book/${book.idBook}`} className={small ? "book__card small" : "book__card"}>
             <img src={book.image || "/src/assets/book-placeholder.png"} alt=""/>
             <div className="book__card__info">
-                    <p><FaFeatherAlt/> { book.authors || "No author" }</p>
+                    {!small && (<p><FaFeatherAlt/> { book.authors || "No author" }</p>)}
                     <p><FaBook/> { book.title || "No Title" }</p>
-                    <p><BsFillCalendarDateFill/> { book.releaseDate || "-" }</p>
-                    <p><BsBroadcastPin/> { book.editor || "No editor"} </p>
+                    {!small && (<p><BsFillCalendarDateFill/> { book.releaseDate || "-" }</p>)}
+                    {!small && (<p><BsBroadcastPin/> { book.editor || "No editor"} </p>)}
             </div>
         </Link>
     )

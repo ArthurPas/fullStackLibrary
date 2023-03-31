@@ -5,68 +5,76 @@ import { BASE_API_URL } from "@/utils/Constants";
 import { User } from "@/utils/Types";
 import { useState } from "react";
 import { uID } from "@/utils/UtilsFunctions";
+import StartSearching from "@/components/placeholders/StartSeaching";
 
+/**
+ * @component Home - A page to display the home page of the application
+ * 
+ * @returns {JSX.Element} - The Home component
+ */
 function Home() {
 
-    const { data, status } = useQuery('books', () => fetchRecentsBooks(4));
+    // The useQuery hooks are enabled only if the user is logged in
 
-    const fetchRecentsBooks = async (nbResults: number) => {
-        const response = await fetch(`${BASE_API_URL}/books?nbResults=${nbResults}&type=DESC`);
+    // Fetch the new books using react-query's useQuery hook
+    const { data: newBooks, status: statusNewBooks } = useQuery("newBooks", () => fetchRecentsBooks(4), {
+        enabled: localStorage.getItem('accessToken') ? true : false
+    });
+
+    // Fetch the last borrowed books of the user using react-query's useQuery hook
+    const { data: borrows, status: statusBorrows } = useQuery("borrows", () => fetchBorrows(), {
+        enabled: localStorage.getItem('accessToken') ? true : false,
+        refetchOnMount: false,
+    });
+
+    /**
+     * @function fetchBorrows - Fetch the last borrowed books of the user
+     * 
+     * @returns {Promise<Book[]>} - The last borrowed books of the user
+     */
+    const fetchBorrows = async () => {
+        let result: any = [];
+        const user: User = JSON.parse(localStorage.getItem('user')!);
+        const response = await fetch(`${BASE_API_URL}/borrow/user/${user.email}`);
 
         if (!response.ok) {
             throw new Error('Something went wrong');
         }
 
-        const newBooks = await response.json();
-        
-        if (localStorage.getItem('accessToken')) {
-            const user: User = JSON.parse(localStorage.getItem('user')!);
-            const responseBorrowed = await fetch(`${BASE_API_URL}/borrow/user/${user.email}`);
-
-            if (!responseBorrowed.ok) {
-                throw new Error('Something went wrong');
-            }
-
-            const borrows = await responseBorrowed.json();
-
-            return {
-                newBooks: newBooks,
-                borrowedBooks: borrows,
-            }
-        }
-
-        return newBooks;
+        return response.json();
     }
 
-    const statusHandler = (status: string) => {
-        switch (status) {
-            case 'loading':
-                return <p>Loading...</p>;
-            case 'error':
-                return <p>Error fetching data</p>;
-            case 'success':
-                if (localStorage.getItem('accessToken')) {
-                    return (
-                        <div className="content__books">
-                            <BookSection title="Recently added books" books={data.newBooks} key={uID.next().value as number}/>
-                            <BookSection title="Last borrowed books" books={data.borrowedBooks} key={uID.next().value as number}/>
-                        </div>
+    /**
+     * @function fetchRecentsBooks - Fetch the last added books in the database
+     * 
+     * @param {number} nbBooks - The number of books to fetch
+     * 
+     * @returns {Promise<Book[]>} - The new books
+     */
+    const fetchRecentsBooks = async (nbBooks: number) => {
+        const user: User = JSON.parse(localStorage.getItem('user')!);
+        const response = await fetch(`${BASE_API_URL}/books?nbResults=${nbBooks}&type=DESC`);
 
-                    );
-                }
-                return (
-                    <div className="content__books">
-                        <BookSection title="Recently added books" books={data}/>
-                    </div>
-                );
+        if (!response.ok) {
+            throw new Error('Something went wrong');
         }
+
+        return response.json();
     }
     
     return (
         <>
             <HeroBanner/>
             <SearchInput/>
-            {statusHandler(status)}
+            <div className="content__books">
+                {statusNewBooks == "success" && newBooks && (
+                    <BookSection title="Recently added books" books={newBooks} key={uID.next().value as number}/>
+                )}
+                {statusBorrows == "success" && borrows && (
+                    <BookSection title="Last borrowed books" books={borrows} key={uID.next().value as number}/>
+                )}
+            </div>
+            {(localStorage.getItem('accessToken') == null) && (<StartSearching/>)}
         </>
     )
 }

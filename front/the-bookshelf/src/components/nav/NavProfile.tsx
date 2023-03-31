@@ -4,24 +4,32 @@ import { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { LogoutButton } from "@/components";
 
+/**
+ * @component NavProfile - Display the profile section of the navbar
+ * 
+ * @returns {JSX.Element} - The NavProfile component
+ * 
+ * @example <NavProfile/>
+ */
 function NavProfile() {
-	const navigate = useNavigate();
 
+    // Tells if the menu profile is displayed or not
     const [displayMenu, setDisplayMenu] = useState<boolean>(false);
 
+    // Handle the click outside the menu (not very clean, sorry :/)
     const handleClickOutside = (event: any) => {
         if (displayMenu && !document.querySelector('.nav__profile')?.contains(event.target)) {
             setDisplayMenu(false);
         }
     }
 
+    // God forgive me for what I've done
     useEffect(() => {
         document.addEventListener("click", handleClickOutside);
         return () => {
             document.removeEventListener("click", handleClickOutside);
         }
     }, [displayMenu]);
-
 
 	return (
 		<div className="nav__profile">

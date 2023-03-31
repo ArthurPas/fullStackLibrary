@@ -7,8 +7,16 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 
 const queryClient = new QueryClient()
 
+/**
+ * @component Root - Display the layout of the website, the navigation bar and the footer
+ * 
+ * @returns {JSX.Element} - The Root component (the layout)
+ * 
+ * @example <Root/>
+ */
 function Root() {
 
+    // Hook used to get the current location (route)
     const location = useLocation();
 
     return (
