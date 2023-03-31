@@ -533,7 +533,7 @@ class ApiController extends AbstractController
             $borrows = $borrow->findBorrowByUser($user);
         }
         if (count($borrows) === 0) { // if the request return 0 line
-            return new JsonResponse(['error' => 'No borrows or users found'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'No borrows or users found'], Response::HTTP_OK);
         }
         return $borrows;
     }

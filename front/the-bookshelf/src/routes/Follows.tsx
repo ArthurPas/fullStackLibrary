@@ -1,6 +1,7 @@
 import { UserCard } from "@/components";
 import { BASE_API_URL } from "@/utils/Constants";
 import { User } from "@/utils/Types";
+import { uID } from "@/utils/UtilsFunctions";
 import { useState } from "react";
 import { useQuery } from "react-query";
 
@@ -76,7 +77,7 @@ function Follows() {
                 return (
                     data.map((follow: User) => {
                         return (
-                            <UserCard user={follow} key={follow.idUser} following={true}/>
+                            <UserCard user={follow} key={uID.next().value as number} following={true}/>
                         );
                     })
                 );
@@ -94,7 +95,7 @@ function Follows() {
                     <div className="recommendations__grid">
                         {recommendations.map((recommendation: any) => {
                             return (
-                                <UserCard user={recommendation} key={recommendation.id_user} following={false}/>
+                                <UserCard user={recommendation} key={uID.next().value as number} following={false}/>
                             );
                         })}
                     </div>
