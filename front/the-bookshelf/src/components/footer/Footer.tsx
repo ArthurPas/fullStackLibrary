@@ -71,7 +71,7 @@ function Footer() {
 				</div>
 			</div>
 			<div className="footer__bottom">
-				<a>Terms of Service</a>
+				<Link to={"/tos"}>Terms of Service</Link>
 				<p>|</p>
 				<Link to="/404">
 					<GrLanguage /> English

@@ -28,13 +28,13 @@ function Nav() {
 				<h1>The Bookshelf</h1>
 			</Link>
 			<ul className="nav__items">
-				<Link to="/" className="nav__item">Home</Link>
+				<li><Link to="/" className="nav__item">Home</Link></li>
 				{ !localStorage.getItem('accessToken') ? (
-					<Link to={"/login"} className="nav__item btn__secondary">Login</Link>
+					<li><Link to={"/login"} className="nav__item btn__secondary">Login</Link></li>
 				) : (
 					<>
-						<Link to="/follows" className="nav__item">Friends</Link>
-						<NavProfile	/>
+						<li><Link to="/follows" className="nav__item">Friends</Link></li>
+						<li><NavProfile	/></li>
 					</>
 				)}
 			</ul>

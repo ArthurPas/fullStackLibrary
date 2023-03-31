@@ -1,5 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
-import { FiLogOut } from "react-icons/fi";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { LogoutButton } from "@/components";
@@ -47,7 +46,7 @@ function NavProfile() {
 			</div>
             { displayMenu ? (
                 <ul className="nav__profile__dropdown">
-                    <h5>
+                    <h2>
                         <img
                             src={JSON.parse(localStorage.getItem("user")!).avatar}
                             alt="Profile"
@@ -56,7 +55,7 @@ function NavProfile() {
                             <p>{JSON.parse(localStorage.getItem("user")!).email}</p>
                             <Link to="/profile" onClick={() => setDisplayMenu(!displayMenu)}>View Profile</Link>
                         </div>
-                    </h5>
+                    </h2>
                     <hr />
                     <LogoutButton />
                 </ul>
