@@ -498,11 +498,6 @@ class ApiController extends AbstractController
         return $books;
     }
 
-
-
-
->>>>>>> symfony/src/Controller/ApiController.php
-
     /**
      * Route that returns all the books borrowed by an user
      */
